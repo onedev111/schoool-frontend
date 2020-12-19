@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from 'assets/images/logo.svg'
 import { Link, NavLink } from 'react-router-dom'
-import { Search } from '@styled-icons/boxicons-regular/Search'
+import { Search } from '@styled-icons/fa-solid/Search'
 import routes from 'routes'
 import useToggle from 'Shared/useToggle'
 import cn from 'classnames'
@@ -39,7 +39,7 @@ export default function Layout({ children }: Props) {
                 to={routes.home()}
                 className="text-xl"
                 exact
-                activeClassName="text-primary"
+                activeClassName="text-blue-primary"
               >
                 Home
               </NavLink>
@@ -47,7 +47,7 @@ export default function Layout({ children }: Props) {
                 to={routes.class()}
                 exact
                 className="text-xl ml-4"
-                activeClassName="text-primary"
+                activeClassName="text-blue-primary"
               >
                 Class
               </NavLink>
@@ -55,7 +55,7 @@ export default function Layout({ children }: Props) {
                 to={routes.notifications()}
                 exact
                 className="text-xl ml-4"
-                activeClassName="text-primary"
+                activeClassName="text-blue-primary"
               >
                 Notifications
               </NavLink>
@@ -63,7 +63,7 @@ export default function Layout({ children }: Props) {
                 to={routes.settings()}
                 exact
                 className="text-xl ml-4 flex-center"
-                activeClassName="text-primary"
+                activeClassName="text-blue-primary"
               >
                 Settings
               </NavLink>
@@ -80,7 +80,7 @@ export default function Layout({ children }: Props) {
                   className="text-gray-a4 h-full flex-center uppercase text-sm font-bold absolute-fill"
                   hidden={Boolean(searchFocused || searchValue)}
                 >
-                  <Search size={16} className="ml-1" />
+                  <Search size={14} className="mr-1" />
                   Schoool
                 </div>
                 <input

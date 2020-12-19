@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router } from 'react-router-dom'
 import history from 'Shared/history'
-import Routes from 'Routes'
+import Routes from 'Router'
 import './styles.css'
 import './style.css'
 

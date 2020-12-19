@@ -39,8 +39,15 @@ module.exports = {
       },
       blue: {
         facebook: '#4F6CAC',
+        primary: '#06ACEE',
       },
-      primary: '#06ACEE',
+      red: {
+        primary: '#FF5A5A',
+      },
+      mustard: {
+        dark: '#DDB100',
+        primary: '#F2C200',
+      },
     },
   },
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from 'assets/images/logo.svg'
-import { Eye } from '@styled-icons/ionicons-outline/Eye'
-import { EyeOff } from '@styled-icons/ionicons-outline/EyeOff'
+import { Eye } from '@styled-icons/fa-regular/Eye'
+import { EyeSlash } from '@styled-icons/fa-regular/EyeSlash'
 import useToggle from 'Shared/useToggle'
 import { Link } from 'react-router-dom'
 import Input from 'User/Auth/Shared/Input'
@@ -32,12 +32,12 @@ export default function SignIn() {
               className="absolute top-0 right-0 mt-1 mr-3 text-gray-8b cursor-pointer"
               onClick={toggleShowPassword}
             >
-              {showPassword ? <EyeOff size={30} /> : <Eye size={30} />}
+              {showPassword ? <EyeSlash size={30} /> : <Eye size={30} />}
             </div>
           </div>
           <Link
             to={routes.signUpForm()}
-            className="bg-primary rounded h-10 flex-center text-white font-bold w-full cursor-pointer mb-3"
+            className="bg-blue-primary rounded h-10 flex-center text-white font-bold w-full cursor-pointer mb-3"
           >
             Sign Up
           </Link>
@@ -59,7 +59,7 @@ export default function SignIn() {
         </div>
         <div className="bg-white py-5 px-12 shadow flex-center font-bold">
           <div className="mr-1">Have an account?</div>
-          <Link to={routes.signIn()} className="text-primary">
+          <Link to={routes.signIn()} className="text">
             Log in
           </Link>
         </div>

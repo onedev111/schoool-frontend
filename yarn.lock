@@ -1461,6 +1461,14 @@
     "@babel/runtime" "^7.10.5"
     "@styled-icons/styled-icon" "^10.6.0"
 
+"@styled-icons/fa-regular@^10.22.0":
+  version "10.22.0"
+  resolved "https://registry.yarnpkg.com/@styled-icons/fa-regular/-/fa-regular-10.22.0.tgz#9ca84bf93905c0029195841e3a91140208f6649f"
+  integrity sha512-R8/BpFeRVgid3arIQkywqz5mrRNafUJ1CTAj4flhKBPAXYw+eTwOZipwbYxTxA4/OrPyn7PT0jG/P1KxrqLROw==
+  dependencies:
+    "@babel/runtime" "^7.10.5"
+    "@styled-icons/styled-icon" "^10.6.0"
+
 "@styled-icons/fa-solid@^10.22.0":
   version "10.22.0"
   resolved "https://registry.yarnpkg.com/@styled-icons/fa-solid/-/fa-solid-10.22.0.tgz#ebe087d955ebfa5c0f7a46467a3e857eca1004c6"
@@ -1469,10 +1477,26 @@
     "@babel/runtime" "^7.10.5"
     "@styled-icons/styled-icon" "^10.6.0"
 
+"@styled-icons/icomoon@^10.18.0":
+  version "10.18.0"
+  resolved "https://registry.yarnpkg.com/@styled-icons/icomoon/-/icomoon-10.18.0.tgz#c9dbed2d54bb2bce5f69b650e20b777b0f246f4e"
+  integrity sha512-4a+j4+zkhfroUiT/4wjFuMJlhL4mvauyKVXZPZPsaRkkhdgWXkfYBy9j9DwA1ETaK+7aZep9Ng3EqHHeOF5bbg==
+  dependencies:
+    "@babel/runtime" "^7.10.5"
+    "@styled-icons/styled-icon" "^10.6.0"
+
 "@styled-icons/ionicons-outline@^10.18.0":
   version "10.18.0"
   resolved "https://registry.yarnpkg.com/@styled-icons/ionicons-outline/-/ionicons-outline-10.18.0.tgz#9b94c85fdb00b643207b9608d0c3dcd0a2637631"
   integrity sha512-X/LMOVpM0tRlLOqxqBslewvLqtIFxpPxMVlLo3BkmfNXq0719uRdTTJFl0amhvRjfa+ZDgnbd+V/NkOlpy3tXQ==
+  dependencies:
+    "@babel/runtime" "^7.10.5"
+    "@styled-icons/styled-icon" "^10.6.0"
+
+"@styled-icons/remix-fill@^10.18.0":
+  version "10.18.0"
+  resolved "https://registry.yarnpkg.com/@styled-icons/remix-fill/-/remix-fill-10.18.0.tgz#7a7b007b6d3e97ff3b63fc07f7af1d365245b25a"
+  integrity sha512-FbnQMvxt2R7CYb8j/dVAXd31CDg4k3vX1zG/9GH9qpL536yxndnyopa7hwF/Yisy2pzR7uNlNXmTQAmYK2HSrg==
   dependencies:
     "@babel/runtime" "^7.10.5"
     "@styled-icons/styled-icon" "^10.6.0"

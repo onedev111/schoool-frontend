@@ -5,8 +5,11 @@
   "dependencies": {
     "@styled-icons/boxicons-regular": "^10.18.0",
     "@styled-icons/boxicons-solid": "^10.18.0",
+    "@styled-icons/fa-regular": "^10.22.0",
     "@styled-icons/fa-solid": "^10.22.0",
+    "@styled-icons/icomoon": "^10.18.0",
     "@styled-icons/ionicons-outline": "^10.18.0",
+    "@styled-icons/remix-fill": "^10.18.0",
     "@styled-icons/typicons": "^10.18.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -47,8 +50,8 @@
     "eject": "react-scripts eject",
     "watch:styles": "postcss --watch src/tailwind.css -o src/styles.css &",
     "build:styles": "postcss --watch src/tailwind.css -o src/styles.css &",
-    "prebuild": "yarn build:styles",
-    "prestart": "yarn watch:styles",
+    "prebuild": "npm run build:styles",
+    "prestart": "npm run watch:styles",
     "eslint": "eslint --fix src"
   },
   "eslintConfig": {

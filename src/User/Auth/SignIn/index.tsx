@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from 'assets/images/logo.svg'
-import { Eye } from '@styled-icons/ionicons-outline/Eye'
-import { EyeOff } from '@styled-icons/ionicons-outline/EyeOff'
+import { Eye } from '@styled-icons/fa-regular/Eye'
+import { EyeSlash } from '@styled-icons/fa-regular/EyeSlash'
 import useToggle from 'Shared/useToggle'
 import { Link } from 'react-router-dom'
 import Input from 'User/Auth/Shared/Input'
@@ -22,7 +22,7 @@ export default function SignIn() {
         <div style={{ maxWidth: '280px' }}>
           <div className="mb-3 text-2xl">
             Teach and Learn English at{' '}
-            <span className="text-primary">SCHOOOL</span>
+            <span className="text-blue-primary">SCHOOOL</span>
           </div>
           <div className="font-sm">
             We provide an ideal platform for both ESL teachers and students
@@ -44,16 +44,19 @@ export default function SignIn() {
               className="absolute top-0 right-0 mt-1 mr-3 text-gray-8b cursor-pointer"
               onClick={toggleShowPassword}
             >
-              {showPassword ? <EyeOff size={30} /> : <Eye size={30} />}
+              {showPassword ? <EyeSlash size={30} /> : <Eye size={30} />}
             </div>
           </div>
           <input
-            className="bg-primary rounded h-10 flex-center text-white font-bold w-full cursor-pointer mb-3"
+            className="bg-blue-primary rounded h-10 flex-center text-white font-bold w-full cursor-pointer mb-3"
             type="submit"
             value="Log In"
           />
           <div className="text-center mb-3">
-            <Link to={routes.forgotPassword()} className="text-primary text-sm">
+            <Link
+              to={routes.forgotPassword()}
+              className="text-blue-primary text-sm"
+            >
               Forgot password?
             </Link>
           </div>
@@ -75,7 +78,7 @@ export default function SignIn() {
         </div>
         <div className="bg-white py-5 px-12 shadow flex-center font-bold">
           <div className="mr-1">Create an account.</div>
-          <Link to={routes.signUp()} className="text-primary">
+          <Link to={routes.signUp()} className="text-blue-primary">
             Sign Up
           </Link>
         </div>

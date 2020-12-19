@@ -24,7 +24,7 @@ import Settings from 'Settings'
 
 // const UserRoutes = () => <Layout>Home page</Layout>
 
-export default function Routes() {
+export default function Router() {
   // const [token] = useUserToken()
 
   return (
