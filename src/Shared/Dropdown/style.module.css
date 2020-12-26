@@ -1,0 +1,22 @@
+.appearingBlock {
+  animation: appear .3s;
+  transition: .3s;
+  width: 324px;
+  top: 100%;
+}
+
+.close {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

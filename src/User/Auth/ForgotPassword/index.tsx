@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from 'assets/images/logo.svg'
 import Input from 'User/Auth/Shared/Input'
-import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
+import { LeftArrowAlt } from '@styled-icons/boxicons-solid/LeftArrowAlt'
 import routes from 'routes'
 import { Link } from 'react-router-dom'
 
@@ -16,7 +16,7 @@ export default function ForgotPassword() {
           to={routes.signIn()}
           className="absolute top-0 left-0 mt-2 ml-3 text-gray-5f"
         >
-          <ArrowLeft size={24} />
+          <LeftArrowAlt size={16} />
         </Link>
         <div className="flex-center mb-5">
           <img src={logo} alt="logo" style={{ width: '80px' }} />

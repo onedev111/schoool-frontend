@@ -9,11 +9,19 @@ html, body, #root {
   height: 100%;
 }
 
-button:focus {
+:focus, button:focus {
   outline: none;
 }
 
+input {
+  background: none;
+}
+
 @tailwind components;
+
+textarea::placeholder, input::placeholder {
+  @apply text-gray-6b;
+}
 
 .absolute-fill {
   @apply absolute top-0 left-0 w-full h-full;

@@ -5,6 +5,10 @@ import history from 'Shared/history'
 import Routes from 'Router'
 import './styles.css'
 import './style.css'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+
+dayjs.extend(utc)
 
 ReactDOM.render(
   <React.StrictMode>

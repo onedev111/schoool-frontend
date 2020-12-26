@@ -1,24 +1,35 @@
 import React from 'react'
-import { DotsHorizontalRounded } from '@styled-icons/boxicons-regular/DotsHorizontalRounded'
 import logo from 'assets/images/logo.svg'
 import style from 'Home/style.module.css'
-import beer from 'assets/images/beer.svg'
 import { Heart } from '@styled-icons/boxicons-solid/Heart'
 import { Comment } from '@styled-icons/fa-solid/Comment'
 import { Check } from '@styled-icons/boxicons-regular/Check'
 import Notebook from 'assets/images/icons/notebook'
 import { Camera } from '@styled-icons/boxicons-regular/Camera'
 import { Smile } from '@styled-icons/boxicons-regular/Smile'
+import { Post as PostType } from './types'
+import Audio from './Audio'
+import cn from 'classnames'
+import ReadMore from 'Home/Post/ReadMore'
+import useToggle from 'Shared/useToggle'
+import Preview from 'Home/Post/Preview'
+import Video from 'Home/Post/Video'
+import Menu from 'Home/Post/Menu'
+import NotebookMenu from 'Home/Post/NotebookMenu'
 
-export default function Post() {
+type Props = {
+  post: PostType
+}
+
+export default function Post({ post }: Props) {
+  const textRef = React.useRef(null)
+  const [showFullText, toggleShowFullText] = useToggle()
+
   return (
     <div className="bg-white shadow relative mb-5">
-      <DotsHorizontalRounded
-        size={24}
-        className="absolute top-0 right-0 mt-8 mr-5"
-      />
+      <Menu />
 
-      <div className="p-5">
+      <div className="px-5 pt-5">
         <div className="flex-center mb-3">
           <img
             src={logo}
@@ -34,26 +45,68 @@ export default function Post() {
           </div>
         </div>
 
-        <div className={`text-gray-02 mb-3 ${style.text}`}>
-          This is where post comment is written. This is where post comment is
-          written. This is where post comment is written. This is where post
-          comment is written.
+        <div
+          ref={textRef}
+          className={cn(
+            `text-gray-02 mb-3`,
+            style.text,
+            !showFullText && style.clampedText,
+          )}
+        >
+          {post.text}
         </div>
 
-        <div className={`text-blue-primary uppercase ${style.text}`}>
-          Send to notebook
-        </div>
+        <div className="flex items-end">
+          <div className="flex-grow">
+            <div className={`text-blue-primary uppercase mb-1 ${style.text}`}>
+              Send to notebook
+            </div>
 
-        <div className={`text-gray-87 uppercase ${style.text}`}>
-          Sentences included in the note book sentences
-        </div>
+            <div className={`text-gray-87 uppercase mb-1 ${style.text}`}>
+              Sentences included in the note book sentences
+            </div>
 
-        <div className={`text-gray-87 uppercase ${style.text}`}>
-          모국어 번역 표현이 나옴. 이탤릭이고
+            <div
+              className={`text-gray-87 uppercase mb-1 font-bold font-italic ${style.text}`}
+            >
+              모국어 번역 표현이 나옴. 이탤릭이고
+            </div>
+          </div>
+          <div>
+            <ReadMore
+              showFullText={showFullText}
+              toggleShowFullText={toggleShowFullText}
+              post={post}
+              textRef={textRef}
+            />
+          </div>
         </div>
+        {(post.audio || post.loopingAudio) && (
+          <div className="mt-4">
+            <div className="flex">
+              {post.audio && (
+                <Audio src={post.audio} compact={Boolean(post.loopingAudio)} />
+              )}
+              {post.loopingAudio && (
+                <Audio
+                  src={post.loopingAudio}
+                  loop
+                  className={post.audio && 'ml-5'}
+                  compact={Boolean(post.audio)}
+                />
+              )}
+            </div>
+          </div>
+        )}
+        {post.previews.map((preview) => (
+          <Preview className="mt-4" preview={preview} />
+        ))}
       </div>
 
-      <img src={beer} alt="beer" className="w-full" />
+      {post.image && (
+        <img src={post.image} alt="beer" className="w-full mt-5" />
+      )}
+      {post.video && <Video video={post.video} className="mt-5" />}
 
       <div
         style={{ height: '90px' }}
@@ -69,9 +122,7 @@ export default function Post() {
         <button className="w-1/4 text-center text-gray-5f transition duration-200 hover:text-blue-primary">
           <Check size={40} />
         </button>
-        <button className="w-1/4 flex-center text-gray-5f transition duration-200 hover:text-blue-primary text-red-500">
-          <Notebook />
-        </button>
+        <NotebookMenu />
       </div>
 
       <div className="pt-6 pb-3 pl-5 pr-8 flex-center">

@@ -4,7 +4,7 @@ import Notebook from './Notebook'
 import Studyflow from './Studyflow'
 
 export default function NotebookWidget() {
-  const [currentTab, setCurrentTab] = React.useState('studyflow')
+  const [currentTab, setCurrentTab] = React.useState('notebook')
 
   return (
     <div

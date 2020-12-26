@@ -1,11 +1,13 @@
 import React from 'react'
 import logo from 'assets/images/logo.svg'
-import { Eye } from '@styled-icons/fa-regular/Eye'
-import { EyeSlash } from '@styled-icons/fa-regular/EyeSlash'
+import { Eye } from '@styled-icons/ionicons-outline/Eye'
+import { EyeOff } from '@styled-icons/ionicons-outline/EyeOff'
 import useToggle from 'Shared/useToggle'
 import { Link } from 'react-router-dom'
 import Input from 'User/Auth/Shared/Input'
 import routes from 'routes'
+import { FacebookSquare } from '@styled-icons/boxicons-logos/FacebookSquare'
+import { Apple } from '@styled-icons/boxicons-logos/Apple'
 
 export default function SignIn() {
   const [showPassword, toggleShowPassword] = useToggle()
@@ -32,7 +34,7 @@ export default function SignIn() {
               className="absolute top-0 right-0 mt-1 mr-3 text-gray-8b cursor-pointer"
               onClick={toggleShowPassword}
             >
-              {showPassword ? <EyeSlash size={30} /> : <Eye size={30} />}
+              {showPassword ? <EyeOff size={30} /> : <Eye size={30} />}
             </div>
           </div>
           <Link
@@ -51,15 +53,19 @@ export default function SignIn() {
             </span>
           </div>
           <div className="bg-blue-facebook rounded h-8 text-center text-white text-sm font-bold flex-center cursor-pointer mb-5">
+            <div className="mr-2 rounded overflow-hidden">
+              <FacebookSquare size={19} />
+            </div>
             Sign up with Facebook
           </div>
           <div className="border border-black rounded h-8 text-center text-black text-sm font-bold flex-center cursor-pointer">
+            <Apple size={12} className="mr-2" />
             Sign up with Apple
           </div>
         </div>
         <div className="bg-white py-5 px-12 shadow flex-center font-bold">
           <div className="mr-1">Have an account?</div>
-          <Link to={routes.signIn()} className="text">
+          <Link to={routes.signIn()} className="text-blue-primary">
             Log in
           </Link>
         </div>

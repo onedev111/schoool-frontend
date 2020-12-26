@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   purge: ['./src/**/*.js'],
   variants: {
@@ -8,6 +10,14 @@ module.exports = {
     purgeLayersByDefault: true,
   },
   theme: {
+    spacing: {
+      ...defaultTheme.spacing,
+      7: '1.75rem',
+    },
+    borderRadius: {
+      ...defaultTheme.borderRadius,
+      default: '0.375rem',
+    },
     colors: {
       white: '#FFFFFF',
       black: '#000000',
@@ -40,13 +50,16 @@ module.exports = {
       blue: {
         facebook: '#4F6CAC',
         primary: '#06ACEE',
+        deep: '#0091FF',
       },
       red: {
+        ...defaultTheme.colors.red,
         primary: '#FF5A5A',
       },
       mustard: {
-        dark: '#DDB100',
         primary: '#F2C200',
+        dark: '#DDB100',
+        darkest: '#EEAF00',
       },
     },
   },

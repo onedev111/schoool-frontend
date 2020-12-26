@@ -1,5 +1,5 @@
 import React from 'react'
-import { Book } from '@styled-icons/icomoon/Book'
+import studyfrom from 'assets/images/icons/studyflow.svg'
 
 export default function Notebook() {
   return (
@@ -11,7 +11,11 @@ export default function Notebook() {
         style={{ width: '60px', height: '60px' }}
         className="bg-mustard-primary flex-center rounded-full mb-3"
       >
-        <Book size={27} className="text-white" />
+        <img
+          src={studyfrom}
+          alt="studyflow"
+          style={{ width: '60px', height: '60px' }}
+        />
       </div>
       <div className="text-black mb-3 text-center">
         You can repeat and practice the English expressions you keep here on the

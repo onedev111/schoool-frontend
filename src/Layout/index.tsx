@@ -1,20 +1,15 @@
 import React from 'react'
 import logo from 'assets/images/logo.svg'
 import { Link, NavLink } from 'react-router-dom'
-import { Search } from '@styled-icons/fa-solid/Search'
 import routes from 'routes'
-import useToggle from 'Shared/useToggle'
-import cn from 'classnames'
 import avatar from 'assets/images/avatar.svg'
+import Search from './Search'
 
 type Props = {
   children: React.ReactNode
 }
 
 export default function Layout({ children }: Props) {
-  const [searchValue, setSearchValue] = React.useState('')
-  const [searchFocused, toggleSearchFocus] = useToggle()
-
   return (
     <div className="w-full h-full flex flex-col">
       <div
@@ -69,31 +64,7 @@ export default function Layout({ children }: Props) {
               </NavLink>
             </div>
             <div className="flex">
-              <div
-                style={{ width: '205px' }}
-                className={cn(
-                  'h-8 rounded-full border bg-gray-fc relative overflow-hidden',
-                  searchFocused ? 'border-gray-45' : 'border-gray-97',
-                )}
-              >
-                <div
-                  className="text-gray-a4 h-full flex-center uppercase text-sm font-bold absolute-fill"
-                  hidden={Boolean(searchFocused || searchValue)}
-                >
-                  <Search size={14} className="mr-1" />
-                  Schoool
-                </div>
-                <input
-                  onFocus={toggleSearchFocus}
-                  onBlur={toggleSearchFocus}
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  className={cn(
-                    'absolute-fill focus:outline-none bg-gray-fc opacity-0 px-6 rounded-full',
-                    (searchFocused || searchValue) && 'opacity-100',
-                  )}
-                />
-              </div>
+              <Search />
               <img
                 style={{ width: '30px', height: '30px' }}
                 className="ml-4"

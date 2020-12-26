@@ -1,5 +1,5 @@
 import React from 'react'
-import { User } from '@styled-icons/fa-solid/User'
+import { User } from '@styled-icons/boxicons-solid/User'
 import cn from 'classnames'
 
 export default function SignUpForm() {
@@ -17,7 +17,7 @@ export default function SignUpForm() {
               className="bg-gray-bb text-white flex-center rounded-full mr-4"
               style={{ width: '100px', height: '100px' }}
             >
-              <User size={60} />
+              <User size={72} />
             </div>
             <div className="text-blue-primary text-lg font-bold">
               Profile Photo
@@ -66,7 +66,7 @@ export default function SignUpForm() {
         </div>
         <div className="mb-8">
           <div className="text-lg ml-1 mb-1 uppercase">Language</div>
-          <select className="h-10 w-full text-lg text-gray-6b px-4 bg-white rounded border border-gray-8b">
+          <select className="h-10 w-full text-gray-6b px-4 bg-white rounded border border-gray-8b">
             <option>English</option>
             <option>Korean</option>
           </select>
