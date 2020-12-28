@@ -5,13 +5,17 @@ import style from './style.module.css'
 type DropdownProps = {
   children: React.ReactNode
   button: React.ReactNode
+  left?: boolean
   className?: string
+  contentClass?: string
 }
 
 export default function Dropdown({
   button,
   children,
   className,
+  contentClass,
+  left,
 }: DropdownProps) {
   const [isOpen, setOpen] = React.useState(false)
   const [openClass, setOpenClass] = React.useState(false)
@@ -54,15 +58,17 @@ export default function Dropdown({
       {isOpen && (
         <div
           className={cn(
-            'origin-top-right absolute right-0 mt-2 rounded-lg shadow bg-white',
+            contentClass ||
+              'origin-top-right absolute mt-2 rounded-lg shadow-around bg-white',
             style.appearingBlock,
             !openClass && style.close,
+            left ? 'left-0' : 'right-0',
           )}
         >
           {children}
         </div>
       )}
-      <button className="relative" onClick={toggle}>
+      <button className="relative block" onClick={toggle}>
         {button}
       </button>
     </div>

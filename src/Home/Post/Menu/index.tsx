@@ -1,22 +1,55 @@
 import React from 'react'
 import Dropdown from 'Shared/Dropdown'
-import { DotsHorizontalRounded } from '@styled-icons/boxicons-regular/DotsHorizontalRounded'
+import useToggle from 'Shared/useToggle'
+import SavePostModal from 'Home/Post/Menu/SavePostModal'
+import SendToNotebook from 'Home/Post/Menu/SendToNotebook'
+import { Post } from 'Home/Post/types'
 
-const className =
-  'h-16 flex-center transition duration-200 hover:bg-gray-f2 cursor-pointer'
+const itemClass =
+  'w-full h-16 flex-center font-bold transition duration-200 hover:bg-gray-f2 cursor-pointer'
 
-export default function Menu() {
+type Props = {
+  post: Post
+  button: React.ReactNode
+  notebookMenu?: boolean
+  className?: string
+}
+
+export default function Menu({ post, button, notebookMenu, className }: Props) {
+  const [savePostOpen, toggleSavePost] = useToggle()
+  const [sendToNotebookOpen, toggleSendToNotebook] = useToggle()
+
   return (
-    <Dropdown
-      button={<DotsHorizontalRounded size={24} />}
-      className="absolute top-0 right-0 mt-8 mr-5 font-bold"
-    >
-      <div className={`${className}`}>Send Message</div>
-      <div className={`${className} text-blue-deep`}>Follow</div>
-      <div className={`${className} text-blue-deep`}>Save Post</div>
-      <div className={`${className}`}>Share This Post</div>
-      <div className={`${className} text-blue-deep`}>Report</div>
-      <div className={`${className} text-red-500`}>Delete</div>
+    <Dropdown button={button} className={className}>
+      {!notebookMenu && <div className={`${itemClass}`}>Send Message</div>}
+      {!notebookMenu && (
+        <div className={`${itemClass} text-blue-deep`}>Follow</div>
+      )}
+      {notebookMenu && (
+        <>
+          {sendToNotebookOpen && (
+            <SendToNotebook post={post} onClose={toggleSendToNotebook} />
+          )}
+          <div onClick={toggleSendToNotebook} className={`${itemClass}`}>
+            Send To Study Notes
+          </div>
+        </>
+      )}
+
+      {savePostOpen && <SavePostModal onClose={toggleSavePost} />}
+      <div onClick={toggleSavePost} className={`${itemClass} text-blue-deep`}>
+        Save Post
+      </div>
+
+      {!notebookMenu && <div className={`${itemClass}`}>Share This Post</div>}
+      {!notebookMenu && (
+        <div className={`${itemClass} text-blue-deep`}>Report</div>
+      )}
+      {notebookMenu && (
+        <div className={`${itemClass} text-blue-deep`}>Edit</div>
+      )}
+      <div className={`${itemClass} text-red-500`}>Delete</div>
+      {notebookMenu && <div className={`${itemClass}`}>Share This Post</div>}
     </Dropdown>
   )
 }

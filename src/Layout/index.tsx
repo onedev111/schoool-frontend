@@ -4,14 +4,47 @@ import { Link, NavLink } from 'react-router-dom'
 import routes from 'routes'
 import avatar from 'assets/images/avatar.svg'
 import Search from './Search'
+import dragOverState from 'Shared/dragOverState'
+import { observer } from 'mobx-react-lite'
 
 type Props = {
   children: React.ReactNode
 }
 
-export default function Layout({ children }: Props) {
+export default observer(function Layout({ children }: Props) {
+  const [state] = React.useState({ dragElementCount: 0 })
+
+  const dragEnter = ({ dataTransfer }: any) => {
+    state.dragElementCount++
+    if (state.dragElementCount !== 1) return
+    dragOverState.hasFiles =
+      (Array.from(dataTransfer.items || []).some(
+        (item: any) => item.kind === 'file',
+      ) ||
+        dataTransfer.files?.length ||
+        0) > 0
+  }
+
+  const dragLeave = () => {
+    state.dragElementCount--
+    if (state.dragElementCount === 0) dragOverState.hasFiles = false
+  }
+
+  const drop = () => {
+    state.dragElementCount = 0
+    dragOverState.hasFiles = false
+  }
+
+  const preventDefault = (e: React.DragEvent<HTMLElement>) => e.preventDefault()
+
   return (
-    <div className="w-full h-full flex flex-col">
+    <div
+      className="w-full h-full flex flex-col"
+      onDragEnter={dragEnter}
+      onDragLeave={dragLeave}
+      onDragOver={preventDefault}
+      onDrop={drop}
+    >
       <div
         className="bg-white shadow flex flex-shrink-0 items-center relative"
         style={{ height: '80px' }}
@@ -23,7 +56,7 @@ export default function Layout({ children }: Props) {
         </div>
         <div
           className="w-full mx-auto font-bold"
-          style={{ maxWidth: '1080px' }}
+          style={{ maxWidth: '1100px' }}
         >
           <div
             className="w-full flex justify-between"
@@ -75,9 +108,9 @@ export default function Layout({ children }: Props) {
           </div>
         </div>
       </div>
-      <div style={{ maxWidth: '1080px' }} className="w-full mx-auto">
+      <div style={{ maxWidth: '1100px' }} className="w-full mx-auto">
         {children}
       </div>
     </div>
   )
-}
+})

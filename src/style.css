@@ -70,3 +70,7 @@
 body {
   font-family: 'Mulish', sans-serif;
 }
+
+.emoji-picker__wrapper {
+  z-index: 100;
+}

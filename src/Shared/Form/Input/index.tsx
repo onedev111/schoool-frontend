@@ -7,16 +7,22 @@ type Props = {
   name: string
   label?: string
   required?: boolean
-  className?: string
+  classes?: {
+    root?: string
+    label?: string
+    input?: string
+    inputError?: string
+    error?: string
+  }
   [key: string]: unknown
 }
 
-export function Input({
+export default function Input({
   form,
   name,
   label,
   required,
-  className,
+  classes = {},
   ...props
 }: Props) {
   const { errors, control, formState } = form
@@ -29,12 +35,9 @@ export function Input({
       name={name}
       render={({ value, name, onChange, onBlur }) => {
         return (
-          <div className={cn('w-full', className)}>
+          <div className={classes.root}>
             {label && (
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor={name}
-              >
+              <label className={classes.label} htmlFor={name}>
                 {label}
                 {required && ' *'}
               </label>
@@ -46,11 +49,11 @@ export function Input({
               onChange={onChange}
               onBlur={onBlur}
               required={required}
-              className={cn('form-input', hasError && 'form-input-error')}
+              className={cn(classes.input, hasError && classes.inputError)}
               {...props}
             />
             {hasError && error && (
-              <div className="form-error">{error.message}</div>
+              <div className={classes.error}>{error.message}</div>
             )}
           </div>
         )

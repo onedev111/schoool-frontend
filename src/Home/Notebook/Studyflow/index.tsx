@@ -1,30 +1,53 @@
 import React from 'react'
-import studyfrom from 'assets/images/icons/studyflow.svg'
+import Placeholder from './Placeholder'
+import { Plus } from '@styled-icons/fa-solid/Plus'
+import List from './List'
+import Form from 'Home/Notebook/Studyflow/Form'
 
-export default function Notebook() {
+const list = [
+  {
+    title: 'Title of the StudyFlow',
+  },
+  {
+    title: 'Title of the StudyFlow',
+  },
+  {
+    title: 'Title of the StudyFlow',
+  },
+]
+
+type Props = {
+  showMenu: boolean
+  toggleMenu(): void
+}
+
+export default function Notebook({ showMenu, toggleMenu }: Props) {
+  if (!showMenu) return <Form toggleMenu={toggleMenu} />
+
   return (
-    <div
-      className="flex-center flex-col mx-16 mb-16"
-      style={{ marginTop: '300px' }}
-    >
-      <div
-        style={{ width: '60px', height: '60px' }}
-        className="bg-mustard-primary flex-center rounded-full mb-3"
-      >
-        <img
-          src={studyfrom}
-          alt="studyflow"
-          style={{ width: '60px', height: '60px' }}
-        />
+    <>
+      <div className="flex-center p-3 border-b border-gray-c5">
+        <button
+          style={{ width: '154px', height: '30px' }}
+          type="button"
+          className="bg-gray-5b text-white rounded-full text-sm uppercase flex-center"
+          onClick={toggleMenu}
+        >
+          <Plus className="mr-2" size={18} />
+          Conversation
+        </button>
+        <button
+          style={{ width: '154px', height: '30px' }}
+          type="button"
+          className="bg-gray-5b text-white rounded-full text-sm uppercase flex-center ml-5"
+          onClick={toggleMenu}
+        >
+          <Plus className="mr-2" size={18} />
+          Repetition
+        </button>
       </div>
-      <div className="text-black mb-3 text-center">
-        You can repeat and practice the English expressions you keep here on the
-        SCHOOOL app.
-      </div>
-      <div className="flex-center">
-        <div className="text-sm font-bold">iOS Download</div>
-        <div className="text-sm font-bold ml-3">Android Download</div>
-      </div>
-    </div>
+      {list.length === 0 && <Placeholder />}
+      {list.length > 0 && <List list={list} />}
+    </>
   )
 }

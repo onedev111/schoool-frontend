@@ -7,7 +7,7 @@ type Props = {
 
 export default function ClassMembersRestriction({ onClose }: Props) {
   return (
-    <Modal onClose={onClose} style={{ maxWidth: '500px' }}>
+    <Modal onClose={onClose} className="text-center">
       <div className="mt-8 mb-2 text-lg">Join This Class</div>
       <div className="font-bold text-gray-02 mb-2 px-10">
         This post is only for class members. If you want to see this post more,

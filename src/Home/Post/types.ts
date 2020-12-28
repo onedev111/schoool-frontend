@@ -16,4 +16,21 @@ export type Post = {
   previews: Preview[]
   image?: string
   video?: Video
+  reachedNotebookLimit?: boolean
+  date: Date
+}
+
+export type Comment = {
+  avatar: string
+  name: string
+  replyId?: number
+  date: Date
+  liked: number
+  comment: string
+  previews?: Preview[]
+  audio?: string
+  loopingAudio?: string
+  image?: string
+  video?: Video
+  comments?: Comment[]
 }

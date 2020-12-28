@@ -1,0 +1,41 @@
+.emojiSelect button img {
+  display: inline;
+}
+
+.emojiSelect > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.emojiSelect > div > button {
+  border: 0;
+  font-size: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: none;
+}
+
+.emojiSelect > div > button:hover {
+  background: none;
+}
+
+.emojiSelect > div > div {
+  top: 100%;
+  margin-top: .25rem;
+}
+
+.emojiSuggestions img {
+  display: inline;
+}
+
+.emojiSuggestions [role=option] {
+  display: flex;
+  align-items: center;
+  padding: 4px 10px 4px 10px;
+}

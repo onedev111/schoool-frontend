@@ -8,13 +8,11 @@ type Props = {
 
 export default function Loader({ className }: Props) {
   return (
-    <div className={cn(style.wrap, className)}>
-      <div className={style.loader}>
-        <div />
-        <div />
-        <div />
-        <div />
-      </div>
+    <div className={cn(className, style.loader)}>
+      <div />
+      <div />
+      <div />
+      <div />
     </div>
   )
 }

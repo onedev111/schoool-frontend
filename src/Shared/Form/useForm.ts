@@ -7,9 +7,11 @@ import {
   UseFormOptions,
 } from 'react-hook-form/dist/types'
 
-const useYupValidationResolver = <T>(validationSchema: Schema<T>) =>
+const useYupValidationResolver = <T>(validationSchema?: Schema<T>) =>
   useCallback(
     async (data) => {
+      if (!validationSchema) return { values: data, errors: {} }
+
       try {
         const values = await validationSchema.validate(data, {
           abortEarly: false,
@@ -48,8 +50,8 @@ export function useForm<
   schema,
   ...params
 }: UseFormOptions<TFieldValues, TContext> & {
-  schema: Schema<unknown>
-}): UseFormMethods<TFieldValues> {
+  schema?: Schema<unknown>
+} = {}): UseFormMethods<TFieldValues> {
   const resolver = useYupValidationResolver(schema)
   return useFormOriginal<TFieldValues, TContext>({ ...params, resolver })
 }

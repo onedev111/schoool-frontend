@@ -7,13 +7,37 @@ import { Link } from 'react-router-dom'
 import Input from 'User/Auth/Shared/Input'
 import { FacebookSquare } from '@styled-icons/boxicons-logos/FacebookSquare'
 import { Apple } from '@styled-icons/boxicons-logos/Apple'
+import * as yup from 'yup'
+import { useForm } from 'Shared/Form'
 import routes from 'routes'
+import api from 'api'
+import Loader from 'Shared/Loader'
+import { useMutation } from 'react-query'
+
+const schema = yup.object({
+  email: yup.string().required(),
+  password: yup.string().required(),
+})
 
 export default function SignIn() {
+  const form = useForm({ schema })
   const [showPassword, toggleShowPassword] = useToggle()
+  const [error, setError] = React.useState<string | null>(null)
+
+  const [signIn, { isLoading }] = useMutation(api.user.login, {
+    onSuccess(result) {
+      console.log(result)
+    },
+  })
+
+  const submit = (values: { email: string; password: string }) => {
+    if (isLoading) return
+
+    signIn(values)
+  }
 
   return (
-    <div className="flex-center h-full">
+    <form className="flex-center h-full" onSubmit={form.handleSubmit(submit)}>
       <div
         className="flex flex-col items-center text-center mr-24"
         style={{ maxWidth: '300px' }}
@@ -35,10 +59,12 @@ export default function SignIn() {
       <div className="ml-6" style={{ width: '350px' }}>
         <div className="bg-white py-10 px-12 shadow mb-5">
           <div className="mb-2">
-            <Input type="email" placeholder="Email" />
+            <Input form={form} name="email" type="email" placeholder="Email" />
           </div>
           <div className="relative mb-5">
             <Input
+              form={form}
+              name="password"
               placeholder="Password"
               type={showPassword ? 'text' : 'password'}
             />
@@ -49,11 +75,10 @@ export default function SignIn() {
               {showPassword ? <EyeOff size={30} /> : <Eye size={30} />}
             </div>
           </div>
-          <input
-            className="bg-blue-primary rounded h-10 flex-center text-white font-bold w-full cursor-pointer mb-3"
-            type="submit"
-            value="Log In"
-          />
+          <button className="bg-blue-primary rounded h-10 flex-center text-white font-bold w-full cursor-pointer mb-3">
+            {!isLoading && 'Log In'}
+            {isLoading && <Loader className="w-8 h-8" />}
+          </button>
           <div className="text-center mb-3">
             <Link
               to={routes.forgotPassword()}
@@ -89,6 +114,6 @@ export default function SignIn() {
           </Link>
         </div>
       </div>
-    </div>
+    </form>
   )
 }

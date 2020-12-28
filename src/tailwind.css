@@ -17,10 +17,18 @@ input {
   background: none;
 }
 
+.text-17 {
+  font-size: 17px;
+}
+
 @tailwind components;
 
 textarea::placeholder, input::placeholder {
   @apply text-gray-6b;
+}
+
+.shadow-around {
+  box-shadow: 0 4px 30px 0 gainsboro;
 }
 
 .absolute-fill {
