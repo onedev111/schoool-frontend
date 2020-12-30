@@ -2,10 +2,10 @@ import React from 'react'
 import logo from 'assets/images/logo.svg'
 import { Link, NavLink } from 'react-router-dom'
 import routes from 'routes'
-import avatar from 'assets/images/avatar.svg'
 import Search from './Search'
 import dragOverState from 'Shared/dragOverState'
 import { observer } from 'mobx-react-lite'
+import { useCurrentUser } from '../User/currentUser'
 
 type Props = {
   children: React.ReactNode
@@ -13,6 +13,7 @@ type Props = {
 
 export default observer(function Layout({ children }: Props) {
   const [state] = React.useState({ dragElementCount: 0 })
+  const [{ avatar }] = useCurrentUser()
 
   const dragEnter = ({ dataTransfer }: any) => {
     state.dragElementCount++
@@ -30,7 +31,8 @@ export default observer(function Layout({ children }: Props) {
     if (state.dragElementCount === 0) dragOverState.hasFiles = false
   }
 
-  const drop = () => {
+  const drop = (e: any) => {
+    e.preventDefault()
     state.dragElementCount = 0
     dragOverState.hasFiles = false
   }
@@ -100,7 +102,7 @@ export default observer(function Layout({ children }: Props) {
               <Search />
               <img
                 style={{ width: '30px', height: '30px' }}
-                className="ml-4"
+                className="ml-4 rounded-full"
                 src={avatar}
                 alt="avatar"
               />

@@ -12,6 +12,7 @@ type Props = {
   onClose(): void
   size?: keyof typeof sizes
   className?: string
+  width?: number
   [key: string]: any
 }
 
@@ -20,6 +21,7 @@ export default function Modal({
   size = 'medium',
   onClose,
   className,
+  width,
   ...props
 }: Props) {
   React.useEffect(() => {
@@ -42,7 +44,7 @@ export default function Modal({
             'bg-white rounded-lg border border-gray-bb shadow w-full',
             className,
           )}
-          style={{ width: sizes[size] }}
+          style={{ width: width ? `${width}px` : sizes[size] }}
           onClick={(e) => e.stopPropagation()}
         >
           {children}

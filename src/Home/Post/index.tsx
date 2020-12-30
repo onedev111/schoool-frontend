@@ -30,7 +30,9 @@ export default function Post({ post }: Props) {
       <div className="bg-white shadow relative mb-5">
         <Menu
           post={post}
-          button={<DotsHorizontalRounded size={24} />}
+          button={({ onClick }) => (
+            <DotsHorizontalRounded onClick={onClick} size={24} />
+          )}
           className="absolute top-0 right-0 mt-8 mr-5"
         />
 
@@ -110,9 +112,12 @@ export default function Post({ post }: Props) {
           </button>
           <Menu
             post={post}
-            button={
-              <Notebook className="text-gray-5f transition duration-200" />
-            }
+            button={({ onClick }) => (
+              <Notebook
+                className="text-gray-5f transition duration-200"
+                onClick={onClick}
+              />
+            )}
             className="relative z-10 w-1/4 flex-center"
             notebookMenu
           />

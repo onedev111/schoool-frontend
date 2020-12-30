@@ -1,6 +1,6 @@
 import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { useUserToken } from 'User/currentUser'
+import { useCurrentUser } from 'User/currentUser'
 import SignIn from 'User/Auth/SignIn'
 import SignUp from 'User/Auth/SignUp'
 import Layout from 'Layout'
@@ -45,12 +45,12 @@ const UserRoutes = () => (
 )
 
 export default function Router() {
-  const [token] = useUserToken()
+  const [user] = useCurrentUser()
 
   return (
     <>
-      {!token && <AuthRoutes />}
-      {token && <UserRoutes />}
+      {!user && <AuthRoutes />}
+      {user && <UserRoutes />}
     </>
   )
 }

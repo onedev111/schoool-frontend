@@ -1,12 +1,12 @@
 import React from 'react'
-import { useUserToken } from 'User/currentUser'
+import { useCurrentUser } from 'User/currentUser'
 
 export default function Settings() {
-  const [_, setToken] = useUserToken()
+  const [_, setUser] = useCurrentUser()
 
   return (
     <div className="mt-4">
-      <button className="inline" onClick={() => setToken(null)}>
+      <button className="inline" onClick={() => setUser(null)}>
         Log Out
       </button>
     </div>

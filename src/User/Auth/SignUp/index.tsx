@@ -12,7 +12,7 @@ import * as yup from 'yup'
 import { useForm } from 'Shared/Form'
 import api from 'api'
 import Loader from 'Shared/Loader'
-import { useUserToken } from 'User/currentUser'
+import { useCurrentUser } from 'User/currentUser'
 import { useMutation } from 'react-query'
 
 const schema = yup.object({
@@ -24,17 +24,13 @@ const schema = yup.object({
 export default function SignIn() {
   const form = useForm({ schema })
   const [showPassword, toggleShowPassword] = useToggle()
-  const [_, setToken] = useUserToken()
+  const [_, setToken] = useCurrentUser()
   const [error, setError] = React.useState<string | null>(null)
 
   const [register, { isLoading }] = useMutation(api.user.register, {
-    onSuccess(result) {
-      const token = result.data?.access_token
-      if (token) return setToken(token)
-
-      const code = result.result_code
-      if (code === '02.01')
-        return setError('User with this email already exists')
+    onSettled(user, error) {
+      if (user) setToken(user)
+      if (error) setError((error as Error).message)
     },
   })
 
@@ -43,11 +39,7 @@ export default function SignIn() {
     email: string
     password: string
   }) => {
-    if (isLoading) return
-
-    register({
-      ...values,
-    })
+    if (!isLoading) register(values)
   }
 
   return (

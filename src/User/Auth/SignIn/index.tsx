@@ -13,6 +13,7 @@ import routes from 'routes'
 import api from 'api'
 import Loader from 'Shared/Loader'
 import { useMutation } from 'react-query'
+import { useCurrentUser } from 'User/currentUser'
 
 const schema = yup.object({
   email: yup.string().required(),
@@ -22,18 +23,18 @@ const schema = yup.object({
 export default function SignIn() {
   const form = useForm({ schema })
   const [showPassword, toggleShowPassword] = useToggle()
+  const [_, setUser] = useCurrentUser()
   const [error, setError] = React.useState<string | null>(null)
 
   const [signIn, { isLoading }] = useMutation(api.user.login, {
-    onSuccess(result) {
-      console.log(result)
+    onSettled(user, error) {
+      if (user) setUser(user)
+      if (error) setError((error as Error).message)
     },
   })
 
   const submit = (values: { email: string; password: string }) => {
-    if (isLoading) return
-
-    signIn(values)
+    if (!isLoading) signIn(values)
   }
 
   return (
@@ -58,6 +59,9 @@ export default function SignIn() {
       </div>
       <div className="ml-6" style={{ width: '350px' }}>
         <div className="bg-white py-10 px-12 shadow mb-5">
+          {error && (
+            <div className="text-red-500 text-center mb-2">{error}</div>
+          )}
           <div className="mb-2">
             <Input form={form} name="email" type="email" placeholder="Email" />
           </div>

@@ -1,4 +1,4 @@
-import { request, Options, HTTPMethod } from 'api/fetch'
+import { request, Options, HTTPMethod } from 'Shared/fetch'
 
 const paramsToSearch = (
   params?: Record<string, string | number | undefined>,

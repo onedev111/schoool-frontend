@@ -1,8 +1,19 @@
 import { useLocalStorage } from 'Shared/localStorage'
+import { User } from './types'
 
-const tokenName = 'userToken'
+const tokenName = 'currentUser'
 
-export const useUserToken = (): ReturnType<typeof useLocalStorage> =>
-  useLocalStorage(tokenName)
+export const useCurrentUser = () => {
+  const [json, setJson] = useLocalStorage(tokenName)
+  return [
+    ((json ? (JSON.parse(json) as User) : null) as unknown) as User,
+    (user: User | null) => {
+      setJson(user ? JSON.stringify(user) : null)
+    },
+  ] as const
+}
 
-export const getUserToken = () => localStorage.getItem(tokenName)
+export const getUserToken = () => {
+  const json = localStorage.getItem(tokenName)
+  return json ? (JSON.parse(json) as User).token : json
+}

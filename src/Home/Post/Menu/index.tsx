@@ -10,7 +10,7 @@ const itemClass =
 
 type Props = {
   post: Post
-  button: React.ReactNode
+  button: (params: { onClick(): void }) => React.ReactNode
   notebookMenu?: boolean
   className?: string
 }
@@ -20,7 +20,11 @@ export default function Menu({ post, button, notebookMenu, className }: Props) {
   const [sendToNotebookOpen, toggleSendToNotebook] = useToggle()
 
   return (
-    <Dropdown button={button} className={className}>
+    <Dropdown
+      button={button}
+      className={className}
+      contentClass="absolute mt-2 rounded-lg shadow-around bg-white right-0 z-20"
+    >
       {!notebookMenu && <div className={`${itemClass}`}>Send Message</div>}
       {!notebookMenu && (
         <div className={`${itemClass} text-blue-deep`}>Follow</div>

@@ -5,7 +5,7 @@ import Studyflow from './Studyflow'
 import useToggle from 'Shared/useToggle'
 
 export default function NotebookWidget() {
-  const [currentTab, setCurrentTab] = React.useState('studyflow')
+  const [currentTab, setCurrentTab] = React.useState('notebook')
   const [showMenu, toggleMenu] = useToggle(true)
 
   return (
