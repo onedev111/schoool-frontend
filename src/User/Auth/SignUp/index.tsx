@@ -24,6 +24,7 @@ const schema = yup.object({
 export default function SignIn() {
   const form = useForm({ schema })
   const [showPassword, toggleShowPassword] = useToggle()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setToken] = useCurrentUser()
   const [error, setError] = React.useState<string | null>(null)
 

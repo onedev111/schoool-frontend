@@ -18,6 +18,10 @@ module.exports = {
       '5px': '5px',
       '10px': '10px',
     },
+    fontSize: {
+      ...defaultTheme.fontSize,
+      15: '0.9375rem',
+    },
     borderRadius: {
       ...defaultTheme.borderRadius,
       default: '0.375rem',
@@ -61,6 +65,7 @@ module.exports = {
         deep: '#0091FF',
         light: '#D8F2FF',
         '9e': '#009EDC',
+        '0c': '#0CBAFF',
       },
       red: {
         ...defaultTheme.colors.red,

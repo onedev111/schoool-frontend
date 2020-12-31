@@ -27,6 +27,8 @@ import ImagePreviews from 'Home/PostForm/ImagePreviews'
 import SentenceForm from 'Home/PostForm/SentenceForm'
 import Sentence from 'Home/Sentence'
 import TagModal from 'Home/PostForm/TagModal'
+import AudioModal from 'Home/PostForm/AudioModal'
+import LoopingAudioModal from 'Home/PostForm/LoopingAudioModal'
 
 type Props = {
   onClose(): void
@@ -53,6 +55,10 @@ export default observer(function PostFormModal({ onClose }: Props) {
   const [openSentenceModal, toggleSentenceModal] = useToggle()
 
   const [openTagModal, toggleTagModal] = useToggle()
+
+  const [openAudioModal, toggleAudioModal] = useToggle()
+
+  const [openLoopingAudioModal, toggleLoopingAudioModal] = useToggle(true)
 
   const {
     onChangeImage,
@@ -91,9 +97,18 @@ export default observer(function PostFormModal({ onClose }: Props) {
         />
       )}
       {openTagModal && <TagModal onClose={toggleTagModal} />}
+      {openAudioModal && <AudioModal onClose={toggleAudioModal} />}
+      {openLoopingAudioModal && (
+        <LoopingAudioModal onClose={toggleLoopingAudioModal} />
+      )}
       <div
         hidden={
-          openSelectTarget || openYouTube || openSentenceModal || openTagModal
+          openSelectTarget ||
+          openYouTube ||
+          openSentenceModal ||
+          openTagModal ||
+          openAudioModal ||
+          openLoopingAudioModal
         }
       >
         {dragArea}
@@ -167,13 +182,21 @@ export default observer(function PostFormModal({ onClose }: Props) {
             <button type="button" onClick={toggleYouTube}>
               <img src={youtube} alt="youtube" data-tip="Youtube" />
             </button>
-            <img src={record} alt="audio" data-tip="Voice" />
-            <img
-              src={looping}
-              alt="looping audio"
-              className="w-10"
+            <button type="button" onClick={toggleAudioModal} data-tip="Voice">
+              <img src={record} alt="audio" />
+            </button>
+            <button
+              type="button"
+              onClick={toggleLoopingAudioModal}
               data-tip="Looping Audio"
-            />
+            >
+              <img
+                src={looping}
+                alt="looping audio"
+                className="w-10"
+                data-tip="Looping Audio"
+              />
+            </button>
             <button
               type="button"
               data-tip="Notebook SentenceForm"
