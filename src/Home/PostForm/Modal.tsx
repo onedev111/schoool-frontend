@@ -26,6 +26,7 @@ import { Sentence as SentenceType } from 'Home/Post/types'
 import ImagePreviews from 'Home/PostForm/ImagePreviews'
 import SentenceForm from 'Home/PostForm/SentenceForm'
 import Sentence from 'Home/Sentence'
+import TagModal from 'Home/PostForm/TagModal'
 
 type Props = {
   onClose(): void
@@ -50,6 +51,8 @@ export default observer(function PostFormModal({ onClose }: Props) {
 
   const [sentence, setSentence] = React.useState<SentenceType | null>(null)
   const [openSentenceModal, toggleSentenceModal] = useToggle()
+
+  const [openTagModal, toggleTagModal] = useToggle()
 
   const {
     onChangeImage,
@@ -87,7 +90,12 @@ export default observer(function PostFormModal({ onClose }: Props) {
           onClose={toggleSentenceModal}
         />
       )}
-      <div hidden={openSelectTarget || openYouTube || openSentenceModal}>
+      {openTagModal && <TagModal onClose={toggleTagModal} />}
+      <div
+        hidden={
+          openSelectTarget || openYouTube || openSentenceModal || openTagModal
+        }
+      >
         {dragArea}
         <button
           type="button"
@@ -173,7 +181,13 @@ export default observer(function PostFormModal({ onClose }: Props) {
             >
               <Notebook style={{ width: '36px' }} />
             </button>
-            <img src={tag} alt="add tag" data-tip="Tag Friends or Class" />
+            <button
+              type="button"
+              data-tip="Tag Friends or Class"
+              onClick={toggleTagModal}
+            >
+              <img src={tag} alt="add tag" />
+            </button>
             <button
               className="text-gray-a4"
               data-tip="Emoji"

@@ -13,6 +13,7 @@ module.exports = {
     spacing: {
       ...defaultTheme.spacing,
       7: '1.75rem',
+      9: '2.25rem',
       11: '2.75rem',
       '5px': '5px',
       '10px': '10px',

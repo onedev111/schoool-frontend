@@ -1,7 +1,7 @@
 import React from 'react'
-import ClassMembersRestriction from 'Home/Post/Modals/ClassMembersRestriction'
 import useToggle from 'Shared/useToggle'
 import { Post } from 'Home/Post/types'
+import Modal from 'Shared/Modal'
 
 type Props = {
   showFullText: boolean
@@ -37,7 +37,25 @@ export default function ReadMore({
   return (
     <>
       {classMembersRestrictionModal && (
-        <ClassMembersRestriction onClose={toggleClassMembersRestrictionModal} />
+        <Modal
+          onClose={toggleClassMembersRestrictionModal}
+          className="text-center"
+        >
+          <div className="mt-8 mb-2 text-lg">Join This Class</div>
+          <div className="font-bold text-gray-02 mb-2 px-10">
+            This post is only for class members. If you want to see this post
+            more, please join this class.
+          </div>
+          <hr className="text-gray-bb" />
+          <div className="flex-center">
+            <button
+              className="rounded-full bg-blue-primary text-white h-7 px-7 my-4 font-bold"
+              onClick={toggleClassMembersRestrictionModal}
+            >
+              Okay
+            </button>
+          </div>
+        </Modal>
       )}
       <button
         className="font-bold ml-5"

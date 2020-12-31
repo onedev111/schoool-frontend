@@ -50,14 +50,12 @@ export default function SelectTarget({ form, onClose }: Props) {
         />
       )}
       <div className="pb-4">
-        <button
-          type="button"
-          className="absolute top-0 left-0 text-gray-5f mt-8 ml-6"
-          onClick={onClose}
-        >
-          <ArrowLeft size={26} />
-        </button>
-        <div className="text-2xl uppercase text-center pt-8 pb-6 border-b border-gray-c5">
+        <div className="text-2xl uppercase text-center pt-8 pb-6 border-b border-gray-c5 relative">
+          <div className="absolute top-0 left-0 bottom-0 flex-center pl-6 text-gray-5f">
+            <button type="button" onClick={onClose}>
+              <ArrowLeft size={26} />
+            </button>
+          </div>
           Select Target
         </div>
         <Controller
