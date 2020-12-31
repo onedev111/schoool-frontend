@@ -13,6 +13,7 @@ module.exports = {
     spacing: {
       ...defaultTheme.spacing,
       7: '1.75rem',
+      11: '2.75rem',
       '5px': '5px',
       '10px': '10px',
     },
@@ -49,6 +50,7 @@ module.exports = {
         '4f': '#4F4F4F',
         49: '#494949',
         45: '#454545',
+        '3b': '#3B3B3B',
         35: '#353535',
         '02': '#020202',
       },

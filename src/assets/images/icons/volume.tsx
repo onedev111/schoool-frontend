@@ -1,5 +1,6 @@
 import React from 'react'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default (props: any) => (
   <svg
     width={19}

@@ -25,7 +25,8 @@ type Props = {
 }
 
 const defaultClasses = {
-  label: 'h-6 text-sm text-gray-6b flex items-center justify-between uppercase',
+  label:
+    'h-6 text-sm text-gray-6b flex items-center justify-between uppercase text-17 mb-1',
   counterError: 'text-red-500',
   input: 'resize-none bg-gray-ef placeholder-gray-97 py-2 px-3 w-full rounded',
   error: 'text-left text-red-500',

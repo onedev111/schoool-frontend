@@ -10,7 +10,9 @@ import List from 'Home/Notebook/Notebook/List'
 import DeleteModal from 'Shared/Modal/Delete'
 import Placeholder from 'Home/Notebook/Notebook/Placeholder'
 import NotebookMaxSentences from 'Shared/Modal/NotebookMaxSentences'
-import AddSentenceModal from 'Home/Notebook/Notebook/AddSentenceModal'
+import { Sentence } from 'Home/Post/types'
+import Modal from 'Shared/Modal'
+import SentenceForm from 'Home/Sentence/Form'
 
 const list = [
   {
@@ -63,11 +65,26 @@ export default function Notebook() {
 
   const selectedIds = Object.keys(checkedIds)
 
+  const addSentence = (sentence: Sentence) => {
+    console.log(sentence)
+  }
+
   return (
     <>
       {deleteModal && <DeleteModal onClose={toggleDeleteModal} />}
       {addModal && false && <NotebookMaxSentences onClose={toggleAddModal} />}
-      {addModal && true && <AddSentenceModal onClose={toggleAddModal} />}
+      {addModal && true && (
+        <Modal onClose={toggleAddModal} className="text-center" size="small">
+          <SentenceForm
+            onClose={toggleAddModal}
+            onSubmit={addSentence}
+            title="Add Expressions"
+            buttonText="Add"
+            contentClass="pt-4 px-5 pb-6"
+            buttonWrapClass="flex-center mt-5"
+          />
+        </Modal>
+      )}
 
       <div className="flex justify-between p-4">
         {!selecting && (

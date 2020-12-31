@@ -7,6 +7,11 @@ export type Video = {
   ratio: number
 }
 
+export type Sentence = {
+  english: string
+  translation: string
+}
+
 export type Post = {
   id: number
   text: string

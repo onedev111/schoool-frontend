@@ -1,10 +1,8 @@
 import React from 'react'
-import photos from 'assets/images/icons/photos.png'
-import { X } from '@styled-icons/boxicons-regular/X'
 import dragOverState from 'Shared/dragOverState'
 import cn from 'classnames'
 
-type Preview = {
+export type Preview = {
   file: File
   preview?: string
 }
@@ -57,6 +55,7 @@ export default function useImageUpload() {
   }
 
   return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onChangeImage: (e: any) => {
       addFiles(e.target.files)
       e.target.value = []
