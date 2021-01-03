@@ -1,6 +1,7 @@
 import React from 'react'
 import cn from 'classnames'
 import { Controller, UseFormMethods } from 'react-hook-form'
+import ControlledTextarea from 'Shared/Form/ControlledTextarea'
 
 type Props = {
   form: UseFormMethods<any>
@@ -58,14 +59,6 @@ export default function Textarea({
           (formState.isSubmitted ||
             (!errorOnlyForSubmitted && formState.touched[name]))
 
-        const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-          onChange(e)
-          const textarea = e.target
-          textarea.style.height = ''
-          textarea.getBoundingClientRect()
-          textarea.style.height = `${textarea.scrollHeight}px`
-        }
-
         return (
           <div className={cn(classes.root, className)}>
             {label && (
@@ -85,15 +78,20 @@ export default function Textarea({
                 )}
               </label>
             )}
-            <textarea
-              ref={elementRef}
-              id={name}
-              name={name}
+            <ControlledTextarea
               value={value || ''}
-              onChange={handleChange}
+              onChange={onChange}
               onBlur={onBlur}
+              error={hasError ? error.message : undefined}
+              name={name}
+              label={label}
+              className={className}
+              counter={counter}
+              maxLength={maxLength}
+              classes={classes}
+              elementRef={elementRef}
+              id={name}
               required={required}
-              className={cn(classes.input, hasError && classes?.inputError)}
               {...props}
             />
             {hasError && error && (

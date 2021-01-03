@@ -1,6 +1,7 @@
 import history from 'Shared/history'
 import { getUserToken } from 'User/currentUser'
 import routes from 'routes'
+import Form from 'Home/Notebook/Studyflow/Form'
 
 export type HTTPMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 
@@ -22,8 +23,12 @@ export const request = async <T>(
   headers.accept = 'application/json'
 
   if (data) {
-    headers['Content-Type'] = 'application/json'
-    options.body = JSON.stringify(data)
+    const formData = new FormData()
+    const record = data as Record<string, string>
+    for (const key in record) {
+      formData.append(key, record[key])
+    }
+    options.body = formData
   }
 
   const token = getUserToken()

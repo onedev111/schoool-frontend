@@ -1,19 +1,15 @@
 import React from 'react'
-import { Sentence as SentenceType } from 'Home/Post/types'
 import cn from 'classnames'
 import { X } from '@styled-icons/boxicons-regular/X'
+import { State } from 'Post/Form/State'
+import { observer } from 'mobx-react-lite'
 
 type Props = {
-  setSentence(sentence: SentenceType | null): void
-  toggleSentenceModal(): void
+  state: State
   className?: string
 }
 
-export default function Sentence({
-  setSentence,
-  toggleSentenceModal,
-  className,
-}: Props) {
+export default observer(function Sentence({ state, className }: Props) {
   return (
     <div
       className={cn(
@@ -22,12 +18,20 @@ export default function Sentence({
       )}
     >
       <div className="flex-grow">Notebook Sentence</div>
-      <button type="button" onClick={toggleSentenceModal} className="px-4">
+      <button
+        type="button"
+        onClick={() => state.setCurrentScreen('sentence')}
+        className="px-4"
+      >
         Edit
       </button>
-      <button type="button" onClick={() => setSentence(null)} className="ml-4">
+      <button
+        type="button"
+        onClick={() => state.setSentence(null)}
+        className="ml-4"
+      >
         <X size={32} />
       </button>
     </div>
   )
-}
+})

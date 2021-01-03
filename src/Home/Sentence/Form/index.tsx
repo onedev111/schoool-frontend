@@ -2,7 +2,7 @@ import React from 'react'
 import { useForm } from 'Shared/Form'
 import * as yup from 'yup'
 import Textarea from 'Shared/Form/Textarea'
-import { Sentence } from 'Home/Post/types'
+import { Sentence } from 'Post/types'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 
 type Props = {

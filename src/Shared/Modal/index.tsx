@@ -9,7 +9,7 @@ export const sizes = {
 
 type Props = {
   children: React.ReactNode
-  onClose(): void
+  onClose?(): void
   size?: keyof typeof sizes
   className?: string
   width?: number

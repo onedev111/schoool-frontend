@@ -10,7 +10,7 @@ import List from 'Home/Notebook/Notebook/List'
 import DeleteModal from 'Shared/Modal/Delete'
 import Placeholder from 'Home/Notebook/Notebook/Placeholder'
 import NotebookMaxSentences from 'Shared/Modal/NotebookMaxSentences'
-import { Sentence } from 'Home/Post/types'
+import { Sentence } from 'Post/types'
 import Modal from 'Shared/Modal'
 import SentenceForm from 'Home/Sentence/Form'
 
