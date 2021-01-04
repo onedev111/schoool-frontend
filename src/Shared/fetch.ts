@@ -26,7 +26,8 @@ export const request = async <T>(
     const formData = new FormData()
     const record = data as Record<string, string>
     for (const key in record) {
-      formData.append(key, record[key])
+      const value = record[key]
+      if (value !== undefined) formData.append(key, value)
     }
     options.body = formData
   }

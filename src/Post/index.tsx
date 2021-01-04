@@ -15,6 +15,8 @@ import CommentForm from 'Post/CommentForm'
 import CommentsModal from 'Post/CommentsModal'
 import Attachments from 'Post/Attachments'
 import Spin from 'assets/images/icons/Spin'
+import dayjs from 'dayjs'
+import { formatDate } from 'Shared/date'
 
 type Props = {
   post: PostType
@@ -62,15 +64,15 @@ export default function Post({ post, uploading }: Props) {
 
           <div className="flex-center mb-3">
             <img
-              src={logo}
-              alt="logo"
+              src={post.user.avatar}
+              alt="avatar"
               style={{ width: '60px', height: '60px' }}
-              className="mr-3"
+              className="mr-3 rounded-full"
             />
             <div className="flex-grow">
-              <div className="text-xl text-gray-02">Mark Kim</div>
+              <div className="text-xl text-gray-02">{post.user.name}</div>
               <div className="font-bold text-gray-b0 text-sm">
-                Yesterday, 12:24 AM
+                {formatDate(post.date)}
               </div>
             </div>
           </div>
@@ -87,22 +89,26 @@ export default function Post({ post, uploading }: Props) {
           </div>
 
           <div className="flex items-end">
-            <div className="flex-grow">
-              <div className={`text-blue-primary uppercase mb-1 ${style.text}`}>
-                Send to notebook
-              </div>
+            {post.notebookSentence && (
+              <div className="flex-grow">
+                <div
+                  className={`text-blue-primary uppercase mb-1 ${style.text}`}
+                >
+                  Send to notebook
+                </div>
 
-              <div className={`text-gray-87 uppercase mb-1 ${style.text}`}>
-                Sentences included in the note book sentences
-              </div>
+                <div className={`text-gray-87 uppercase mb-1 ${style.text}`}>
+                  {post.notebookSentence.text}
+                </div>
 
-              <div
-                className={`text-gray-87 uppercase mb-1 font-bold font-italic ${style.text}`}
-              >
-                모국어 번역 표현이 나옴. 이탤릭이고
+                <div
+                  className={`text-gray-87 uppercase mb-1 font-bold font-italic ${style.text}`}
+                >
+                  {post.notebookSentence.translation}
+                </div>
               </div>
-            </div>
-            <div>
+            )}
+            <div className="whitespace-no-wrap">
               <ReadMore
                 showFullText={showFullText}
                 toggleShowFullText={toggleShowFullText}
@@ -125,19 +131,29 @@ export default function Post({ post, uploading }: Props) {
           style={{ height: '90px' }}
           className="border-b border-gray-d6 flex items-center justify-around px-8"
         >
-          <Like />
+          <Like post={post} />
           <button className="w-1/4 flex-center text-gray-5f transition duration-200">
             <Comment size={29} onClick={toggleComments} />
-            <div className="text-lg ml-3">12</div>
+            {post.repliesCount > 0 && (
+              <div className="text-lg ml-3">{post.repliesCount}</div>
+            )}
           </button>
-          <button className="w-1/4 text-center text-gray-5f transition duration-200">
+          <button
+            className={cn(
+              'w-1/4 text-center transition duration-200',
+              post.saved ? 'text-blue-primary' : 'text-gray-5f',
+            )}
+          >
             <Check size={40} />
           </button>
           <Menu
             post={post}
             button={({ onClick }) => (
               <Notebook
-                className="text-gray-5f transition duration-200"
+                className={cn(
+                  'transition duration-200',
+                  post.notebookSentence ? 'text-blue-primary' : 'text-gray-5f',
+                )}
                 onClick={onClick}
               />
             )}

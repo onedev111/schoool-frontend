@@ -9,23 +9,35 @@ export type Video = {
   ratio: number
 }
 
-export type Sentence = {
-  english: string
+export type NotebookSentence = {
+  text: string
   translation: string
 }
 
 export type Post = {
   id: number
   text: string
+  isMine: boolean
+  previews: Preview[]
+  user: {
+    id: number
+    name: string
+    avatar: string
+  }
+  liked: boolean
+  likesCount: number
+  repliesCount: number
+  saved: boolean
+  images: string[]
   joinedToClass?: boolean
   audio?: string
   loopingAudio?: string
-  previews: Preview[]
   image?: string
   video?: Video
   reachedNotebookLimit?: boolean
   date: Dayjs
   error?: string
+  notebookSentence?: NotebookSentence
 }
 
 export type Comment = {

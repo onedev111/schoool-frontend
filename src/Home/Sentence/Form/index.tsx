@@ -2,26 +2,26 @@ import React from 'react'
 import { useForm } from 'Shared/Form'
 import * as yup from 'yup'
 import Textarea from 'Shared/Form/Textarea'
-import { Sentence } from 'Post/types'
+import { NotebookSentence } from 'Post/types'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 
 type Props = {
   backButton?: boolean
   title: string
   buttonText: string
-  sentence?: Sentence | null
+  sentence?: NotebookSentence | null
   className?: string
   titleClass?: string
   contentClass: string
   buttonWrapClass: string
   onClose(): void
-  onSubmit(sentence: Sentence): void
+  onSubmit(sentence: NotebookSentence): void
 }
 
 const maxLength = 250
 
 const schema = yup.object({
-  english: yup.string().label('english sentence').max(maxLength).required(),
+  text: yup.string().label('english sentence').max(maxLength).required(),
   translation: yup.string().label('translation').max(maxLength).required(),
 })
 
@@ -40,10 +40,10 @@ export default function SentenceForm({
   const form = useForm({
     schema,
     mode: 'onChange',
-    defaultValues: sentence || { english: '', translation: '' },
+    defaultValues: sentence || { text: '', translation: '' },
   })
 
-  const submit = (values: Sentence) => {
+  const submit = (values: NotebookSentence) => {
     onSubmit(values)
     onClose()
   }
@@ -69,7 +69,7 @@ export default function SentenceForm({
           counter
           maxLength={250}
           form={form}
-          name="english"
+          name="text"
           label="English sentence"
           placeholder="Add english sentence"
         />

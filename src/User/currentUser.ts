@@ -13,7 +13,11 @@ export const useCurrentUser = () => {
   ] as const
 }
 
-export const getUserToken = () => {
+export const getCurrentUser = () => {
   const json = localStorage.getItem(tokenName)
-  return json ? (JSON.parse(json) as User).token : json
+  return JSON.parse(json as string) as User
 }
+
+export const getUserToken = () => getCurrentUser()?.token
+
+export const getCurrentUserId = () => getCurrentUser().id

@@ -1,9 +1,11 @@
 import * as user from 'User/api'
 import * as post from 'Post/api'
+import * as fileUpload from 'FileUpload/api'
 
 export default {
   user,
   post,
+  fileUpload,
   // updateEnglishLevel: () => '/v1.3/update_eng_level',
   // updateProfileImage: () => '/update_profile_image',
   // updateName: () => '/update_user_name',

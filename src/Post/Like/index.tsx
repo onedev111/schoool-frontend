@@ -2,14 +2,19 @@ import React from 'react'
 import { Heart } from '@styled-icons/boxicons-solid/Heart'
 import useToggle from 'Shared/useToggle'
 import cn from 'classnames'
+import { Post } from 'Post/types'
 
-export default function Index() {
-  const [liked, toggle] = useToggle()
+type Props = {
+  post: Post
+}
+
+export default function Index({ post }: Props) {
+  const [liked, toggle] = useToggle(post.liked)
 
   return (
     <button
       className={cn(
-        'w-1/4 text-center text-gray-5f transition duration-200',
+        'w-1/4 flex-center text-gray-5f transition duration-200',
         liked && 'text-blue-primary',
       )}
       onClick={toggle}

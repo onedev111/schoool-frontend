@@ -1,5 +1,9 @@
 import { get, post } from 'Shared/apiUtils'
-import { getUserToken } from 'User/currentUser'
+import {
+  getCurrentUserId,
+  getCurrentUser,
+  getUserToken,
+} from 'User/currentUser'
 import { Post } from 'Post/types'
 import dayjs from 'dayjs'
 
@@ -103,11 +107,27 @@ export const list = get(
       num_of_posts: offset,
     },
     response: (data: { data: ListPostResponse[] }): Post[] => {
+      const userId = getCurrentUserId()
+
       return data.data.map((post) => ({
         id: post.share_post_id,
         text: post.comment,
+        isMine: post.user_id === userId,
+        user: {
+          id: post.user_id,
+          name: post.name,
+          avatar: post.profile_image_dir,
+        },
+        liked: Boolean(post.liked),
+        likesCount: post.like_count,
+        repliesCount: post.reply_count,
+        saved: Boolean(post.check_notebook),
+        images: [],
         previews: [],
         date: dayjs(post.date),
+        notebookSentence: post.title
+          ? { text: post.title, translation: post.translated_title }
+          : undefined,
       }))
     },
   }),
@@ -154,11 +174,15 @@ type CreatePostResponse = {
   zoom_link: string
 }
 
-export const create = post(({ text }: { text: string }) => ({
+export const create = post(({ text, images = [] }: Partial<Post>) => ({
   path: '/add_share_post',
   data: {
     access_token: getUserToken(),
     comment: text,
+    photo: images[0],
+    photo_second: images[1],
+    photo_third: images[2],
+    photo_fourth: images[3],
     is_public: 0,
   },
   response: (data: { result_code: string; data: CreatePostResponse }): Post => {
@@ -168,8 +192,18 @@ export const create = post(({ text }: { text: string }) => ({
     return {
       id: post.share_post_id,
       text: post.comment,
+      images,
       previews: [],
+      isMine: post.user_id === getCurrentUserId(),
+      user: getCurrentUser(),
+      liked: false,
+      likesCount: 0,
+      repliesCount: 0,
+      saved: false,
       date: dayjs(),
+      notebookSentence: post.title
+        ? { text: post.title, translation: post.translated_title }
+        : undefined,
     }
   },
 }))

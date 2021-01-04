@@ -1,6 +1,7 @@
 const http = require('http')
 const httpProxy = require('http-proxy')
 const cors = require('cors')
+const querystring = require('querystring')
 
 const port = 4000
 const apiBase = 'https://www.schoool.net'
@@ -14,7 +15,6 @@ http
     corsResolver(req, res, () => {
       delete req.headers.host
       delete req.headers.origin
-      delete req.headers.referrer
 
       proxy.web(req, res, { target: apiBase })
     })

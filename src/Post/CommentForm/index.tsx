@@ -1,18 +1,15 @@
 import React from 'react'
 import { Camera } from '@styled-icons/boxicons-regular/Camera'
-import { CloseCircle } from '@styled-icons/ionicons-solid/CloseCircle'
-import dragOverState from 'Shared/dragOverState'
 import { observer } from 'mobx-react-lite'
 import cn from 'classnames'
 import { Smile } from '@styled-icons/fa-regular'
-import { EmojiButton } from '@joeattardi/emoji-button'
 import { useForm } from 'Shared/Form'
 import * as yup from 'yup'
 import { UseFormMethods } from 'react-hook-form'
 import Textarea from 'Shared/Form/Textarea'
-import useImageUpload from 'Shared/useImageUpload'
 import { X } from '@styled-icons/boxicons-regular/X'
 import useEmojiPicker from 'Shared/useEmojiPicker'
+import useImageUploadState from 'utils/imageUploadState'
 
 const schema = yup.object({
   text: yup.string().min(5).required(),
@@ -30,7 +27,7 @@ export default observer(function CommentForm({ className, rows = 1 }: Props) {
     defaultValues: { text: '' },
   })
 
-  const { onChangeImage, previews, removeImage, dragArea } = useImageUpload()
+  const imageUploadState = useImageUploadState()
 
   const editorRef = React.useRef(null)
 
@@ -46,7 +43,8 @@ export default observer(function CommentForm({ className, rows = 1 }: Props) {
         className={cn('relative', className)}
         onSubmit={form.handleSubmit(submit)}
       >
-        {dragArea}
+        {imageUploadState.warningModal}
+        {imageUploadState.dragArea}
         <div className="flex-grow">
           <Textarea
             classes={{
@@ -62,8 +60,8 @@ export default observer(function CommentForm({ className, rows = 1 }: Props) {
             placeholder="Write a comment"
             errorOnlyForSubmitted
           />
-          {previews.map((preview, i) => {
-            if (!preview.preview) return <React.Fragment key={i} />
+          {imageUploadState.images.map((image, i) => {
+            if (!image.preview) return <React.Fragment key={i} />
 
             return (
               <div
@@ -74,12 +72,12 @@ export default observer(function CommentForm({ className, rows = 1 }: Props) {
                   type="button"
                   className="w-5 h-5 flex-center text-white absolute top-0 right-0 mt-2 mr-2"
                   style={{ background: 'rgba(0, 0, 0, .3)' }}
-                  onClick={() => removeImage(preview)}
+                  onClick={() => imageUploadState.removeImage(image)}
                 >
                   <X size={20} />
                 </button>
                 <img
-                  src={preview.preview}
+                  src={image.preview}
                   alt="image preview"
                   style={{ maxHeight: '72px' }}
                 />
@@ -95,7 +93,7 @@ export default observer(function CommentForm({ className, rows = 1 }: Props) {
               <input
                 hidden
                 type="file"
-                onChange={onChangeImage}
+                onChange={(e) => imageUploadState.onChangeImage(e)}
                 accept="image/*"
               />
             </label>

@@ -45,7 +45,7 @@ export default function ControlledTextarea({
   className,
   counter,
   maxLength,
-  classes = defaultClasses,
+  classes = {},
   elementRef,
   ...props
 }: Props) {
@@ -57,17 +57,19 @@ export default function ControlledTextarea({
     textarea.style.height = `${textarea.scrollHeight}px`
   }
 
+  const style = Object.assign({}, defaultClasses, classes)
+
   return (
-    <div className={cn(classes.root, className)}>
+    <div className={cn(style.root, className)}>
       {label && (
-        <label className={classes.label} htmlFor={name}>
+        <label className={style.label} htmlFor={name}>
           {label}
           {required && ' *'}
           {counter && (
             <div
               className={cn(
-                classes.counter,
-                (value?.length || 0) > (maxLength || 0) && classes.counterError,
+                style.counter,
+                (value?.length || 0) > (maxLength || 0) && style.counterError,
               )}
             >
               {value?.length || 0}/{maxLength}
@@ -83,10 +85,10 @@ export default function ControlledTextarea({
         onChange={handleChange}
         onBlur={onBlur}
         required={required}
-        className={cn(classes.input, error && classes?.inputError)}
+        className={cn(style.input, error && style?.inputError)}
         {...props}
       />
-      {error && <div className={classes.error}>{error}</div>}
+      {error && <div className={style.error}>{error}</div>}
     </div>
   )
 }

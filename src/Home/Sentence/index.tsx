@@ -27,7 +27,7 @@ export default observer(function Sentence({ state, className }: Props) {
       </button>
       <button
         type="button"
-        onClick={() => state.setSentence(null)}
+        onClick={() => state.setSentence()}
         className="ml-4"
       >
         <X size={32} />

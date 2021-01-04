@@ -8,7 +8,6 @@ import Notebook from 'assets/images/icons/notebook'
 import tag from 'assets/images/icons/tag.png'
 import { Smile } from '@styled-icons/fa-regular'
 import ReactTooltip from 'react-tooltip'
-import useImageUpload from 'Shared/useImageUpload'
 import cn from 'classnames'
 import { observer } from 'mobx-react-lite'
 import photos from 'assets/images/icons/photos.png'
@@ -26,6 +25,7 @@ import LoopingAudioModal from 'Post/Form/LoopingAudioModal'
 import { createFormState } from 'Post/Form/State'
 import FormTextarea from 'Post/Form/Textarea'
 import submit from 'Post/Form/submit'
+import useImageUploadState from 'utils/imageUploadState'
 
 type Props = {
   onClose(): void
@@ -39,13 +39,9 @@ export default observer(function PostFormModal({ onClose }: Props) {
     className: 'mt-4',
   })
 
-  const {
-    onChangeImage,
-    previews,
-    hasPreviews,
-    removeImage,
-    dragArea,
-  } = useImageUpload()
+  const imageUploadState = useImageUploadState({
+    onChange: (images) => state.setImages(images),
+  })
 
   const toggleEmoji = useEmojiPicker({ editorRef: state.editorRef })
 
@@ -78,7 +74,8 @@ export default observer(function PostFormModal({ onClose }: Props) {
 
   return (
     <div>
-      {dragArea}
+      {imageUploadState.warningModal}
+      {imageUploadState.dragArea}
       <button
         type="button"
         className="absolute top-0 right-0 text-gray-5f mt-8 mr-6"
@@ -92,7 +89,7 @@ export default observer(function PostFormModal({ onClose }: Props) {
       <div
         className={cn(
           'p-6',
-          hasPreviews || (youtubeId && youtubeVideoHeight)
+          imageUploadState.hasPreviews || (youtubeId && youtubeVideoHeight)
             ? 'pb-0'
             : 'border-b border-gray-c5',
         )}
@@ -123,19 +120,29 @@ export default observer(function PostFormModal({ onClose }: Props) {
         </div>
         <FormTextarea state={state} />
 
-        {state.values.sentence && <Sentence state={state} className="mt-4" />}
+        {state.values.notebookSentence && (
+          <Sentence state={state} className="mt-4" />
+        )}
       </div>
 
       {video}
 
-      <ImagePreviews previews={previews} removeImage={removeImage} />
+      <ImagePreviews
+        images={imageUploadState.images}
+        removeImage={(image) => imageUploadState.removeImage(image)}
+      />
 
       <div className="pt-3 px-7 pb-7">
         <div className="uppercase mb-3">Add media</div>
         <div className="flex items-center justify-between">
           <label className="cursor-pointer">
             <img src={photos} alt="photos" data-tip="Photo" />
-            <input type="file" multiple hidden onChange={onChangeImage} />
+            <input
+              type="file"
+              multiple
+              hidden
+              onChange={(e) => imageUploadState.onChangeImage(e)}
+            />
           </label>
           <img src={camera} alt="video" data-tip="Video" />
           <button

@@ -1,17 +1,17 @@
 import React from 'react'
 import { X } from '@styled-icons/boxicons-regular/X'
-import { Preview } from 'Shared/useImageUpload'
+import { UploadingImage } from 'utils/imageUploadState'
 
 type Props = {
-  previews: Preview[]
-  removeImage(preview: Preview): void
+  images: UploadingImage[]
+  removeImage(preview: UploadingImage): void
 }
 
-export default function ImagePreviews({ previews, removeImage }: Props) {
+export default function ImagePreviews({ images, removeImage }: Props) {
   return (
     <>
-      {previews.map((preview, i) => {
-        if (!preview.preview) return <React.Fragment key={i} />
+      {images.map((image, i) => {
+        if (!image.preview) return <React.Fragment key={i} />
 
         return (
           <div
@@ -23,11 +23,11 @@ export default function ImagePreviews({ previews, removeImage }: Props) {
               type="button"
               className="w-10 h-10 flex-center text-white absolute top-0 right-0 mt-5 mr-7"
               style={{ background: 'rgba(0, 0, 0, .3)' }}
-              onClick={() => removeImage(preview)}
+              onClick={() => removeImage(image)}
             >
               <X size={28} />
             </button>
-            <img className="max-w-full" src={preview.preview} alt="image" />
+            <img className="max-w-full" src={image.preview} alt="image" />
           </div>
         )
       })}

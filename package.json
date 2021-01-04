@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@joeattardi/emoji-button": "^4.6.0",
-    "@styled-icons/bootstrap": "^10.19.0",
+    "@styled-icons/bootstrap": "^10.23.0",
     "@styled-icons/boxicons-logos": "^10.18.0",
     "@styled-icons/boxicons-regular": "^10.18.0",
     "@styled-icons/boxicons-solid": "^10.18.0",

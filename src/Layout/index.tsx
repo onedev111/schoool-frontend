@@ -109,6 +109,14 @@ export default observer(function Layout({ children }: Props) {
             </div>
           </div>
         </div>
+        <div className="absolute top-0 right-0 bottom-0 flex-center mr-8 text-gray-6e text-xl uppercase">
+          <a href="#" className="transition duration-200 hover:text-black">
+            How to use
+          </a>
+          <a href="#" className="ml-8 transition duration-200 hover:text-black">
+            About Schoool
+          </a>
+        </div>
       </div>
       <div style={{ maxWidth: '1100px' }} className="w-full mx-auto">
         {children}

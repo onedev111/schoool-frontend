@@ -8,18 +8,20 @@ type Props = {
 }
 
 export default observer(function SentenceForm({ state }: Props) {
-  const { sentence } = state.values
+  const { notebookSentence } = state.values
 
   return (
     <SentenceSharedForm
-      sentence={sentence}
+      sentence={notebookSentence}
       titleClass="text-2xl uppercase text-center pt-8 pb-6"
       contentClass="pt-6 px-8 pb-12"
       buttonWrapClass="flex-center mt-12"
       title={
-        sentence ? 'Edit Notebook SentenceForm' : 'Add Notebook SentenceForm'
+        notebookSentence
+          ? 'Edit Notebook SentenceForm'
+          : 'Add Notebook SentenceForm'
       }
-      buttonText={sentence ? 'Save SentenceForm' : 'Add SentenceForm'}
+      buttonText={notebookSentence ? 'Save SentenceForm' : 'Add SentenceForm'}
       onClose={() => state.backToForm()}
       onSubmit={(sentence) => state.setSentence(sentence)}
       backButton={true}

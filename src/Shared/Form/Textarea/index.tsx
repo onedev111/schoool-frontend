@@ -60,24 +60,7 @@ export default function Textarea({
             (!errorOnlyForSubmitted && formState.touched[name]))
 
         return (
-          <div className={cn(classes.root, className)}>
-            {label && (
-              <label className={classes.label} htmlFor={name}>
-                {label}
-                {required && ' *'}
-                {counter && (
-                  <div
-                    className={cn(
-                      classes.counter,
-                      (value?.length || 0) > (maxLength || 0) &&
-                        classes.counterError,
-                    )}
-                  >
-                    {value?.length || 0}/{maxLength}
-                  </div>
-                )}
-              </label>
-            )}
+          <>
             <ControlledTextarea
               value={value || ''}
               onChange={onChange}
@@ -94,10 +77,7 @@ export default function Textarea({
               required={required}
               {...props}
             />
-            {hasError && error && (
-              <div className={classes.error}>{error.message}</div>
-            )}
-          </div>
+          </>
         )
       }}
     />
