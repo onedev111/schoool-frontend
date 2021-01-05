@@ -22,7 +22,7 @@ const comments: Comment[] = [
     liked: 1,
     audio,
     loopingAudio: audio,
-    image: '/beer.svg',
+    images: ['/beer.svg'],
     video: {
       src: 'https://www.youtube.com/embed/lJIrF4YjHfQ',
       ratio: 315 / 560,
@@ -53,6 +53,7 @@ const comments: Comment[] = [
     comments: [
       {
         avatar,
+        images: [],
         name: 'Mark Kim',
         date: new Date(),
         liked: 2,
@@ -61,6 +62,7 @@ const comments: Comment[] = [
       },
       {
         avatar,
+        images: [],
         name: 'Mark Kim',
         date: new Date(),
         liked: 3,
@@ -71,6 +73,7 @@ const comments: Comment[] = [
   },
   {
     avatar,
+    images: [],
     name: 'Mark Kim',
     date: new Date(),
     liked: 4,

@@ -122,9 +122,14 @@ export const list = get(
         likesCount: post.like_count,
         repliesCount: post.reply_count,
         saved: Boolean(post.check_notebook),
-        images: [],
+        images: [
+          post.photo_dir,
+          post.photo_dir_second,
+          post.photo_dir_third,
+          post.photo_dir_fourth,
+        ].filter((image) => image),
         previews: [],
-        date: dayjs(post.date),
+        date: dayjs(`${post.date} UTC`),
         notebookSentence: post.title
           ? { text: post.title, translation: post.translated_title }
           : undefined,

@@ -50,7 +50,7 @@ export type Comment = {
   previews?: Preview[]
   audio?: string
   loopingAudio?: string
-  image?: string
+  images: string[]
   video?: Video
   comments?: Comment[]
 }

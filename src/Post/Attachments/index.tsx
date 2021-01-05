@@ -3,6 +3,7 @@ import { Preview as PreviewType, Video as VideoType } from 'Post/types'
 import Audio from 'Post/Audio'
 import Video from 'Post/Video'
 import Preview from 'Post/Preview'
+import Photos from 'Post/Attachments/Photos'
 
 type Props = {
   audioClass?: string
@@ -13,7 +14,7 @@ type Props = {
     audio?: string
     loopingAudio?: string
     previews?: PreviewType[]
-    image?: string
+    images: string[]
     video?: VideoType
   }
 }
@@ -23,7 +24,7 @@ export default function Attachments({
   previewsClass,
   imageClass,
   videoClass,
-  attachments: { audio, loopingAudio, previews, image, video },
+  attachments: { audio, loopingAudio, previews, images, video },
 }: Props) {
   return (
     <>
@@ -47,6 +48,7 @@ export default function Attachments({
         </>
       )}
 
+      <Photos className={imageClass} images={images} />
       {(previews as PreviewType[])?.length > 0 && (
         <div className={previewsClass}>
           {previews?.map((preview, i) => (
@@ -59,7 +61,6 @@ export default function Attachments({
         </div>
       )}
 
-      {image && <img src={image} alt="beer" className={imageClass} />}
       {video && <Video video={video} className={videoClass} />}
     </>
   )
