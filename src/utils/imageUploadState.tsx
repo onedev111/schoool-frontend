@@ -11,6 +11,8 @@ export type UploadingImage = {
 
 const maxImagesCount = 4
 
+const supportedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']
+
 type Props = {
   onChange?(images: UploadingImage[]): void
 }
@@ -30,23 +32,29 @@ const createImageUploadState = ({ onChange }: Props = {}) =>
       if (this.onChange) this.onChange(images)
       this.setImages(images)
     },
-    showMaxWarning: false,
-    setShowMaxWarning(value: boolean) {
-      this.showMaxWarning = value
+    warning: undefined as string | undefined,
+    setWarning(value: string | undefined) {
+      this.warning = value
     },
     addFiles(files: File[]) {
-      const limited = Array.from(files).slice(
-        this.images.length,
-        maxImagesCount,
-      )
-      this.setShowMaxWarning(files.length > maxImagesCount)
+      const filesArray = Array.from(files)
+      const filtered = filesArray
+        .slice(this.images.length, maxImagesCount)
+        .filter((file) => supportedMimes.includes(file.type))
+
+      if (files.length > maxImagesCount)
+        this.setWarning('You can only choose 4 photos')
+      else if (filesArray.some((file) => !supportedMimes.includes(file.type)))
+        this.setWarning('Supported image formats are jpeg, png, svg and gif')
+      else this.setWarning(undefined)
+
       this.changeImages([
         ...this.images,
-        ...limited.map((file) => ({
+        ...filtered.map((file) => ({
           file,
         })),
       ])
-      limited.forEach((file) => {
+      filtered.forEach((file) => {
         const reader = new FileReader()
         reader.onload = () => {
           this.changeImages(
@@ -68,15 +76,14 @@ const createImageUploadState = ({ onChange }: Props = {}) =>
       const {
         dataTransfer: { items, files },
       } = e
-      if (items) {
-        this.addFiles(
-          Array.from(items)
+
+      const images = items
+        ? (Array.from(items)
             .filter((item) => item.kind === 'file')
-            .map((item) => item.getAsFile()) as File[],
-        )
-      } else {
-        this.addFiles(Array.from(files))
-      }
+            .map((item) => item.getAsFile()) as File[])
+        : Array.from(files).filter((item) => item.type.startsWith('image'))
+
+      this.addFiles(images)
     },
     onChangeImage(e: any) {
       this.addFiles(e.target.files)
@@ -89,7 +96,7 @@ const createImageUploadState = ({ onChange }: Props = {}) =>
     },
     get dragArea() {
       return (
-        dragOverState.hasFiles && (
+        dragOverState.hasImage && (
           <div
             className={cn(
               'absolute-fill flex-center text-xl b border-4 border-dashed',
@@ -102,17 +109,17 @@ const createImageUploadState = ({ onChange }: Props = {}) =>
             onDragLeave={() => this.setDragOver(false)}
             onDrop={this.handleDrop}
           >
-            Drag file here
+            Drag images here
           </div>
         )
       )
     },
     get warningModal() {
       return (
-        this.showMaxWarning && (
+        this.warning && (
           <Alert
-            title="You can only choose 4 photos"
-            onClose={() => this.setShowMaxWarning(false)}
+            title={this.warning}
+            onClose={() => this.setWarning(undefined)}
           />
         )
       )

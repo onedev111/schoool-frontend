@@ -128,6 +128,7 @@ export const list = get(
           post.photo_dir_third,
           post.photo_dir_fourth,
         ].filter((image) => image),
+        video: post.video,
         previews: [],
         date: dayjs(`${post.date} UTC`),
         notebookSentence: post.title
@@ -179,7 +180,7 @@ type CreatePostResponse = {
   zoom_link: string
 }
 
-export const create = post(({ text, images = [] }: Partial<Post>) => ({
+export const create = post(({ text, images = [], video }: Partial<Post>) => ({
   path: '/add_share_post',
   data: {
     access_token: getUserToken(),
@@ -188,6 +189,7 @@ export const create = post(({ text, images = [] }: Partial<Post>) => ({
     photo_second: images[1],
     photo_third: images[2],
     photo_fourth: images[3],
+    video,
     is_public: 0,
   },
   response: (data: { result_code: string; data: CreatePostResponse }): Post => {

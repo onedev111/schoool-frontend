@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 
 export default makeAutoObservable({
-  hasFiles: false,
+  hasImage: false,
+  hasVideo: false,
 })

@@ -26,6 +26,8 @@ import { createFormState } from 'Post/Form/State'
 import FormTextarea from 'Post/Form/Textarea'
 import submit from 'Post/Form/submit'
 import useImageUploadState from 'utils/imageUploadState'
+import useVideoUploadState from 'utils/videoUploadState'
+import VideoPreview from 'Post/Form/VideoPreview'
 
 type Props = {
   onClose(): void
@@ -41,6 +43,10 @@ export default observer(function PostFormModal({ onClose }: Props) {
 
   const imageUploadState = useImageUploadState({
     onChange: (images) => state.setImages(images),
+  })
+
+  const videoUploadState = useVideoUploadState({
+    onChange: (video) => state.setVideo(video),
   })
 
   const toggleEmoji = useEmojiPicker({ editorRef: state.editorRef })
@@ -89,7 +95,9 @@ export default observer(function PostFormModal({ onClose }: Props) {
       <div
         className={cn(
           'p-6',
-          imageUploadState.hasPreviews || (youtubeId && youtubeVideoHeight)
+          imageUploadState.hasPreviews ||
+            (youtubeId && youtubeVideoHeight) ||
+            videoUploadState.url
             ? 'pb-0'
             : 'border-b border-gray-c5',
         )}
@@ -127,6 +135,14 @@ export default observer(function PostFormModal({ onClose }: Props) {
 
       {video}
 
+      {videoUploadState.url && (
+        <VideoPreview
+          video={videoUploadState.url}
+          removeVideo={() => videoUploadState.setVideo(undefined)}
+          className="mt-4"
+        />
+      )}
+
       <ImagePreviews
         images={imageUploadState.images}
         removeImage={(image) => imageUploadState.removeImage(image)}
@@ -144,7 +160,14 @@ export default observer(function PostFormModal({ onClose }: Props) {
               onChange={(e) => imageUploadState.onChangeImage(e)}
             />
           </label>
-          <img src={camera} alt="video" data-tip="Video" />
+          <label className="cursor-pointer">
+            <img src={camera} alt="video" data-tip="Video" />
+            <input
+              type="file"
+              hidden
+              onChange={(e) => videoUploadState.onChangeVideo(e)}
+            />
+          </label>
           <button
             type="button"
             onClick={() => state.setCurrentScreen('youtube')}

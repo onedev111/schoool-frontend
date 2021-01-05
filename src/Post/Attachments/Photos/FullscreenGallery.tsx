@@ -24,13 +24,15 @@ export default function FullscreenGallery({
   return (
     <Fullscreen onClose={onClose}>
       <div className="w-full h-full flex-center relative px-5">
-        <button
-          type="button"
-          className="text-gray-bb mr-5"
-          onClick={() => reactSwipe?.prev()}
-        >
-          <ChevronLeft size={52} />
-        </button>
+        {images.length > 1 && (
+          <button
+            type="button"
+            className="text-gray-bb mr-5"
+            onClick={() => reactSwipe?.prev()}
+          >
+            <ChevronLeft size={52} />
+          </button>
+        )}
         <ReactSwipe
           className="w-full"
           ref={(el) => {
@@ -46,13 +48,15 @@ export default function FullscreenGallery({
               </div>
             ))}
         </ReactSwipe>
-        <button
-          type="button"
-          className="text-gray-bb ml-5"
-          onClick={() => reactSwipe?.next()}
-        >
-          <ChevronRight size={52} />
-        </button>
+        {images.length > 1 && (
+          <button
+            type="button"
+            className="text-gray-bb ml-5"
+            onClick={() => reactSwipe?.next()}
+          >
+            <ChevronRight size={52} />
+          </button>
+        )}
       </div>
     </Fullscreen>
   )

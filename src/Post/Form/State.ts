@@ -4,6 +4,7 @@ import { Preview } from 'Post/types'
 import { getCurrentUser } from 'User/currentUser'
 import dayjs from 'dayjs'
 import { UploadingImage } from 'utils/imageUploadState'
+import { UploadingVideo } from 'utils/videoUploadState'
 
 type Screen =
   | 'form'
@@ -40,7 +41,12 @@ export const createFormState = () =>
       notebookSentence: undefined as NotebookSentence | undefined,
       previews: [] as Preview[],
       images: [],
-    } as Omit<Post, 'images'> & { privacy: string; images: UploadingImage[] },
+      video: undefined,
+    } as Omit<Post, 'images' | 'video'> & {
+      privacy: string
+      images: UploadingImage[]
+      video: UploadingVideo | undefined
+    },
     setText(text: string) {
       this.values.text = text
     },
@@ -52,6 +58,9 @@ export const createFormState = () =>
     },
     setImages(images: UploadingImage[]) {
       this.values.images = images
+    },
+    setVideo(video: UploadingVideo | undefined) {
+      this.values.video = video
     },
     get isValid() {
       return this.values.text.trim().length > 0

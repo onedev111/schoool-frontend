@@ -11,6 +11,14 @@ type Props = {
   children: React.ReactNode
 }
 
+const hasType = (dataTransfer: any, type: string) =>
+  Array.from(dataTransfer.items || []).some(
+    (item: any) => item.kind === 'file' && item.type.startsWith(type),
+  ) ||
+  Array.from(dataTransfer.files || []).some((item: any) =>
+    item.type.startsWith(type),
+  )
+
 export default observer(function Layout({ children }: Props) {
   const [state] = React.useState({ dragElementCount: 0 })
   const [{ avatar }] = useCurrentUser()
@@ -18,23 +26,20 @@ export default observer(function Layout({ children }: Props) {
   const dragEnter = ({ dataTransfer }: any) => {
     state.dragElementCount++
     if (state.dragElementCount !== 1) return
-    dragOverState.hasFiles =
-      (Array.from(dataTransfer.items || []).some(
-        (item: any) => item.kind === 'file',
-      ) ||
-        dataTransfer.files?.length ||
-        0) > 0
+    dragOverState.hasImage = hasType(dataTransfer, 'image')
+    dragOverState.hasVideo = hasType(dataTransfer, 'video')
   }
 
   const dragLeave = () => {
     state.dragElementCount--
-    if (state.dragElementCount === 0) dragOverState.hasFiles = false
+    if (state.dragElementCount === 0)
+      dragOverState.hasImage = dragOverState.hasVideo = false
   }
 
   const drop = (e: any) => {
     e.preventDefault()
     state.dragElementCount = 0
-    dragOverState.hasFiles = false
+    dragOverState.hasImage = dragOverState.hasVideo = false
   }
 
   const preventDefault = (e: React.DragEvent<HTMLElement>) => e.preventDefault()

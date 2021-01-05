@@ -1,5 +1,5 @@
 import React from 'react'
-import { Preview as PreviewType, Video as VideoType } from 'Post/types'
+import { Preview as PreviewType } from 'Post/types'
 import Audio from 'Post/Audio'
 import Video from 'Post/Video'
 import Preview from 'Post/Preview'
@@ -15,7 +15,7 @@ type Props = {
     loopingAudio?: string
     previews?: PreviewType[]
     images: string[]
-    video?: VideoType
+    video?: string
   }
 }
 

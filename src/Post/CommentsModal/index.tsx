@@ -23,10 +23,10 @@ const comments: Comment[] = [
     audio,
     loopingAudio: audio,
     images: ['/beer.svg'],
-    video: {
-      src: 'https://www.youtube.com/embed/lJIrF4YjHfQ',
-      ratio: 315 / 560,
-    },
+    // video: {
+    //   src: 'https://www.youtube.com/embed/lJIrF4YjHfQ',
+    //   ratio: 315 / 560,
+    // },
     comment:
       'comment is written here. comment is written here. what you write is written here. comment is written here. what you write is written here.',
     previews: [

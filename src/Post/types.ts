@@ -33,7 +33,7 @@ export type Post = {
   audio?: string
   loopingAudio?: string
   image?: string
-  video?: Video
+  video?: string
   reachedNotebookLimit?: boolean
   date: Dayjs
   error?: string
@@ -51,6 +51,6 @@ export type Comment = {
   audio?: string
   loopingAudio?: string
   images: string[]
-  video?: Video
+  video?: string
   comments?: Comment[]
 }

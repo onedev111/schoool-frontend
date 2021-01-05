@@ -1,5 +1,6 @@
 import React from 'react'
 import { X } from '@styled-icons/boxicons-regular/X'
+import { useKey } from 'react-use'
 
 type Props = {
   children: React.ReactNode
@@ -7,6 +8,8 @@ type Props = {
 }
 
 export default function Fullscreen({ children, onClose }: Props) {
+  useKey('Escape', onClose)
+
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 z-30 bg-gray-2a">
       <button
