@@ -1,17 +1,22 @@
 import React from 'react'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 import cn from 'classnames'
-import useYouTube from 'Shared/useYouTube'
+import { observer } from 'mobx-react-lite'
+import useYouTubeState, { State } from 'utils/youTubeState'
 
 type Props = {
-  youtubeId: string | null
-  setYoutubeId(id: string | null): void
+  youtubeId?: string
+  youtubeState: State
   onClose(): void
 }
 
-export default function YouTube({ youtubeId, setYoutubeId, onClose }: Props) {
+export default observer(function YouTube({
+  youtubeId,
+  youtubeState,
+  onClose,
+}: Props) {
   const [url, setUrl] = React.useState('')
-  const { youtubeId: id, setYoutubeId: setId, video } = useYouTube({
+  const state = useYouTubeState({
     youtubeId,
     className: 'mt-10',
   })
@@ -19,7 +24,7 @@ export default function YouTube({ youtubeId, setYoutubeId, onClose }: Props) {
   const onChange = async (url: string) => {
     setUrl(url)
     const id = new URLSearchParams(url.slice(url.indexOf('?'))).get('v')
-    setId(id)
+    state.setYouTubeId(id || undefined)
   }
 
   return (
@@ -43,18 +48,18 @@ export default function YouTube({ youtubeId, setYoutubeId, onClose }: Props) {
           value={url}
           onChange={(e) => onChange(e.target.value)}
         />
-        {video}
+        {state.video}
         <div className="flex-center mt-12">
           <button
             type="button"
             className={cn(
               'h-8 rounded-full bg-blue-primary text-white',
-              !id && 'opacity-25',
+              !state.youtubeId && 'opacity-25',
             )}
             style={{ width: '200px' }}
-            disabled={!id}
+            disabled={!state.youtubeId}
             onClick={() => {
-              setYoutubeId(id)
+              youtubeState.setYouTubeId(state.youtubeId, state.ratio)
               onClose()
             }}
           >
@@ -64,4 +69,4 @@ export default function YouTube({ youtubeId, setYoutubeId, onClose }: Props) {
       </div>
     </div>
   )
-}
+})

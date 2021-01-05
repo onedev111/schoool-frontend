@@ -15,7 +15,6 @@ import useEmojiPicker from 'Shared/useEmojiPicker'
 import SelectTarget from 'Post/Form/SelectTarget'
 import { CaretDown } from '@styled-icons/boxicons-regular/CaretDown'
 import YouTube from 'Post/Form/YouTube'
-import useYouTube from 'Shared/useYouTube'
 import ImagePreviews from 'Post/Form/ImagePreviews'
 import SentenceForm from 'Post/Form/SentenceForm'
 import Sentence from 'Home/Sentence'
@@ -28,6 +27,7 @@ import submit from 'Post/Form/submit'
 import useImageUploadState from 'utils/imageUploadState'
 import useVideoUploadState from 'utils/videoUploadState'
 import VideoPreview from 'Post/Form/VideoPreview'
+import useYouTubeState from 'utils/youTubeState'
 
 type Props = {
   onClose(): void
@@ -36,9 +36,12 @@ type Props = {
 export default observer(function PostFormModal({ onClose }: Props) {
   const [state] = React.useState(() => createFormState())
 
-  const { youtubeId, youtubeVideoHeight, setYoutubeId, video } = useYouTube({
+  const youTubeState = useYouTubeState({
     close: true,
     className: 'mt-4',
+    onChange(id) {
+      state.setYouTubeId(id)
+    },
   })
 
   const imageUploadState = useImageUploadState({
@@ -63,8 +66,8 @@ export default observer(function PostFormModal({ onClose }: Props) {
   if (state.currentScreen === 'youtube')
     return (
       <YouTube
-        youtubeId={youtubeId}
-        setYoutubeId={setYoutubeId}
+        youtubeId={youTubeState.youtubeId}
+        youtubeState={youTubeState}
         onClose={() => state.backToForm()}
       />
     )
@@ -96,7 +99,7 @@ export default observer(function PostFormModal({ onClose }: Props) {
         className={cn(
           'p-6',
           imageUploadState.hasPreviews ||
-            (youtubeId && youtubeVideoHeight) ||
+            youTubeState.video ||
             videoUploadState.url
             ? 'pb-0'
             : 'border-b border-gray-c5',
@@ -133,7 +136,7 @@ export default observer(function PostFormModal({ onClose }: Props) {
         )}
       </div>
 
-      {video}
+      {youTubeState.video}
 
       {videoUploadState.url && (
         <VideoPreview

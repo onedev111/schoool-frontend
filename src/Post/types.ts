@@ -34,6 +34,7 @@ export type Post = {
   loopingAudio?: string
   image?: string
   video?: string
+  youtubeId?: string
   reachedNotebookLimit?: boolean
   date: Dayjs
   error?: string

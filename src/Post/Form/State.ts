@@ -42,6 +42,7 @@ export const createFormState = () =>
       previews: [] as Preview[],
       images: [],
       video: undefined,
+      youtubeId: undefined,
     } as Omit<Post, 'images' | 'video'> & {
       privacy: string
       images: UploadingImage[]
@@ -61,6 +62,9 @@ export const createFormState = () =>
     },
     setVideo(video: UploadingVideo | undefined) {
       this.values.video = video
+    },
+    setYouTubeId(id: string | undefined) {
+      this.values.youtubeId = id
     },
     get isValid() {
       return this.values.text.trim().length > 0

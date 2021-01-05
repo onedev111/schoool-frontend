@@ -95,7 +95,7 @@ type ListPostResponse = {
   translated_title: string
   user_id: number
   video: string
-  youtube_id: number
+  youtube_id: string
   zoom_link: string
 }
 
@@ -129,6 +129,7 @@ export const list = get(
           post.photo_dir_fourth,
         ].filter((image) => image),
         video: post.video,
+        youtubeId: post.youtube_id,
         previews: [],
         date: dayjs(`${post.date} UTC`),
         notebookSentence: post.title
@@ -180,37 +181,43 @@ type CreatePostResponse = {
   zoom_link: string
 }
 
-export const create = post(({ text, images = [], video }: Partial<Post>) => ({
-  path: '/add_share_post',
-  data: {
-    access_token: getUserToken(),
-    comment: text,
-    photo: images[0],
-    photo_second: images[1],
-    photo_third: images[2],
-    photo_fourth: images[3],
-    video,
-    is_public: 0,
-  },
-  response: (data: { result_code: string; data: CreatePostResponse }): Post => {
-    if (data.result_code !== '01.00') throw new Error('Something went wrong')
-    const post = data.data
+export const create = post(
+  ({ text, images = [], video, youtubeId }: Partial<Post>) => ({
+    path: '/add_share_post',
+    data: {
+      access_token: getUserToken(),
+      comment: text,
+      photo: images[0],
+      photo_second: images[1],
+      photo_third: images[2],
+      photo_fourth: images[3],
+      video,
+      youtube_id: youtubeId,
+      is_public: 0,
+    },
+    response: (data: {
+      result_code: string
+      data: CreatePostResponse
+    }): Post => {
+      if (data.result_code !== '01.00') throw new Error('Something went wrong')
+      const post = data.data
 
-    return {
-      id: post.share_post_id,
-      text: post.comment,
-      images,
-      previews: [],
-      isMine: post.user_id === getCurrentUserId(),
-      user: getCurrentUser(),
-      liked: false,
-      likesCount: 0,
-      repliesCount: 0,
-      saved: false,
-      date: dayjs(),
-      notebookSentence: post.title
-        ? { text: post.title, translation: post.translated_title }
-        : undefined,
-    }
-  },
-}))
+      return {
+        id: post.share_post_id,
+        text: post.comment,
+        images,
+        previews: [],
+        isMine: post.user_id === getCurrentUserId(),
+        user: getCurrentUser(),
+        liked: false,
+        likesCount: 0,
+        repliesCount: 0,
+        saved: false,
+        date: dayjs(),
+        notebookSentence: post.title
+          ? { text: post.title, translation: post.translated_title }
+          : undefined,
+      }
+    },
+  }),
+)

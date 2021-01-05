@@ -4,6 +4,8 @@ import Audio from 'Post/Audio'
 import Video from 'Post/Video'
 import Preview from 'Post/Preview'
 import Photos from 'Post/Attachments/Photos'
+import useYouTubeState from 'utils/youTubeState'
+import { observer } from 'mobx-react-lite'
 
 type Props = {
   audioClass?: string
@@ -16,15 +18,22 @@ type Props = {
     previews?: PreviewType[]
     images: string[]
     video?: string
+    youtubeId?: string
   }
 }
+
+const YouTube = observer(({ youtubeId }: { youtubeId: string }) => {
+  const { video } = useYouTubeState({ youtubeId })
+
+  return video
+})
 
 export default function Attachments({
   audioClass,
   previewsClass,
   imageClass,
   videoClass,
-  attachments: { audio, loopingAudio, previews, images, video },
+  attachments: { audio, loopingAudio, previews, images, video, youtubeId },
 }: Props) {
   return (
     <>
@@ -62,6 +71,8 @@ export default function Attachments({
       )}
 
       {video && <Video video={video} className={videoClass} />}
+
+      {youtubeId && <YouTube youtubeId={youtubeId} />}
     </>
   )
 }

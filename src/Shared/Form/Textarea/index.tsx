@@ -73,7 +73,6 @@ export default function Textarea({
               maxLength={maxLength}
               classes={classes}
               elementRef={elementRef}
-              id={name}
               required={required}
               {...props}
             />
