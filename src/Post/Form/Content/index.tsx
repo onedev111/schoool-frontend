@@ -19,7 +19,7 @@ import ImagePreviews from 'Post/Form/ImagePreviews'
 import SentenceForm from 'Post/Form/SentenceForm'
 import Sentence from 'Home/Sentence'
 import TagModal from 'Post/Form/TagModal'
-import AudioModal from 'Post/Form/AudioModal'
+import RecordAudio from 'Post/Form/RecordAudio'
 import LoopingAudioModal from 'Post/Form/LoopingAudioModal'
 import { createFormState } from 'Post/Form/State'
 import FormTextarea from 'Post/Form/Textarea'
@@ -76,7 +76,7 @@ export default observer(function PostFormModal({ onClose }: Props) {
 
   if (state.currentScreen === 'tag') return <TagModal state={state} />
 
-  if (state.currentScreen === 'audio') return <AudioModal state={state} />
+  if (state.currentScreen === 'audio') return <RecordAudio state={state} />
 
   if (state.currentScreen === 'loopingAudio')
     return <LoopingAudioModal state={state} />

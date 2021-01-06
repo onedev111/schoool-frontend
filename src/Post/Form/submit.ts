@@ -4,10 +4,13 @@ import api from 'api'
 import { queryCache } from 'react-query'
 import dayjs from 'dayjs'
 import { Post } from 'Post/types'
+import { UploadingAudio } from 'Post/Form/RecordAudio/State'
+import { UploadingVideo } from 'utils/videoUploadState'
 
 export default async function submitPost({ state }: { state: State }) {
-  const { images, video } = state.values
-  const videos = [video].filter((video) => video)
+  const { images, video, audio } = state.values
+  const videos = [video].filter((video) => video) as UploadingVideo[]
+  const audios = [audio].filter((audio) => audio) as UploadingAudio[]
 
   const post: Post = {
     ...state.values,
@@ -15,17 +18,20 @@ export default async function submitPost({ state }: { state: State }) {
       .map(({ preview }) => preview)
       .filter((preview) => preview) as string[],
     video: video && URL.createObjectURL(video),
+    audio: audio && audio.url,
     date: dayjs(),
   }
   const observablePost = UploadingPostsStore.addPost(post)
 
   const photoCount = images.length
   const videoCount = videos.length
+  const soundCount = audios.length
 
-  if (photoCount > 0 || videoCount > 0) {
+  if (Math.max(photoCount, videoCount, soundCount) > 0) {
     const urls = await api.fileUpload.getUploadingUrls({
       photoCount,
       videoCount,
+      soundCount,
     })
     try {
       await Promise.all([
@@ -50,6 +56,17 @@ export default async function submitPost({ state }: { state: State }) {
             },
             body: video,
           }).then(() => (observablePost.video = upload.cdnUrl))
+        }),
+        ...audios.map((audio, index) => {
+          const upload = urls.sounds[index]
+
+          return fetch(upload.url, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            body: audio.blob,
+          }).then(() => (observablePost.audio = upload.cdnUrl))
         }),
       ])
     } catch (err) {

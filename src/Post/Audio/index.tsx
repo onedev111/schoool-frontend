@@ -45,56 +45,43 @@ export default observer(function Audio({
   const [state] = React.useState(createState)
 
   const [audio] = React.useState(() => {
-    const audio = new Howl({
-      src,
-      loop,
-      onload() {
-        state.setDuration(audio.duration())
-      },
-      onplay() {
-        state.setPlaying(true)
-      },
-      onpause() {
-        state.setPlaying(false)
-      },
-      onstop() {
-        state.setPlaying(false)
-      },
-      onend() {
-        state.setPlaying(false)
-      },
-    })
+    const audio = new window.Audio(src)
+    audio.loop = Boolean(loop)
+    audio.onloadedmetadata = () => state.setDuration(audio.duration)
+    audio.onplay = () => state.setPlaying(true)
+    audio.onpause = () => state.setPlaying(false)
+    audio.onended = () => state.setCurrentTime(0)
     return audio
   })
 
   const togglePlay = () => {
-    if (audio.playing()) audio.pause()
+    if (state.playing) audio.pause()
     else audio.play()
   }
 
   React.useEffect(() => {
     if (state.playing) {
       const animation = () => {
-        state.setCurrentTime(audio.seek() as number)
+        state.setCurrentTime(audio.currentTime)
         request = requestAnimationFrame(animation)
       }
       let request = requestAnimationFrame(animation)
 
       return () => cancelAnimationFrame(request)
     } else {
-      state.setCurrentTime(audio.seek() as number)
+      state.setCurrentTime(audio.currentTime)
     }
   }, [state.playing])
 
   const [focused, toggleFocused] = useToggle()
   useKeyWhenFocused(focused, ' ', togglePlay)
   useKeyWhenFocused(focused, 'ArrowLeft', () => {
-    const value = audio.seek() as number
-    audio.seek(Math.max(value - 1, 0))
+    const value = audio.currentTime
+    audio.currentTime = Math.max(value - 1, 0)
   })
   useKeyWhenFocused(focused, 'ArrowRight', () => {
-    const value = audio.seek() as number
-    audio.seek(Math.min(value + 1, audio.duration()))
+    const value = audio.currentTime as number
+    audio.currentTime = Math.min(value + 1, state.duration)
   })
 
   return (
@@ -120,7 +107,7 @@ export default observer(function Audio({
       <div className={cn('text-sm', compact ? 'ml-2' : 'ml-3 mr-1')}>
         {state.duration ? formatTime(state.duration) : null}
       </div>
-      <button onClick={() => audio.stop()}>
+      <button onClick={() => audio.pause()}>
         <StopFill size={36} />
       </button>
     </div>

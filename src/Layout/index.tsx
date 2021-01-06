@@ -123,7 +123,7 @@ export default observer(function Layout({ children }: Props) {
           </a>
         </div>
       </div>
-      <div style={{ maxWidth: '1100px' }} className="w-full mx-auto">
+      <div style={{ maxWidth: '1100px' }} className="w-full mx-auto h-full">
         {children}
       </div>
     </div>

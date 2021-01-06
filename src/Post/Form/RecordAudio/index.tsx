@@ -3,20 +3,25 @@ import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 import { PlayFill } from '@styled-icons/bootstrap/PlayFill'
 import { PauseFill } from '@styled-icons/bootstrap/PauseFill'
 import cn from 'classnames'
-import useToggle from 'Shared/useToggle'
 import { State } from 'Post/Form/State'
 import { observer } from 'mobx-react-lite'
+import createAudioRecordingState from 'Post/Form/RecordAudio/State'
+import Time from 'Post/Form/RecordAudio/Time'
+import ProgressBar from 'Post/Form/RecordAudio/ProgressBar'
 
 type Props = {
   state: State
 }
 
-export default observer(function AudioModal({ state }: Props) {
-  const [recording, toggleRecording] = useToggle(true)
-  const [recorded, toggleRecorded] = useToggle(true)
-  const [playing, togglePlaying] = useToggle()
+export default observer(function RecordAudio({ state: postState }: Props) {
+  const [state] = React.useState(() => createAudioRecordingState())
 
-  const onClose = () => state.backToForm()
+  const onClose = () => postState.backToForm()
+
+  const submit = () => {
+    postState.setAudio(state.result)
+    onClose()
+  }
 
   return (
     <div className="pb-12">
@@ -28,22 +33,16 @@ export default observer(function AudioModal({ state }: Props) {
         </div>
         Record Voice Over
       </div>
-      <div
-        className={cn('overflow-hidden', recording && 'bg-gray-e2')}
-        style={{ height: '3px' }}
-      >
-        <div
-          className="w-full h-full bg-blue-0c"
-          style={{ transform: 'translateX(-70%)' }}
-        />
-      </div>
+      <ProgressBar state={state} />
       <div className="flex-col flex-center mb-7">
         <button
           type="button"
-          onClick={toggleRecording}
+          onClick={() => state.toggleRecording()}
           className={cn(
             'text-15 border border-blue-0c rounded-full',
-            recording ? 'bg-blue-0c text-white' : 'text-blue-0c',
+            state.isRecording || state.recorded
+              ? 'bg-blue-0c text-white'
+              : 'text-blue-0c',
           )}
           style={{
             marginTop: '57px',
@@ -52,38 +51,54 @@ export default observer(function AudioModal({ state }: Props) {
             borderWidth: '4px',
           }}
         >
-          {recording ? 'Recording' : 'Start'}
+          {state.isRecording
+            ? 'Recording'
+            : state.recorded
+            ? 'Resume'
+            : 'Start'}
         </button>
-        <div className="text-gray-6b mt-2 h-6">{recording && '00:42'}</div>
+        <div className="text-gray-6b mt-2 h-6">
+          <Time state={state} />
+        </div>
       </div>
-      {!recorded && (
-        <div className="text-center text-lg">
+      {!state.recorded && (
+        <div className="flex-center text-lg h-10">
           Record your lecture. It is limted to 5 minutes.
         </div>
       )}
-      {recorded && (
+      {state.recorded && (
         <div className="flex-center">
           <button
             type="button"
             className="h-8 rounded-full border-2 border-blue-primary text-blue-primary flex-center font-bold"
             style={{ width: '130px' }}
+            onClick={() => state.reset()}
           >
             Reset
           </button>
-          {!playing && (
-            <button type="button" className="ml-7" onClick={togglePlaying}>
-              <PlayFill size={42} />
+          {!state.isPlaying && (
+            <button
+              type="button"
+              className="ml-7"
+              onClick={() => state.audio.play()}
+            >
+              <PlayFill size={40} />
             </button>
           )}
-          {playing && (
-            <button type="button" className="ml-7" onClick={togglePlaying}>
-              <PauseFill size={42} />
+          {state.isPlaying && (
+            <button
+              type="button"
+              className="ml-7"
+              onClick={() => state.audio.pause()}
+            >
+              <PauseFill size={40} />
             </button>
           )}
           <button
             type="button"
             className="h-8 rounded-full bg-blue-primary text-white flex-center font-bold ml-7"
             style={{ width: '130px' }}
+            onClick={submit}
           >
             Add To Post
           </button>

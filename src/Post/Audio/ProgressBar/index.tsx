@@ -4,7 +4,7 @@ import { AudioState } from 'Post/Audio/state'
 import { observer } from 'mobx-react-lite'
 
 type Props = {
-  audio: Howl
+  audio: HTMLAudioElement
   state: AudioState
 }
 
@@ -14,7 +14,9 @@ export default observer(function ProgressBar({ audio, state }: Props) {
   const changePosition = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     const button = (ref.current as unknown) as HTMLElement
     const { left, width } = button.getBoundingClientRect()
-    audio.seek(((e.clientX - left) * state.duration) / width)
+    const time = ((e.clientX - left) * state.duration) / width
+    audio.currentTime = time
+    state.setCurrentTime(time)
   }
 
   const progressPercent = `${

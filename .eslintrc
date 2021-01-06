@@ -12,6 +12,9 @@
   ],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "no-async-promise-executor": "off"
+    "no-async-promise-executor": "off",
+    "prettier/prettier": ["error", {
+      "endOfLine": "auto"
+    }]
   }
 }

@@ -7,8 +7,10 @@ import './styles.css'
 import './style.css'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import smoothscroll from 'smoothscroll-polyfill'
 
 dayjs.extend(utc)
+smoothscroll.polyfill()
 
 ReactDOM.render(
   <React.StrictMode>

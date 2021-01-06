@@ -88,7 +88,7 @@ const createYouTubeState = ({
                 </button>
               )}
               <iframe
-                width="99%"
+                className="w-full"
                 height={this.height}
                 src={`https://www.youtube.com/embed/${this.youtubeId}?feature=oembed`}
                 frameBorder="-1"

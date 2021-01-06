@@ -5,6 +5,7 @@ import { getCurrentUser } from 'User/currentUser'
 import dayjs from 'dayjs'
 import { UploadingImage } from 'utils/imageUploadState'
 import { UploadingVideo } from 'utils/videoUploadState'
+import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 
 type Screen =
   | 'form'
@@ -43,10 +44,11 @@ export const createFormState = () =>
       images: [],
       video: undefined,
       youtubeId: undefined,
-    } as Omit<Post, 'images' | 'video'> & {
+    } as Omit<Post, 'images' | 'video' | 'audio'> & {
       privacy: string
       images: UploadingImage[]
-      video: UploadingVideo | undefined
+      video?: UploadingVideo
+      audio?: UploadingAudio
     },
     setText(text: string) {
       this.values.text = text
@@ -65,6 +67,9 @@ export const createFormState = () =>
     },
     setYouTubeId(id: string | undefined) {
       this.values.youtubeId = id
+    },
+    setAudio(audio: UploadingAudio) {
+      this.values.audio = audio
     },
     get isValid() {
       return this.values.text.trim().length > 0

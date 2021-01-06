@@ -130,6 +130,7 @@ export const list = get(
         ].filter((image) => image),
         video: post.video,
         youtubeId: post.youtube_id,
+        audio: post.sound_dir,
         previews: [],
         date: dayjs(`${post.date} UTC`),
         notebookSentence: post.title
@@ -182,7 +183,7 @@ type CreatePostResponse = {
 }
 
 export const create = post(
-  ({ text, images = [], video, youtubeId }: Partial<Post>) => ({
+  ({ text, images = [], video, youtubeId, audio }: Partial<Post>) => ({
     path: '/add_share_post',
     data: {
       access_token: getUserToken(),
@@ -193,31 +194,11 @@ export const create = post(
       photo_fourth: images[3],
       video,
       youtube_id: youtubeId,
+      sound: audio,
       is_public: 0,
     },
-    response: (data: {
-      result_code: string
-      data: CreatePostResponse
-    }): Post => {
+    response: (data: { result_code: string; data: CreatePostResponse }) => {
       if (data.result_code !== '01.00') throw new Error('Something went wrong')
-      const post = data.data
-
-      return {
-        id: post.share_post_id,
-        text: post.comment,
-        images,
-        previews: [],
-        isMine: post.user_id === getCurrentUserId(),
-        user: getCurrentUser(),
-        liked: false,
-        likesCount: 0,
-        repliesCount: 0,
-        saved: false,
-        date: dayjs(),
-        notebookSentence: post.title
-          ? { text: post.title, translation: post.translated_title }
-          : undefined,
-      }
     },
   }),
 )
