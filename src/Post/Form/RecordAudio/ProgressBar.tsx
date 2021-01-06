@@ -2,8 +2,10 @@ import { State as AudioState } from 'Post/Form/RecordAudio/State'
 import { observer } from 'mobx-react-lite'
 import React from 'react'
 
-const getTranslateX = (state: AudioState, time: number) =>
-  `translateX(${Math.round((time * 100) / state.maxTimeMs) - 100}%)`
+const getTranslateX = (state: AudioState) =>
+  `translateX(${
+    Math.round((state.currentTime * 100) / state.maxTimeMs) - 100
+  }%)`
 
 type Props = {
   state: AudioState
@@ -18,10 +20,7 @@ export default observer(function ProgressBar({ state }: Props) {
 
       const animation = () => {
         if (ref.current) {
-          ref.current.style.transform = getTranslateX(
-            state,
-            state.recordedTime + Date.now() - state.startTime,
-          )
+          ref.current.style.transform = getTranslateX(state)
         }
         request = requestAnimationFrame(animation)
       }
@@ -32,14 +31,13 @@ export default observer(function ProgressBar({ state }: Props) {
         cancelAnimationFrame(request)
       }
     } else {
-      if (ref.current)
-        ref.current.style.transform = getTranslateX(state, state.recordedTime)
+      if (ref.current) ref.current.style.transform = getTranslateX(state)
     }
   }, [state.isRecording])
 
   React.useEffect(() => {
     if (!state.recorded && ref.current)
-      ref.current.style.transform = getTranslateX(state, 0)
+      ref.current.style.transform = getTranslateX(state)
   }, [state.recorded])
 
   return (

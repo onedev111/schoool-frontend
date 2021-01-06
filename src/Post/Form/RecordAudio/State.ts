@@ -19,6 +19,10 @@ export default function createAudioRecordingState() {
     recordedTime: 0,
     startTime: 0,
     isPlaying: false,
+    animationRequest: 0,
+    currentTime: 0,
+    url: '',
+    audio: new Audio(),
     async getMediaRecorder() {
       if (!this.mediaRecorderPromise) {
         this.mediaRecorderPromise = new Promise((resolve, reject) => {
@@ -27,14 +31,34 @@ export default function createAudioRecordingState() {
             .then((stream) => {
               const mediaRecorder = new MediaRecorder(stream)
 
+              const animation = () => {
+                const time = this.recordedTime + Date.now() - this.startTime
+                this.currentTime = Math.min(time, this.maxTimeMs)
+                if (this.currentTime === this.maxTimeMs)
+                  return this.stopRecording()
+
+                this.animationRequest = requestAnimationFrame(animation)
+              }
+
               const onStart = () => {
                 this.isRecording = true
                 this.startTime = Date.now()
+                this.animationRequest = requestAnimationFrame(animation)
               }
 
               const onStop = () => {
                 this.isRecording = false
                 this.recordedTime += Date.now() - this.startTime
+                this.url = URL.createObjectURL(this.blob)
+                this.audio = new Audio(this.url)
+                this.audio.src = this.result.url
+                this.audio.onplay = () => this.setIsPlaying(true)
+
+                const onStop = () => this.setIsPlaying(false)
+                this.audio.onpause = onStop
+                this.audio.onended = onStop
+
+                cancelAnimationFrame(this.animationRequest)
               }
 
               mediaRecorder.addEventListener('start', onStart)
@@ -69,13 +93,28 @@ export default function createAudioRecordingState() {
     async startRecording() {
       const mediaRecorder = await this.getMediaRecorder()
       mediaRecorder.start()
+      this.pauseAudio()
     },
     async stopRecording() {
       const mediaRecorder = await this.getMediaRecorder()
       mediaRecorder.stop()
+      mediaRecorder.stream
+        .getTracks()
+        .forEach((track: MediaStreamTrack) => track.stop())
     },
     reset() {
       this.chunks.length = 0
+      this.recordedTime = 0
+      this.currentTime = 0
+      this.pauseAudio()
+    },
+    playAudio() {
+      this.audio.play()
+      this.isPlaying = true
+    },
+    pauseAudio() {
+      this.audio.pause()
+      this.isPlaying = false
     },
     get recorded() {
       return this.chunks.length > 0
@@ -86,15 +125,9 @@ export default function createAudioRecordingState() {
     get result() {
       const result: UploadingAudio = {
         blob: this.blob,
-        url: URL.createObjectURL(this.blob),
+        url: this.url,
       }
       return result
-    },
-    get audio() {
-      const audio = new Audio(this.result.url)
-      audio.onplay = () => this.setIsPlaying(true)
-      audio.onpause = () => this.setIsPlaying(false)
-      return audio
     },
   })
 }

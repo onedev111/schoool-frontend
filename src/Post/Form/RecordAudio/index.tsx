@@ -80,7 +80,9 @@ export default observer(function RecordAudio({ state: postState }: Props) {
             <button
               type="button"
               className="ml-7"
-              onClick={() => state.audio.play()}
+              onClick={() => {
+                state.playAudio()
+              }}
             >
               <PlayFill size={40} />
             </button>
@@ -89,7 +91,9 @@ export default observer(function RecordAudio({ state: postState }: Props) {
             <button
               type="button"
               className="ml-7"
-              onClick={() => state.audio.pause()}
+              onClick={() => {
+                state.pauseAudio()
+              }}
             >
               <PauseFill size={40} />
             </button>
