@@ -1,5 +1,4 @@
 import React from 'react'
-import { Howl } from 'howler'
 import { AudioState } from 'Post/Audio/state'
 import { observer } from 'mobx-react-lite'
 

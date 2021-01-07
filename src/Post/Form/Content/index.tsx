@@ -20,7 +20,7 @@ import SentenceForm from 'Post/Form/SentenceForm'
 import Sentence from 'Home/Sentence'
 import TagModal from 'Post/Form/TagModal'
 import RecordAudio from 'Post/Form/RecordAudio'
-import LoopingAudioModal from 'Post/Form/LoopingAudioModal'
+import LoopingAudioModal from 'Post/Form/LoopingAudio'
 import { createFormState } from 'Post/Form/State'
 import FormTextarea from 'Post/Form/Textarea'
 import submit from 'Post/Form/submit'
@@ -28,6 +28,8 @@ import useImageUploadState from 'utils/imageUploadState'
 import useVideoUploadState from 'utils/videoUploadState'
 import VideoPreview from 'Post/Form/VideoPreview'
 import useYouTubeState from 'utils/youTubeState'
+import Audio from 'Post/Audio'
+import AddMediaPanel from 'Post/Form/AddMediaPanel'
 
 type Props = {
   onClose(): void
@@ -51,8 +53,6 @@ export default observer(function PostFormModal({ onClose }: Props) {
   const videoUploadState = useVideoUploadState({
     onChange: (video) => state.setVideo(video),
   })
-
-  const toggleEmoji = useEmojiPicker({ editorRef: state.editorRef })
 
   React.useEffect(() => {
     window.onbeforeunload = () => 'Changes you made may not be saved.'
@@ -131,6 +131,23 @@ export default observer(function PostFormModal({ onClose }: Props) {
         </div>
         <FormTextarea state={state} />
 
+        {state.values.audio && (
+          <Audio
+            src={state.values.audio.url}
+            className="mt-4"
+            onDelete={() => state.setAudio()}
+          />
+        )}
+
+        {state.values.loopingAudio && (
+          <Audio
+            src={state.values.loopingAudio}
+            loop
+            className="mt-4"
+            onDelete={() => state.setLoopingAudio()}
+          />
+        )}
+
         {state.values.notebookSentence && (
           <Sentence state={state} className="mt-4" />
         )}
@@ -151,75 +168,11 @@ export default observer(function PostFormModal({ onClose }: Props) {
         removeImage={(image) => imageUploadState.removeImage(image)}
       />
 
-      <div className="pt-3 px-7 pb-7">
-        <div className="uppercase mb-3">Add media</div>
-        <div className="flex items-center justify-between">
-          <label className="cursor-pointer">
-            <img src={photos} alt="photos" data-tip="Photo" />
-            <input
-              type="file"
-              multiple
-              hidden
-              onChange={(e) => imageUploadState.onChangeImage(e)}
-            />
-          </label>
-          <label className="cursor-pointer">
-            <img src={camera} alt="video" data-tip="Video" />
-            <input
-              type="file"
-              hidden
-              onChange={(e) => videoUploadState.onChangeVideo(e)}
-            />
-          </label>
-          <button
-            type="button"
-            onClick={() => state.setCurrentScreen('youtube')}
-          >
-            <img src={youtube} alt="youtube" data-tip="Youtube" />
-          </button>
-          <button
-            type="button"
-            onClick={() => state.setCurrentScreen('audio')}
-            data-tip="Voice"
-          >
-            <img src={record} alt="audio" />
-          </button>
-          <button
-            type="button"
-            onClick={() => state.setCurrentScreen('loopingAudio')}
-            data-tip="Looping Audio"
-          >
-            <img
-              src={looping}
-              alt="looping audio"
-              className="w-10"
-              data-tip="Looping Audio"
-            />
-          </button>
-          <button
-            type="button"
-            data-tip="Notebook SentenceForm"
-            onClick={() => state.setCurrentScreen('sentence')}
-          >
-            <Notebook style={{ width: '36px' }} />
-          </button>
-          <button
-            type="button"
-            data-tip="Tag Friends or Class"
-            onClick={() => state.setCurrentScreen('tag')}
-          >
-            <img src={tag} alt="add tag" />
-          </button>
-          <button
-            className="text-gray-a4"
-            data-tip="Emoji"
-            onClick={toggleEmoji}
-          >
-            <Smile size={28} />
-          </button>
-          <ReactTooltip place="bottom" type="dark" effect="solid" />
-        </div>
-      </div>
+      <AddMediaPanel
+        state={state}
+        imageUploadState={imageUploadState}
+        videoUploadState={videoUploadState}
+      />
     </div>
   )
 })

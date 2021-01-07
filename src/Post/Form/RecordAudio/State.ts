@@ -1,135 +1,126 @@
 import { makeAutoObservable } from 'mobx'
-import AudioRecorder from 'audio-recorder-polyfill'
-;(window as any).MediaRecorder = AudioRecorder
+import {
+  createAudioRecorder,
+  defaultState,
+  RecorderState,
+} from 'utils/audioRecorder'
 
 export type UploadingAudio = {
+  arrayBuffer: ArrayBuffer
   blob: Blob
   url: string
+  duration: number
 }
 
-type MediaRecorder = typeof AudioRecorder
-declare const MediaRecorder: MediaRecorder
+type Props = {
+  audio?: UploadingAudio
+}
 
-export default function createAudioRecordingState() {
-  return makeAutoObservable({
-    maxTimeMs: 5 * 60 * 1000,
-    isRecording: false,
-    mediaRecorderPromise: undefined as Promise<MediaRecorder> | undefined,
-    chunks: [] as BlobPart[],
-    recordedTime: 0,
-    startTime: 0,
+export default function createAudioRecordingState({ audio }: Props) {
+  const recorder = createAudioRecorder({
+    arrayBuffer: audio?.arrayBuffer,
+    currentTime: audio?.duration,
+  })
+
+  const createAudioElement = (state: {
+    setIsPlaying(value: boolean): void
+    result?: UploadingAudio
+  }) => {
+    if (!state.result) return undefined
+
+    const audio = new Audio(state.result.url)
+    audio.onended = () => state.setIsPlaying(false)
+    return audio
+  }
+
+  const state = makeAutoObservable({
+    maxTime: 20 * 60,
+    state: defaultState,
+    recorded: Boolean(audio),
+    currentTime: audio?.duration || 0,
     isPlaying: false,
-    animationRequest: 0,
-    currentTime: 0,
-    url: '',
-    audio: new Audio(),
-    async getMediaRecorder() {
-      if (!this.mediaRecorderPromise) {
-        this.mediaRecorderPromise = new Promise((resolve, reject) => {
-          navigator.mediaDevices
-            .getUserMedia({ audio: true })
-            .then((stream) => {
-              const mediaRecorder = new MediaRecorder(stream)
-
-              const animation = () => {
-                const time = this.recordedTime + Date.now() - this.startTime
-                this.currentTime = Math.min(time, this.maxTimeMs)
-                if (this.currentTime === this.maxTimeMs)
-                  return this.stopRecording()
-
-                this.animationRequest = requestAnimationFrame(animation)
-              }
-
-              const onStart = () => {
-                this.isRecording = true
-                this.startTime = Date.now()
-                this.animationRequest = requestAnimationFrame(animation)
-              }
-
-              const onStop = () => {
-                this.isRecording = false
-                this.recordedTime += Date.now() - this.startTime
-                this.url = URL.createObjectURL(this.blob)
-                this.audio = new Audio(this.url)
-                this.audio.src = this.result.url
-                this.audio.onplay = () => this.setIsPlaying(true)
-
-                const onStop = () => this.setIsPlaying(false)
-                this.audio.onpause = onStop
-                this.audio.onended = onStop
-
-                cancelAnimationFrame(this.animationRequest)
-              }
-
-              mediaRecorder.addEventListener('start', onStart)
-              mediaRecorder.addEventListener('resume', onStart)
-              mediaRecorder.addEventListener('stop', onStop)
-              mediaRecorder.addEventListener('pause', onStop)
-
-              mediaRecorder.addEventListener(
-                'dataavailable',
-                (e: { data: BlobPart }) => {
-                  this.chunks.push(e.data)
-                },
-              )
-
-              return resolve(mediaRecorder)
-            })
-            .catch(reject)
-        })
+    result: audio as UploadingAudio | undefined,
+    audio: undefined as HTMLAudioElement | undefined,
+    setState(state: RecorderState) {
+      this.state = state
+      this.recorded = true
+      if (this.state === 'recording') {
+        this.result = undefined
+        this.audio = undefined
       }
-
-      return this.mediaRecorderPromise
+      if (this.state === 'paused') this.requestAudio()
     },
-    setIsRecording(value: boolean) {
-      this.isRecording = value
+    setCurrentTime(time: number) {
+      this.currentTime = time
     },
     setIsPlaying(value: boolean) {
       this.isPlaying = value
     },
-    async toggleRecording() {
-      this.isRecording ? this.stopRecording() : this.startRecording()
+    toggleRecording() {
+      recorder.toggle()
     },
-    async startRecording() {
-      const mediaRecorder = await this.getMediaRecorder()
-      mediaRecorder.start()
-      this.pauseAudio()
-    },
-    async stopRecording() {
-      const mediaRecorder = await this.getMediaRecorder()
-      mediaRecorder.stop()
-      mediaRecorder.stream
-        .getTracks()
-        .forEach((track: MediaStreamTrack) => track.stop())
+    stopRecording() {
+      recorder.stop()
     },
     reset() {
-      this.chunks.length = 0
-      this.recordedTime = 0
+      recorder.clearAudioData()
+      if (this.audio) this.audio.pause()
+      this.recorded = false
       this.currentTime = 0
+      this.isPlaying = false
+      this.audio = undefined
+      this.result = undefined
       this.pauseAudio()
     },
     playAudio() {
-      this.audio.play()
-      this.isPlaying = true
+      if (this.audio) this.audio.play()
+      else this.requestAudio()
+
+      this.setIsPlaying(true)
     },
     pauseAudio() {
-      this.audio.pause()
-      this.isPlaying = false
+      if (this.audio) this.audio.pause()
+      this.setIsPlaying(false)
     },
-    get recorded() {
-      return this.chunks.length > 0
+    requestAudio() {
+      recorder.requestAudio()
     },
-    get blob() {
-      return new Blob(this.chunks)
-    },
-    get result() {
-      const result: UploadingAudio = {
-        blob: this.blob,
-        url: this.url,
-      }
-      return result
+    get isRecording() {
+      return this.state === 'recording'
     },
   })
+
+  state.audio = createAudioElement(state)
+
+  recorder.addEventListener('stateChange', (e) => {
+    state.setState(e.data)
+  })
+
+  recorder.addEventListener('timeChange', (e) => {
+    let time = e.data
+    if (time >= state.maxTime) {
+      time = state.maxTime
+      recorder.pause()
+    }
+    state.setCurrentTime(time)
+  })
+
+  recorder.addEventListener('audio', (e) => {
+    if (state.audio) state.audio.pause()
+
+    const blob = new Blob([e.data], { type: 'audio/wav' })
+    const url = URL.createObjectURL(blob)
+    state.result = {
+      arrayBuffer: e.data,
+      blob,
+      url,
+      duration: state.currentTime,
+    }
+    state.audio = createAudioElement(state)
+    if (state.isPlaying) state.audio?.play()
+  })
+
+  return state
 }
 
 export type State = ReturnType<typeof createAudioRecordingState>

@@ -8,8 +8,10 @@ import looping from 'assets/images/icons/looping.png'
 import { PlayFill } from '@styled-icons/bootstrap/PlayFill'
 import ControlledTextarea from 'Shared/Form/ControlledTextarea'
 import cn from 'classnames'
-import useToggle from 'Shared/useToggle'
 import Spin from 'assets/images/icons/Spin'
+import { Voice } from 'Upload/api'
+import api from 'api'
+import { PauseFill } from '@styled-icons/bootstrap/PauseFill'
 
 type Props = {
   state: State
@@ -20,40 +22,77 @@ const schema = yup.object({
   text: yup.string().label('english sentence').max(maxLength).required(),
 })
 
-const voicesRows: Record<string, string>[] = [
+const voicesRows: Record<string, Voice>[] = [
   {
-    'American male': 'American male',
-    'American female': 'American female',
-    'British male': 'British male',
+    'American male': 'Matthew',
+    'American female': 'Joanna',
+    'British male': 'Brian',
   },
   {
-    'British female': 'British female',
-    'Luke (kid voice)': 'Luke (kid voice)',
-    'Zoen (slow)': 'Zoen (slow)',
+    'British female': 'Amy',
+    'Luke (kid voice)': 'Ivy',
+    'Zoen (slow)': 'Kendra',
   },
 ]
 
-export default observer(function LoopingAudioModal({ state }: Props) {
+export default observer(function LoopingAudio({ state }: Props) {
   const [text, setText] = React.useState('')
   const [error, setError] = React.useState<string | undefined>(undefined)
-  const [voice, setVoice] = React.useState<string | undefined>(undefined)
-  const [processing, toggleProcessing] = useToggle()
+  const [processing, setProcessing] = React.useState(false)
+
+  const [audio] = React.useState(() => {
+    const audio = new Audio()
+    audio.loop = true
+    const onStop = () => setPlaying(false)
+    audio.onpause = onStop
+    audio.onended = onStop
+    return audio
+  })
+  const [playing, setPlaying] = React.useState(false)
+  const [loopingAudio, setLoopingAudio] = React.useState<string | undefined>(
+    state.values.loopingAudio,
+  )
+
+  React.useEffect(() => {
+    if (loopingAudio) audio.src = loopingAudio
+  }, [loopingAudio])
+
+  const isValid = text.length > 0 && state.values.loopingAudioVoices.length > 0
 
   const onClose = () => state.backToForm()
 
-  const convert = () => {
+  const convert = async () => {
     try {
-      schema.validateSync({ text })
       setError(undefined)
+      setProcessing(true)
+      schema.validateSync({ text })
+      const url = await api.upload.createLoopingAudio({
+        text,
+        voices: state.values.loopingAudioVoices,
+      })
+      setLoopingAudio(url)
     } catch (err) {
       setError(err.message)
-      return
+      setLoopingAudio(undefined)
     }
 
-    toggleProcessing()
+    setProcessing(false)
   }
 
-  const isValid = text.length > 0 && voice
+  const togglePlay = () => {
+    if (playing) {
+      setPlaying(false)
+      audio.pause()
+    } else {
+      setPlaying(true)
+      audio.play()
+    }
+  }
+
+  const submit = () => {
+    state.backToForm()
+    state.setLoopingAudio(loopingAudio)
+  }
 
   return (
     <div className="pb-12">
@@ -66,7 +105,7 @@ export default observer(function LoopingAudioModal({ state }: Props) {
         Make Looping Audio
       </div>
       <div className="pt-4 px-6">
-        <div className="text-center text-lg mb-11 text-gray-49">
+        <div className="text-center text-lg mb-10 text-gray-49">
           You can convert English text into audio, and make it loop
           automatically.
         </div>
@@ -99,13 +138,15 @@ export default observer(function LoopingAudioModal({ state }: Props) {
               <label key={value} className="w-full flex items-center">
                 <Radio
                   classes={{ root: 'mr-2' }}
-                  checked={voice === value}
-                  onChange={() => setVoice(value)}
+                  checked={state.values.loopingAudioVoices.includes(
+                    voices[value],
+                  )}
+                  onChange={() => state.toggleLoopingAudioVoice(voices[value])}
                   name="voice"
                   value={value}
                   size={10}
                 />
-                {voices[value]}
+                {value}
               </label>
             ))}
           </div>
@@ -127,12 +168,18 @@ export default observer(function LoopingAudioModal({ state }: Props) {
           <div className="w-8 text-blue-primary pt-5">
             {processing && <Spin />}
           </div>
-          <button className="w-24" type="button">
+          <button
+            className={cn('w-24', !loopingAudio && 'opacity-25')}
+            type="button"
+            disabled={!loopingAudio}
+            onClick={togglePlay}
+          >
             <div
               className="bg-blue-primary rounded-full flex-center text-white mx-auto"
               style={{ width: '52px', height: '52px' }}
             >
-              <PlayFill size={32} />
+              {!playing && <PlayFill size={32} />}
+              {playing && <PauseFill size={32} />}
             </div>
             <div className="text-sm text-gray-5b mt-1">Looped Audio</div>
           </button>
@@ -140,8 +187,13 @@ export default observer(function LoopingAudioModal({ state }: Props) {
         <div className="flex-center mt-12">
           <button
             type="button"
-            className="h-8 bg-blue-primary text-white flex-center rounded-full"
+            className={cn(
+              'h-8 bg-blue-primary text-white flex-center rounded-full',
+              !loopingAudio && 'invisible',
+            )}
             style={{ width: '200px' }}
+            disabled={!loopingAudio}
+            onClick={submit}
           >
             Add To Post
           </button>

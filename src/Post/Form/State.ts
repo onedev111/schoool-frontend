@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { UploadingImage } from 'utils/imageUploadState'
 import { UploadingVideo } from 'utils/videoUploadState'
 import { UploadingAudio } from 'Post/Form/RecordAudio/State'
+import { Voice } from 'Upload/api'
 
 type Screen =
   | 'form'
@@ -44,11 +45,14 @@ export const createFormState = () =>
       images: [],
       video: undefined,
       youtubeId: undefined,
+      loopingAudioVoices: [],
+      loopingAudio: undefined,
     } as Omit<Post, 'images' | 'video' | 'audio'> & {
       privacy: string
       images: UploadingImage[]
       video?: UploadingVideo
       audio?: UploadingAudio
+      loopingAudioVoices: Voice[]
     },
     setText(text: string) {
       this.values.text = text
@@ -68,8 +72,16 @@ export const createFormState = () =>
     setYouTubeId(id: string | undefined) {
       this.values.youtubeId = id
     },
-    setAudio(audio: UploadingAudio) {
+    setAudio(audio?: UploadingAudio) {
       this.values.audio = audio
+    },
+    toggleLoopingAudioVoice(voice: Voice) {
+      const index = this.values.loopingAudioVoices.indexOf(voice)
+      if (index !== -1) this.values.loopingAudioVoices.splice(index, 1)
+      else this.values.loopingAudioVoices.push(voice)
+    },
+    setLoopingAudio(url?: string) {
+      this.values.loopingAudio = url
     },
     get isValid() {
       return this.values.text.trim().length > 0

@@ -14,12 +14,15 @@ type Props = {
 }
 
 export default observer(function RecordAudio({ state: postState }: Props) {
-  const [state] = React.useState(() => createAudioRecordingState())
+  const [state] = React.useState(() =>
+    createAudioRecordingState({ audio: postState.values.audio }),
+  )
 
   const onClose = () => postState.backToForm()
 
   const submit = () => {
     postState.setAudio(state.result)
+    state.stopRecording()
     onClose()
   }
 
@@ -61,12 +64,13 @@ export default observer(function RecordAudio({ state: postState }: Props) {
           <Time state={state} />
         </div>
       </div>
-      {!state.recorded && (
+      {state.isRecording && <div className="h-10" />}
+      {!state.recorded && !state.isRecording && (
         <div className="flex-center text-lg h-10">
-          Record your lecture. It is limted to 5 minutes.
+          Record your lecture. It is limted to 20 minutes.
         </div>
       )}
-      {state.recorded && (
+      {state.recorded && !state.isRecording && (
         <div className="flex-center">
           <button
             type="button"
@@ -100,9 +104,13 @@ export default observer(function RecordAudio({ state: postState }: Props) {
           )}
           <button
             type="button"
-            className="h-8 rounded-full bg-blue-primary text-white flex-center font-bold ml-7"
+            className={cn(
+              'h-8 rounded-full bg-blue-primary text-white flex-center font-bold ml-7',
+              !state.result && 'opacity-25',
+            )}
             style={{ width: '130px' }}
             onClick={submit}
+            disabled={Boolean(!state.result)}
           >
             Add To Post
           </button>

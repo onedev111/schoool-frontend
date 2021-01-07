@@ -93,3 +93,5 @@ export default function useVideoUploadState(props: Props = {}) {
   const [state] = React.useState(() => createVideoUploadState(props))
   return state
 }
+
+export type State = ReturnType<typeof useVideoUploadState>

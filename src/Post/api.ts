@@ -131,6 +131,7 @@ export const list = get(
         video: post.video,
         youtubeId: post.youtube_id,
         audio: post.sound_dir,
+        loopingAudio: post.looping_url,
         previews: [],
         date: dayjs(`${post.date} UTC`),
         notebookSentence: post.title
@@ -183,10 +184,18 @@ type CreatePostResponse = {
 }
 
 export const create = post(
-  ({ text, images = [], video, youtubeId, audio }: Partial<Post>) => ({
+  ({
+    text,
+    images = [],
+    video,
+    youtubeId,
+    audio,
+    loopingAudio,
+  }: Partial<Post>) => ({
     path: '/add_share_post',
     data: {
       access_token: getUserToken(),
+      is_public: 0,
       comment: text,
       photo: images[0],
       photo_second: images[1],
@@ -195,7 +204,7 @@ export const create = post(
       video,
       youtube_id: youtubeId,
       sound: audio,
-      is_public: 0,
+      looping_url: loopingAudio,
     },
     response: (data: { result_code: string; data: CreatePostResponse }) => {
       if (data.result_code !== '01.00') throw new Error('Something went wrong')

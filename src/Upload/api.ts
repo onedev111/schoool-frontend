@@ -1,4 +1,4 @@
-import { get } from 'Shared/apiUtils'
+import { get, post } from 'Shared/apiUtils'
 import { getUserToken } from 'User/currentUser'
 
 type UploadUrls = {
@@ -38,6 +38,36 @@ export const getUploadingUrls = get(
     response: (data: UrlsResponse): UrlsData => {
       if (data.result_code !== '01.00') throw new Error('Something went wrong')
       return data.data
+    },
+  }),
+)
+
+export type Voice = 'Matthew' | 'Joanna' | 'Brian' | 'Amy' | 'Ivy' | 'Kendra'
+export const voices: Voice[] = [
+  'Matthew',
+  'Joanna',
+  'Brian',
+  'Amy',
+  'Ivy',
+  'Kendra',
+]
+
+type CreateLoopingAudioResponse = {
+  result_code: string
+  url: string
+}
+
+export const createLoopingAudio = post(
+  ({ text, voices }: { text: string; voices: Voice[] }) => ({
+    path: '/looping',
+    data: {
+      access_token: getUserToken(),
+      targets: JSON.stringify(voices),
+      text,
+    },
+    response(data: CreateLoopingAudioResponse): string {
+      if (data.result_code !== '01.00') throw new Error('Something went wrong')
+      return data.url
     },
   }),
 )

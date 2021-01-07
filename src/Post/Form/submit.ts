@@ -28,7 +28,7 @@ export default async function submitPost({ state }: { state: State }) {
   const soundCount = audios.length
 
   if (Math.max(photoCount, videoCount, soundCount) > 0) {
-    const urls = await api.fileUpload.getUploadingUrls({
+    const urls = await api.upload.getUploadingUrls({
       photoCount,
       videoCount,
       soundCount,

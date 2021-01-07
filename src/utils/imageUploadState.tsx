@@ -130,3 +130,5 @@ export default function useImageUploadState(props: Props = {}) {
   const [state] = React.useState(() => createImageUploadState(props))
   return state
 }
+
+export type State = ReturnType<typeof useImageUploadState>
