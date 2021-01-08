@@ -14,10 +14,16 @@ const maxImagesCount = 4
 const supportedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']
 
 type Props = {
+  dragAreaAlwaysVisible?: boolean
+  dragAreaText?: string
   onChange?(images: UploadingImage[]): void
 }
 
-const createImageUploadState = ({ onChange }: Props = {}) =>
+const createImageUploadState = ({
+  dragAreaAlwaysVisible,
+  dragAreaText = 'Drag & Drop files here',
+  onChange,
+}: Props = {}) =>
   makeAutoObservable({
     onChange,
     images: [] as UploadingImage[],
@@ -96,7 +102,7 @@ const createImageUploadState = ({ onChange }: Props = {}) =>
     },
     get dragArea() {
       return (
-        dragOverState.hasImage && (
+        (dragAreaAlwaysVisible || dragOverState.hasImage) && (
           <div
             className={cn(
               'absolute-fill flex-center text-xl b border-4 border-dashed',
@@ -107,9 +113,9 @@ const createImageUploadState = ({ onChange }: Props = {}) =>
             style={{ background: 'rgba(255, 255, 255, .5)' }}
             onDragOver={() => this.setDragOver(true)}
             onDragLeave={() => this.setDragOver(false)}
-            onDrop={this.handleDrop}
+            onDrop={(e) => this.handleDrop(e)}
           >
-            Drag images here
+            {dragAreaText}
           </div>
         )
       )

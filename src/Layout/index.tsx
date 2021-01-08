@@ -3,55 +3,18 @@ import logo from 'assets/images/logo.svg'
 import { Link, NavLink } from 'react-router-dom'
 import routes from 'routes'
 import Search from './Search'
-import dragOverState from 'Shared/dragOverState'
 import { observer } from 'mobx-react-lite'
-import { useCurrentUser } from '../User/currentUser'
+import { useCurrentUser } from 'User/currentUser'
 
 type Props = {
   children: React.ReactNode
 }
 
-const hasType = (dataTransfer: any, type: string) =>
-  Array.from(dataTransfer.items || []).some(
-    (item: any) => item.kind === 'file' && item.type.startsWith(type),
-  ) ||
-  Array.from(dataTransfer.files || []).some((item: any) =>
-    item.type.startsWith(type),
-  )
-
 export default observer(function Layout({ children }: Props) {
-  const [state] = React.useState({ dragElementCount: 0 })
   const [{ avatar }] = useCurrentUser()
 
-  const dragEnter = ({ dataTransfer }: any) => {
-    state.dragElementCount++
-    if (state.dragElementCount !== 1) return
-    dragOverState.hasImage = hasType(dataTransfer, 'image')
-    dragOverState.hasVideo = hasType(dataTransfer, 'video')
-  }
-
-  const dragLeave = () => {
-    state.dragElementCount--
-    if (state.dragElementCount === 0)
-      dragOverState.hasImage = dragOverState.hasVideo = false
-  }
-
-  const drop = (e: any) => {
-    e.preventDefault()
-    state.dragElementCount = 0
-    dragOverState.hasImage = dragOverState.hasVideo = false
-  }
-
-  const preventDefault = (e: React.DragEvent<HTMLElement>) => e.preventDefault()
-
   return (
-    <div
-      className="w-full h-full flex flex-col"
-      onDragEnter={dragEnter}
-      onDragLeave={dragLeave}
-      onDragOver={preventDefault}
-      onDrop={drop}
-    >
+    <div className="w-full h-full flex flex-col">
       <div
         className="bg-white shadow flex flex-shrink-0 items-center relative"
         style={{ height: '80px' }}

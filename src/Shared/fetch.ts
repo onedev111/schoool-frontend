@@ -1,4 +1,4 @@
-import history from 'Shared/history'
+import history from 'utils/history'
 import { getUserToken } from 'User/currentUser'
 import routes from 'routes'
 import Form from 'Home/Notebook/Studyflow/Form'

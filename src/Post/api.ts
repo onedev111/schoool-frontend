@@ -1,9 +1,5 @@
 import { get, post } from 'Shared/apiUtils'
-import {
-  getCurrentUserId,
-  getCurrentUser,
-  getUserToken,
-} from 'User/currentUser'
+import { getCurrentUserId, getUserToken } from 'User/currentUser'
 import { Post } from 'Post/types'
 import dayjs from 'dayjs'
 

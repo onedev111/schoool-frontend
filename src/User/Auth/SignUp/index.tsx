@@ -14,6 +14,7 @@ import api from 'api'
 import Loader from 'Shared/Loader'
 import { useCurrentUser } from 'User/currentUser'
 import { useMutation } from 'react-query'
+import history from 'utils/history'
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -30,7 +31,10 @@ export default function SignIn() {
 
   const [register, { isLoading }] = useMutation(api.user.register, {
     onSettled(user, error) {
-      if (user) setToken(user)
+      if (user) {
+        setToken(user)
+        history.push(routes.signUpForm())
+      }
       if (error) setError((error as Error).message)
     },
   })

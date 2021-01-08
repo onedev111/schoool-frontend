@@ -1,5 +1,10 @@
 import React from 'react'
 
+export const setItem = (key: string, value: string | null) => {
+  const event = new CustomEvent('localStorage', { detail: { key, value } })
+  window.dispatchEvent(event)
+}
+
 export const useLocalStorage = (
   key: string,
 ): [string | null, (value: string | null) => void] => {
@@ -25,10 +30,7 @@ export const useLocalStorage = (
       window.removeEventListener('localStorage', listener as () => void)
   }, [value, setValueFromEvent])
 
-  const setValue = (value: string | null) => {
-    const event = new CustomEvent('localStorage', { detail: { key, value } })
-    window.dispatchEvent(event)
-  }
+  const setValue = (value: string | null) => setItem(key, value)
 
   return [value, setValue]
 }

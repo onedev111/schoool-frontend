@@ -5,3 +5,5 @@ export type User = {
   email: string
   avatar: string
 }
+
+export type EnglishLevel = 'Basic' | 'Intermediate' | 'Advanced'

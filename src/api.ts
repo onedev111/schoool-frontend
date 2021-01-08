@@ -1,16 +1,13 @@
 import * as user from 'User/api'
 import * as post from 'Post/api'
 import * as upload from 'Upload/api'
+import * as constants from 'Constants/api'
 
 export default {
   user,
   post,
   upload,
-  // updateEnglishLevel: () => '/v1.3/update_eng_level',
-  // updateProfileImage: () => '/update_profile_image',
-  // updateName: () => '/update_user_name',
-  // updateBio: () => '/v1.3/update_bio',
-  // updateInstructorProfile: () => '/v1.2/update_instructor_profile',
+  constants,
   // posts: {
   //   list: ({ offset, limit }: { limit?: number; offset?: number }) =>
   //     `/rest_share${params({ num_of_posts: offset, limit_posts: limit })}`,

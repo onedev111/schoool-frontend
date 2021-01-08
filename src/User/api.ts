@@ -1,5 +1,7 @@
 import { post, getMutation } from 'Shared/apiUtils'
-import { User } from './types'
+import { EnglishLevel, User } from './types'
+import { getUploadingUrls } from 'Upload/api'
+import { getCurrentUser, getUserToken, setCurrentUser } from 'User/currentUser'
 
 type UserResponse = {
   user_id: number
@@ -100,3 +102,136 @@ export const forgotPassword = getMutation((params: { email: string }) => ({
     return data
   },
 }))
+
+export const updateBio = post(({ bio }: { bio: string }) => ({
+  path: '/v1.3/update_bio',
+  data: {
+    access_token: getUserToken(),
+    bio,
+  },
+  response({ result_code }: { result_code: string }) {
+    if (result_code !== '36.00') throw new Error('Something went wrong')
+    return
+  },
+}))
+
+export const updateEnglishLevel = post(
+  ({ englishLevel }: { englishLevel: EnglishLevel }) => ({
+    path: '/v1.3/update_eng_level',
+    data: {
+      access_token: getUserToken(),
+      eng_level: englishLevel,
+    },
+    response({ result_code }: { result_code: string }) {
+      if (result_code !== '35.00') throw new Error('Something went wrong')
+      return
+    },
+  }),
+)
+
+export const updateBaseLanguage = getMutation(
+  ({ language }: { language: string }) => ({
+    path: '/update_base_language',
+    params: {
+      access_token: getUserToken(),
+      newLanguage: language,
+    },
+    response() {
+      return
+    },
+  }),
+)
+
+export const updateProfileImage = post(({ avatar }: { avatar: string }) => ({
+  path: '/update_profile_image',
+  data: {
+    access_token: getUserToken(),
+    new_profile_image: avatar,
+  },
+  response({ result_code }: { result_code: string }) {
+    if (result_code !== '05.00') throw new Error('Something went wrong')
+    return
+  },
+}))
+
+export const updateLocation = getMutation(
+  ({ location }: { location: string }) => ({
+    path: '/v1.2/update_instructor_profile',
+    params: {
+      access_token: getUserToken(),
+      location,
+    },
+    response({ result_code }: { result_code: string }) {
+      if (result_code !== '22.00') throw new Error('Something went wrong')
+      return
+    },
+  }),
+)
+
+export const updateProfile = async ({
+  avatar,
+  bio,
+  englishLevel,
+  language,
+  location,
+}: {
+  avatar?: { blob: Blob }
+  bio?: string
+  englishLevel?: EnglishLevel
+  language?: string
+  location?: string
+}) => {
+  const promises: Promise<unknown>[] = []
+
+  if (avatar) {
+    promises.push(
+      new Promise(async (resolve, reject) => {
+        try {
+          const urls = await getUploadingUrls({
+            domain: 'users/profile',
+            photoCount: 1,
+          })
+
+          const { url, cdnUrl } = urls.photos[0]
+
+          await fetch(url, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            body: avatar.blob,
+          })
+
+          await updateProfileImage({
+            avatar:
+              'http://dzh6ulgfepbq.cloudfront.net/users/profile/photo/1674e3f6-071f-49c1-898a-a58974877d08.jpg',
+          })
+
+          const user = getCurrentUser()
+          if (user) setCurrentUser({ ...user, avatar: cdnUrl })
+          resolve()
+        } catch (error) {
+          reject(error)
+        }
+      }),
+    )
+  }
+
+  if (bio) {
+    promises.push(updateBio({ bio }))
+  }
+
+  if (englishLevel) {
+    promises.push(updateEnglishLevel({ englishLevel }))
+  }
+
+  if (language) {
+    promises.push(updateBaseLanguage({ language }))
+  }
+
+  if (location) {
+    promises.push(updateLocation({ location }))
+  }
+
+  await Promise.all(promises)
+}

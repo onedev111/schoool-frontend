@@ -19,10 +19,12 @@ type UrlsData = {
 
 export const getUploadingUrls = get(
   ({
+    domain = 'share',
     photoCount,
     soundCount,
     videoCount,
   }: {
+    domain?: 'share' | 'users/profile'
     photoCount?: number
     soundCount?: number
     videoCount?: number
@@ -30,7 +32,7 @@ export const getUploadingUrls = get(
     path: '/file_uploading_url',
     params: {
       access_token: getUserToken(),
-      domain: 'share',
+      domain,
       photo_count: photoCount,
       sound_count: soundCount,
       video_count: videoCount,
