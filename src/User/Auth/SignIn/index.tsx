@@ -5,7 +5,6 @@ import { EyeOff } from '@styled-icons/ionicons-outline/EyeOff'
 import useToggle from 'Shared/useToggle'
 import { Link } from 'react-router-dom'
 import Input from 'User/Auth/Shared/Input'
-import { FacebookSquare } from '@styled-icons/boxicons-logos/FacebookSquare'
 import { Apple } from '@styled-icons/boxicons-logos/Apple'
 import * as yup from 'yup'
 import { useForm } from 'Shared/Form'
@@ -14,8 +13,8 @@ import api from 'api'
 import Loader from 'Shared/Loader'
 import { useMutation } from 'react-query'
 import { useCurrentUser } from 'User/currentUser'
-import './fb'
 import history from 'utils/history'
+import FacebookSignIn from 'User/Auth/FacebookSignIn'
 
 const schema = yup.object({
   email: yup.string().required(),
@@ -46,23 +45,6 @@ export default function SignIn() {
     if (!isLoading) {
       setAuthType('email')
       signIn({ emailBased: values })
-    }
-  }
-
-  const facebookLogin = () => {
-    if (!isLoading) {
-      setAuthType('facebook')
-      ;(window as any).FB.login((res: any) => {
-        if (res.status === 'connected') {
-          const { accessToken, userID } = res.authResponse
-          signIn({
-            facebook: {
-              token: accessToken,
-              userId: userID,
-            },
-          })
-        }
-      })
     }
   }
 
@@ -131,22 +113,16 @@ export default function SignIn() {
               or
             </span>
           </div>
-          <div
-            className="bg-blue-facebook rounded h-8 text-center text-white text-sm font-bold flex-center cursor-pointer mb-5"
-            onClick={facebookLogin}
-          >
-            <div className="mr-2 rounded overflow-hidden">
-              <FacebookSquare size={19} />
-            </div>
-            {(!isLoading || authType !== 'facebook') && 'Log in with Facebook'}
-            {isLoading && authType === 'facebook' && (
-              <Loader className="w-8 h-8" />
-            )}
-          </div>
-          <div className="border border-black rounded h-8 text-center text-black text-sm font-bold flex-center cursor-pointer">
-            <Apple size={12} className="mr-2" />
-            Log in with Apple
-          </div>
+          <FacebookSignIn
+            text="Log in with Facebook"
+            signIn={signIn}
+            onClick={() => setAuthType('facebook')}
+            isLoading={isLoading && authType === 'facebook'}
+          />
+          {/*<div className="border border-black rounded h-8 text-center text-black text-sm font-bold flex-center cursor-pointer">*/}
+          {/*  <Apple size={12} className="mr-2" />*/}
+          {/*  Log in with Apple*/}
+          {/*</div>*/}
         </div>
         <div className="bg-white py-5 px-12 shadow flex-center font-bold">
           <div className="mr-1">Create an account.</div>

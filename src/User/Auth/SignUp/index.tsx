@@ -12,9 +12,10 @@ import * as yup from 'yup'
 import { useForm } from 'Shared/Form'
 import api from 'api'
 import Loader from 'Shared/Loader'
-import { useCurrentUser } from 'User/currentUser'
+import { setCurrentUser, useCurrentUser } from 'User/currentUser'
 import { useMutation } from 'react-query'
 import history from 'utils/history'
+import FacebookSignIn from 'User/Auth/FacebookSignIn'
 
 const schema = yup.object({
   name: yup.string().required(),
@@ -28,12 +29,25 @@ export default function SignIn() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setToken] = useCurrentUser()
   const [error, setError] = React.useState<string | null>(null)
+  const [authType, setAuthType] = React.useState<'facebook' | 'apple'>(
+    'facebook',
+  )
 
   const [register, { isLoading }] = useMutation(api.user.register, {
     onSettled(user, error) {
       if (user) {
         setToken(user)
         history.push(routes.signUpForm())
+      }
+      if (error) setError((error as Error).message)
+    },
+  })
+
+  const [signIn, { isLoading: isLoadingSocial }] = useMutation(api.user.login, {
+    onSettled(user, error) {
+      if (user) {
+        setCurrentUser(user)
+        if (user.isNew) history.push(routes.signUpForm())
       }
       if (error) setError((error as Error).message)
     },
@@ -90,16 +104,16 @@ export default function SignIn() {
               or
             </span>
           </div>
-          <div className="bg-blue-facebook rounded h-8 text-center text-white text-sm font-bold flex-center cursor-pointer mb-5">
-            <div className="mr-2 rounded overflow-hidden">
-              <FacebookSquare size={19} />
-            </div>
-            Sign up with Facebook
-          </div>
-          <div className="border border-black rounded h-8 text-center text-black text-sm font-bold flex-center cursor-pointer">
-            <Apple size={12} className="mr-2" />
-            Sign up with Apple
-          </div>
+          <FacebookSignIn
+            text="Sign up with Facebook"
+            signIn={signIn}
+            onClick={() => setAuthType('facebook')}
+            isLoading={isLoadingSocial && authType === 'facebook'}
+          />
+          {/*<div className="border border-black rounded h-8 text-center text-black text-sm font-bold flex-center cursor-pointer">*/}
+          {/*  <Apple size={12} className="mr-2" />*/}
+          {/*  Sign up with Apple*/}
+          {/*</div>*/}
         </div>
         <div className="bg-white py-5 px-12 shadow flex-center font-bold">
           <div className="mr-1">Have an account?</div>
