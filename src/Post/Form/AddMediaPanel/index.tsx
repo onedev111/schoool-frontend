@@ -79,7 +79,9 @@ export default function AddMediaPanel({
         <button
           type="button"
           data-tip="Tag Friends or Class"
-          onClick={() => state.setCurrentScreen('tag')}
+          onMouseDown={() => {
+            state.openTagModal()
+          }}
         >
           <img src={tag} alt="add tag" />
         </button>

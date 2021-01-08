@@ -1,6 +1,5 @@
 import React from 'react'
 import logo from 'assets/images/logo.svg'
-import Modal from 'Shared/Modal'
 import FormContent from './Content'
 import useToggle from 'Shared/useToggle'
 
@@ -9,11 +8,7 @@ export default function PostForm() {
 
   return (
     <>
-      {showModal && (
-        <Modal onClose={toggleModal} width={550} className="relative">
-          <FormContent onClose={toggleModal} />
-        </Modal>
-      )}
+      {showModal && <FormContent onClose={toggleModal} />}
       <div
         className="bg-white p-5 flex-center mb-5 shadow"
         onClick={toggleModal}

@@ -1,6 +1,6 @@
 import { get, post } from 'Shared/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
-import { Post } from 'Post/types'
+import { Post, Tag } from 'Post/types'
 import dayjs from 'dayjs'
 
 type ListPostResponse = {
@@ -204,6 +204,49 @@ export const create = post(
     },
     response: (data: { result_code: string; data: CreatePostResponse }) => {
       if (data.result_code !== '01.00') throw new Error('Something went wrong')
+    },
+  }),
+)
+
+type SearchTagsResponse = {
+  result_code: string
+  data: {
+    id: number
+    name: string
+    priority: number
+    profile_image_dir: string
+    subpriority: number
+    type: number
+  }[]
+}
+
+export const searchTags = get(
+  ({
+    search,
+    limit = 20,
+    offset = 0,
+  }: {
+    search: string
+    limit?: number
+    offset?: number
+  }) => ({
+    path: '/search_user_class_for_tag',
+    params: {
+      access_token: getUserToken(),
+      include_studyflow: '1',
+      limit_posts: limit,
+      num_of_posts: offset,
+      search_key: search,
+    },
+    response(res: SearchTagsResponse): Tag[] {
+      if (res.result_code !== '33.00') throw new Error('Something went wrong')
+
+      return res.data.map((tag) => ({
+        id: tag.id,
+        name: tag.name,
+        image: tag.profile_image_dir,
+        type: tag.type === 1 ? 'user' : tag.type === 2 ? 'class' : 'studyflow',
+      }))
     },
   }),
 )

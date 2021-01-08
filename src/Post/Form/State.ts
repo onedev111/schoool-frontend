@@ -21,8 +21,16 @@ let id = 0
 
 export const createFormState = () =>
   makeAutoObservable({
-    editorRef: { current: null },
+    editorRef: { current: null } as { current: null | HTMLDivElement },
     currentScreen: 'form' as Screen,
+    selectionRange: undefined as
+      | {
+          startContainer: Node
+          endContainer: Node
+          startOffset: number
+          endOffset: number
+        }
+      | undefined,
     setCurrentScreen(screen: Screen) {
       this.currentScreen = screen
     },
@@ -82,6 +90,16 @@ export const createFormState = () =>
     },
     setLoopingAudio(url?: string) {
       this.values.loopingAudio = url
+    },
+    openTagModal() {
+      const range = window.getSelection()?.getRangeAt(0)
+      this.selectionRange = range && {
+        startContainer: range.startContainer,
+        endContainer: range.endContainer,
+        startOffset: range.startOffset,
+        endOffset: range.endOffset,
+      }
+      this.currentScreen = 'tag'
     },
     get isValid() {
       return this.values.text.trim().length > 0

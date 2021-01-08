@@ -30,6 +30,7 @@ import VideoPreview from 'Post/Form/VideoPreview'
 import useYouTubeState from 'utils/youTubeState'
 import Audio from 'Post/Audio'
 import AddMediaPanel from 'Post/Form/AddMediaPanel'
+import Modal from 'Shared/Modal'
 
 type Props = {
   onClose(): void
@@ -61,118 +62,124 @@ export default observer(function PostFormModal({ onClose }: Props) {
     }
   })
 
-  if (state.currentScreen === 'privacy') return <SelectTarget state={state} />
-
-  if (state.currentScreen === 'youtube')
-    return (
-      <YouTube
-        youtubeId={youTubeState.youtubeId}
-        youtubeState={youTubeState}
-        onClose={() => state.backToForm()}
-      />
-    )
-
-  if (state.currentScreen === 'sentence') return <SentenceForm state={state} />
-
-  if (state.currentScreen === 'tag') return <TagModal state={state} />
-
-  if (state.currentScreen === 'audio') return <RecordAudio state={state} />
-
-  if (state.currentScreen === 'loopingAudio')
-    return <LoopingAudioModal state={state} />
-
   return (
-    <div>
-      {imageUploadState.warningModal}
-      {imageUploadState.dragArea}
-      <button
-        type="button"
-        className="absolute top-0 right-0 text-gray-5f mt-8 mr-6"
-        onClick={onClose}
+    <>
+      {state.currentScreen === 'tag' && <TagModal state={state} />}
+      <Modal
+        onClose={onClose}
+        width={550}
+        className="relative"
+        hidden={state.currentScreen === 'tag'}
       >
-        <X size={32} />
-      </button>
-      <div className="text-2xl uppercase text-center pt-8 pb-6 border-b border-gray-c5">
-        Create
-      </div>
-      <div
-        className={cn(
-          'p-6',
-          imageUploadState.hasPreviews ||
-            youTubeState.video ||
-            videoUploadState.url
-            ? 'pb-0'
-            : 'border-b border-gray-c5',
+        {state.currentScreen === 'privacy' && <SelectTarget state={state} />}
+        {state.currentScreen === 'youtube' && (
+          <YouTube
+            youtubeId={youTubeState.youtubeId}
+            youtubeState={youTubeState}
+            onClose={() => state.backToForm()}
+          />
         )}
-      >
-        <div className="flex">
-          <button
-            type="button"
-            className="w-1/2 bg-gray-f7 flex items-center justify-between px-5 text-xl h-10 rounded-full border border-gray-8b block relative z-30"
-            onClick={() => state.setCurrentScreen('privacy')}
-          >
-            {state.values.privacy}
-            <CaretDown size={24} />
-          </button>
-          <button
-            type="button"
-            className={cn(
-              'w-1/2 ml-7 bg-blue-primary text-white h-10 rounded-full font-bold flex-center',
-              !state.isValid && 'opacity-25',
+        {state.currentScreen === 'sentence' && <SentenceForm state={state} />}
+        {state.currentScreen === 'audio' && <RecordAudio state={state} />}
+        {state.currentScreen === 'loopingAudio' && (
+          <LoopingAudioModal state={state} />
+        )}
+        {(state.currentScreen === 'form' || state.currentScreen === 'tag') && (
+          <div>
+            {imageUploadState.warningModal}
+            {imageUploadState.dragArea}
+            <button
+              type="button"
+              className="absolute top-0 right-0 text-gray-5f mt-8 mr-6"
+              onClick={onClose}
+            >
+              <X size={32} />
+            </button>
+            <div className="text-2xl uppercase text-center pt-8 pb-6 border-b border-gray-c5">
+              Create
+            </div>
+            <div
+              className={cn(
+                'p-6',
+                imageUploadState.hasPreviews ||
+                  youTubeState.video ||
+                  videoUploadState.url
+                  ? 'pb-0'
+                  : 'border-b border-gray-c5',
+              )}
+            >
+              <div className="flex">
+                <button
+                  type="button"
+                  className="w-1/2 bg-gray-f7 flex items-center justify-between px-5 text-xl h-10 rounded-full border border-gray-8b block relative z-30"
+                  onClick={() => state.setCurrentScreen('privacy')}
+                >
+                  {state.values.privacy}
+                  <CaretDown size={24} />
+                </button>
+                <button
+                  type="button"
+                  className={cn(
+                    'w-1/2 ml-7 bg-blue-primary text-white h-10 rounded-full font-bold flex-center',
+                    !state.isValid && 'opacity-25',
+                  )}
+                  disabled={!state.isValid}
+                  onClick={() => {
+                    onClose()
+                    submit({ state })
+                  }}
+                >
+                  Post
+                </button>
+              </div>
+
+              <FormTextarea state={state} />
+
+              {state.values.audio && (
+                <Audio
+                  src={state.values.audio.url}
+                  className="mt-4"
+                  onDelete={() => state.setAudio()}
+                />
+              )}
+
+              {state.values.loopingAudio && (
+                <Audio
+                  src={state.values.loopingAudio}
+                  loop
+                  className="mt-4"
+                  onDelete={() => state.setLoopingAudio()}
+                />
+              )}
+
+              {state.values.notebookSentence && (
+                <Sentence state={state} className="mt-4" />
+              )}
+            </div>
+
+            {youTubeState.video}
+
+            {videoUploadState.url && (
+              <VideoPreview
+                video={videoUploadState.url}
+                removeVideo={() => videoUploadState.setVideo(undefined)}
+                className="mt-4"
+              />
             )}
-            disabled={!state.isValid}
-            onClick={() => {
-              onClose()
-              submit({ state })
-            }}
-          >
-            Post
-          </button>
-        </div>
-        <FormTextarea state={state} />
 
-        {state.values.audio && (
-          <Audio
-            src={state.values.audio.url}
-            className="mt-4"
-            onDelete={() => state.setAudio()}
-          />
+            <ImagePreviews
+              images={imageUploadState.images}
+              removeImage={(image) => imageUploadState.removeImage(image)}
+            />
+
+            <AddMediaPanel
+              state={state}
+              imageUploadState={imageUploadState}
+              videoUploadState={videoUploadState}
+            />
+          </div>
         )}
-
-        {state.values.loopingAudio && (
-          <Audio
-            src={state.values.loopingAudio}
-            loop
-            className="mt-4"
-            onDelete={() => state.setLoopingAudio()}
-          />
-        )}
-
-        {state.values.notebookSentence && (
-          <Sentence state={state} className="mt-4" />
-        )}
-      </div>
-
-      {youTubeState.video}
-
-      {videoUploadState.url && (
-        <VideoPreview
-          video={videoUploadState.url}
-          removeVideo={() => videoUploadState.setVideo(undefined)}
-          className="mt-4"
-        />
-      )}
-
-      <ImagePreviews
-        images={imageUploadState.images}
-        removeImage={(image) => imageUploadState.removeImage(image)}
-      />
-
-      <AddMediaPanel
-        state={state}
-        imageUploadState={imageUploadState}
-        videoUploadState={videoUploadState}
-      />
-    </div>
+      </Modal>
+    </>
   )
 })

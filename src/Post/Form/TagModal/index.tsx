@@ -1,47 +1,92 @@
 import React from 'react'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
-import { useCurrentUser } from 'User/currentUser'
 import Radio from 'Shared/Form/Radio'
-import publicIcon from 'assets/images/icons/public.png'
 import { Search as SearchIcon } from '@styled-icons/fa-solid/Search'
 import { State } from 'Post/Form/State'
 import { observer } from 'mobx-react-lite'
+import { useInfiniteQuery } from 'react-query'
+import api from 'api'
+import { Tag } from 'Post/types'
+import Spin from 'assets/images/icons/Spin'
+
+const typeName: Record<Tag['type'], string> = {
+  user: 'Friend',
+  class: 'Class',
+  studyflow: 'StudyFlow',
+}
 
 type Props = {
   state: State
 }
 
+const scrollLoadThreshold = 350
+
 export default observer(function TagModal({ state }: Props) {
-  const [{ avatar }] = useCurrentUser()
+  const [search, setSearch] = React.useState('')
+  const {
+    data = [],
+    isLoading,
+    isFetching,
+    fetchMore,
+    canFetchMore,
+  } = useInfiniteQuery(
+    ['searchTags', { search }],
+    (key, { search }, page = 0) => {
+      return api.post.searchTags({ search, offset: (page as number) * 20 })
+    },
+    {
+      getFetchMore: (lastPage, pages) =>
+        lastPage.length > 0 ? pages.length : undefined,
+    },
+  )
 
   const onClose = () => state.backToForm()
 
-  const options: {
-    label: string
-    text: string
-    image: string
-  }[] = [
-    {
-      label: 'Listen on the go',
-      text: 'Class',
-      image: publicIcon,
-    },
-    {
-      label: 'Restaurant',
-      text: 'StudyFlow',
-      image: avatar,
-    },
-    {
-      label: 'Mark Kim',
-      text: 'Friend',
-      image: avatar,
-    },
-  ]
+  const onScroll = (e: any) => {
+    const el = (e as { target: HTMLElement }).target
+    if (
+      canFetchMore &&
+      !isLoading &&
+      !isFetching &&
+      el.scrollHeight - el.offsetHeight - el.scrollTop <= scrollLoadThreshold
+    ) {
+      fetchMore()
+    }
+  }
+
+  const addTag = (tag: Tag) => {
+    state.backToForm()
+    // const link = `<span class='text-blue-primary'>${tag.name}</span>`
+    // const range = state.selectionRange
+    // if (range) {
+    //   const { endContainer, startOffset, endOffset } = range
+    //   if (endContainer.nodeType === 3) {
+    //     const parent = endContainer.parentNode as HTMLElement
+    //     const textNode = endContainer as HTMLElement
+    //     const text = textNode.textContent || ''
+    //     const html = text.slice(0, startOffset) + link + text.slice(endOffset)
+    //     textNode.insertAdjacentHTML('beforebegin', html)
+    //     parent.removeChild(textNode)
+    //   } else if (endContainer?.nodeType === 1) {
+    //     ;(endContainer as HTMLElement).insertAdjacentHTML('beforeend', link)
+    //   }
+    // } else {
+    //   const editor = state.editorRef.current as HTMLDivElement
+    //   editor.insertAdjacentHTML('beforeend', link)
+    //   state.setText(editor.innerHTML)
+    // }
+  }
 
   return (
-    <>
-      <div className="pb-4">
-        <div className="text-2xl uppercase text-center pt-8 pb-6 border-b border-gray-c5 relative">
+    <div
+      className="fixed top-0 left-0 right-0 bottom-0 z-50 py-16"
+      style={{ backdropFilter: 'blur(1px)', background: 'rgba(0, 0, 0, .1)' }}
+    >
+      <div
+        className="bg-white pb-4 mx-auto w-full flex flex-col h-full"
+        style={{ maxWidth: '550px' }}
+      >
+        <div className="text-2xl uppercase text-center pt-8 pb-6 border-b border-gray-c5 relative flex-shrink-0">
           <div className="absolute top-0 left-0 bottom-0 flex-center pl-6 text-gray-5f">
             <button type="button" onClick={onClose}>
               <ArrowLeft size={26} />
@@ -49,47 +94,62 @@ export default observer(function TagModal({ state }: Props) {
           </div>
           Tag
         </div>
-        <div className="py-3 px-4 relative border-b border-gray-c5">
+        <div className="py-3 px-4 relative border-b border-gray-c5 flex-shrink-0">
           <div className="absolute top-0 left-0 bottom-0 flex-center ml-7 text-gray-a4">
             <SearchIcon size={14} />
           </div>
           <input
             type="search"
             className="bg-gray-ef border border-gray-97 rounded-full h-9 flex items-center pl-8 pr-4 w-full"
-            placeholder="Search friends, class, studyflow "
+            placeholder="Search friends, class, studyflow"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        {options.map(({ label, text, image }, i) => {
-          return (
-            <label
-              key={i}
-              className="block border-b border-gray-c5 flex items-center justify-between py-2 px-4 pr-7"
-            >
-              <div className="flex-center">
-                <img
-                  src={image}
-                  alt="image"
-                  style={{ width: '45px', height: '45px' }}
-                  className="rounded-full"
-                />
-                <div className="ml-3 flex flex-col justify-center">
-                  <div className="text-lg font-bold">{label}</div>
-                  <div className="text-gray-6b text-sm">{text}</div>
-                </div>
-              </div>
-              <Radio
-                size={22}
-                checked={false}
-                onChange={() => {
-                  console.log('select')
-                }}
-                name={name}
-                value={label}
-              />
-            </label>
-          )
-        })}
+        <div className="flex-grow overflow-auto" onScroll={onScroll}>
+          {data.map((page) => (
+            <>
+              {page.map((tag) => {
+                const { id, name, image, type } = tag
+
+                return (
+                  <label
+                    key={id}
+                    className="block border-b border-gray-c5 flex items-center justify-between py-2 px-4 pr-7"
+                  >
+                    <div className="flex-center">
+                      <img
+                        src={image}
+                        alt="image"
+                        style={{ width: '45px', height: '45px' }}
+                        className="rounded-full"
+                      />
+                      <div className="ml-3 flex flex-col justify-center">
+                        <div className="text-lg font-bold">{name}</div>
+                        <div className="text-gray-6b text-sm">
+                          {typeName[type]}
+                        </div>
+                      </div>
+                    </div>
+                    <Radio
+                      size={22}
+                      checked={false}
+                      onChange={() => addTag(tag)}
+                      name={name}
+                      value={String(id)}
+                    />
+                  </label>
+                )
+              })}
+            </>
+          ))}
+          {isFetching && (
+            <div className="flex-center my-5">
+              <Spin className="w-10 h-10 text-blue-primary animate-spin" />
+            </div>
+          )}
+        </div>
       </div>
-    </>
+    </div>
   )
 })

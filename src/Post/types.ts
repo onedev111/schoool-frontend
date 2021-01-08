@@ -55,3 +55,10 @@ export type Comment = {
   video?: string
   comments?: Comment[]
 }
+
+export type Tag = {
+  id: number
+  name: string
+  image: string
+  type: 'user' | 'class' | 'studyflow'
+}
