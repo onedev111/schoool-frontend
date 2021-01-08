@@ -39,7 +39,7 @@ export default function DragNDropWrapper({ children }: Props) {
 
   return (
     <div
-      className="min-h-full flex flex-col justify-center"
+      className="h-full"
       onDragEnter={dragEnter}
       onDragLeave={dragLeave}
       onDragOver={preventDefault}

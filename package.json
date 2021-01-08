@@ -68,6 +68,7 @@
   },
   "scripts": {
     "start": "concurrently --kill-others \"react-scripts start\" \"node proxy/index.js\"",
+    "start:https": "concurrently --kill-others \"HTTPS=true react-scripts start\" \"node proxy/index.js\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

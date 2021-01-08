@@ -18,6 +18,7 @@ type UserResponse = {
   instructor_initial: string
   instructor_theme: string | string[]
   is_instructor: string | number
+  is_new: boolean
   facebook_id?: string
   apple_id?: string
   instructor_profile?: string
@@ -52,6 +53,7 @@ type UserResponse = {
 }
 
 const mapUser = (user: UserResponse): User => ({
+  isNew: user.is_new,
   id: user.user_id,
   token: user.access_token,
   name: user.name,
@@ -60,9 +62,29 @@ const mapUser = (user: UserResponse): User => ({
 })
 
 export const login = post(
-  ({ email, password }: { email: string; password: string }) => ({
+  (
+    params:
+      | {
+          emailBased: { email: string; password: string }
+        }
+      | {
+          facebook: { userId: string; token: string }
+        },
+  ) => ({
     path: '/login',
-    data: { email, password, type: '0', os: 2 },
+    data: {
+      ...('emailBased' in params ? params.emailBased : {}),
+      ...('facebook' in params
+        ? {
+            facebook_id: params.facebook.userId,
+            facebook_token: params.facebook.token,
+          }
+        : {}),
+      type: 'emailBased' in params ? '0' : 'facebook' in params ? '1' : '2',
+      register_type:
+        'emailBased' in params ? undefined : 'facebook' in params ? '1' : '2',
+      os: 2,
+    },
     response: (data: { result_code: string; data: UserResponse }): User => {
       if (data.result_code === '01.03')
         throw new Error('Email or password is invalid')

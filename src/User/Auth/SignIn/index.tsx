@@ -14,6 +14,8 @@ import api from 'api'
 import Loader from 'Shared/Loader'
 import { useMutation } from 'react-query'
 import { useCurrentUser } from 'User/currentUser'
+import './fb'
+import history from 'utils/history'
 
 const schema = yup.object({
   email: yup.string().required(),
@@ -25,17 +27,43 @@ export default function SignIn() {
   const [showPassword, toggleShowPassword] = useToggle()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, setUser] = useCurrentUser()
+  const [authType, setAuthType] = React.useState<
+    'email' | 'facebook' | 'apple'
+  >('email')
   const [error, setError] = React.useState<string | null>(null)
 
   const [signIn, { isLoading }] = useMutation(api.user.login, {
     onSettled(user, error) {
-      if (user) setUser(user)
+      if (user) {
+        setUser(user)
+        if (user.isNew) history.push(routes.signUpForm())
+      }
       if (error) setError((error as Error).message)
     },
   })
 
   const submit = (values: { email: string; password: string }) => {
-    if (!isLoading) signIn(values)
+    if (!isLoading) {
+      setAuthType('email')
+      signIn({ emailBased: values })
+    }
+  }
+
+  const facebookLogin = () => {
+    if (!isLoading) {
+      setAuthType('facebook')
+      ;(window as any).FB.login((res: any) => {
+        if (res.status === 'connected') {
+          const { accessToken, userID } = res.authResponse
+          signIn({
+            facebook: {
+              token: accessToken,
+              userId: userID,
+            },
+          })
+        }
+      })
+    }
   }
 
   return (
@@ -81,8 +109,10 @@ export default function SignIn() {
             </div>
           </div>
           <button className="bg-blue-primary rounded h-10 flex-center text-white font-bold w-full cursor-pointer mb-3">
-            {!isLoading && 'Log In'}
-            {isLoading && <Loader className="w-8 h-8" />}
+            {(!isLoading || authType !== 'email') && 'Log In'}
+            {isLoading && authType === 'email' && (
+              <Loader className="w-8 h-8" />
+            )}
           </button>
           <div className="text-center mb-3">
             <Link
@@ -101,11 +131,17 @@ export default function SignIn() {
               or
             </span>
           </div>
-          <div className="bg-blue-facebook rounded h-8 text-center text-white text-sm font-bold flex-center cursor-pointer mb-5">
+          <div
+            className="bg-blue-facebook rounded h-8 text-center text-white text-sm font-bold flex-center cursor-pointer mb-5"
+            onClick={facebookLogin}
+          >
             <div className="mr-2 rounded overflow-hidden">
               <FacebookSquare size={19} />
             </div>
-            Log in with Facebook
+            {(!isLoading || authType !== 'facebook') && 'Log in with Facebook'}
+            {isLoading && authType === 'facebook' && (
+              <Loader className="w-8 h-8" />
+            )}
           </div>
           <div className="border border-black rounded h-8 text-center text-black text-sm font-bold flex-center cursor-pointer">
             <Apple size={12} className="mr-2" />

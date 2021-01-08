@@ -1,4 +1,5 @@
 export type User = {
+  isNew: boolean
   id: number
   token: string
   name: string
