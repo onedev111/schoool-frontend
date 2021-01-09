@@ -1,22 +1,21 @@
 import React from 'react'
-import logo from 'assets/images/logo.svg'
 import style from 'Home/style.module.css'
 import { Comment } from '@styled-icons/fa-solid/Comment'
 import { Post as PostType } from 'Post/types'
 import cn from 'classnames'
-import ReadMore from 'Post/ReadMore'
+import ReadMore from 'Post/Item/ReadMore'
 import useToggle from 'Shared/useToggle'
-import Menu from 'Post/Menu'
-import Like from 'Post/Like'
+import Menu from 'Post/Item/Menu'
+import Like from 'Post/Item/Like'
 import { Check } from '@styled-icons/boxicons-regular/Check'
 import { DotsHorizontalRounded } from '@styled-icons/boxicons-regular/DotsHorizontalRounded'
 import Notebook from 'assets/images/icons/notebook'
-import CommentForm from 'Post/CommentForm'
-import CommentsModal from 'Post/CommentsModal'
-import Attachments from 'Post/Attachments'
+import CommentForm from 'Post/Item/CommentForm'
+import CommentsModal from 'Post/Item/CommentsModal'
+import Attachments from 'Post/Item/Attachments'
 import Spin from 'assets/images/icons/Spin'
-import dayjs from 'dayjs'
 import { formatDate } from 'Shared/date'
+import Text from 'Post/Item/Text'
 
 type Props = {
   post: PostType
@@ -77,16 +76,7 @@ export default function Post({ post, uploading }: Props) {
             </div>
           </div>
 
-          <div
-            ref={textRef}
-            className={cn(
-              `text-gray-02 mb-3`,
-              style.text,
-              !showFullText && style.clampedText,
-            )}
-          >
-            {post.text}
-          </div>
+          <Text post={post} textRef={textRef} showFullText={showFullText} />
 
           <div className="flex items-end">
             {post.notebookSentence && (

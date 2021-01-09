@@ -1,8 +1,8 @@
 import React from 'react'
 import Dropdown from 'Shared/Dropdown'
 import useToggle from 'Shared/useToggle'
-import SavePostModal from 'Post/Menu/SavePostModal'
-import SendToNotebook from 'Post/Menu/SendToNotebook'
+import SavePostModal from 'Post/Item/Menu/SavePostModal'
+import SendToNotebook from 'Post/Item/Menu/SendToNotebook'
 import { Post } from 'Post/types'
 
 const itemClass =

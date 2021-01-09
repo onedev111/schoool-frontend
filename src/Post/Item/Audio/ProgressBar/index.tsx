@@ -1,5 +1,5 @@
 import React from 'react'
-import { AudioState } from 'Post/Audio/state'
+import { AudioState } from 'Post/Item/Audio/state'
 import { observer } from 'mobx-react-lite'
 
 type Props = {

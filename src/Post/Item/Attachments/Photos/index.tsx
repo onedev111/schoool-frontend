@@ -1,7 +1,7 @@
 import React from 'react'
-import style from 'Post/Attachments/Photos/style.module.css'
+import style from 'Post/Item/Attachments/Photos/style.module.css'
 import cn from 'classnames'
-import FullscreenGallery from 'Post/Attachments/Photos/FullscreenGallery'
+import FullscreenGallery from 'Post/Item/Attachments/Photos/FullscreenGallery'
 
 type Props = {
   className?: string

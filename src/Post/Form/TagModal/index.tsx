@@ -6,10 +6,10 @@ import { State } from 'Post/Form/State'
 import { observer } from 'mobx-react-lite'
 import { useInfiniteQuery } from 'react-query'
 import api from 'api'
-import { Tag } from 'Post/types'
+import { TagToInsert } from 'Post/types'
 import Spin from 'assets/images/icons/Spin'
 
-const typeName: Record<Tag['type'], string> = {
+const typeName: Record<TagToInsert['type'], string> = {
   user: 'Friend',
   class: 'Class',
   studyflow: 'StudyFlow',
@@ -54,27 +54,40 @@ export default observer(function TagModal({ state }: Props) {
     }
   }
 
-  const addTag = (tag: Tag) => {
+  const addTag = (tag: TagToInsert) => {
+    const editor = state.editorRef.current as HTMLDivElement
+    const link = document.createElement('span')
+    link.setAttribute('contenteditable', 'false')
+    link.className = 'text-blue-primary pointer-events-none'
+    link.textContent = '' + tag.name
+    link.setAttribute('data-tag-id', String(tag.id))
+    link.setAttribute('data-tag-type', tag.type)
+    const range = state.selectionRange
+    if (range) {
+      const { endContainer, startOffset, endOffset } = range
+      if (endContainer.nodeType === 3) {
+        const parent = endContainer.parentNode as HTMLElement
+        const textNode = endContainer as HTMLElement
+        const text = textNode.textContent || ''
+        parent.insertBefore(
+          document.createTextNode(text.slice(0, startOffset)),
+          textNode,
+        )
+        parent.insertBefore(link, textNode)
+        parent.insertBefore(
+          document.createTextNode(text.slice(endOffset)),
+          textNode,
+        )
+        parent.removeChild(textNode)
+      } else if (endContainer?.nodeType === 1) {
+        ;(endContainer as HTMLElement).appendChild(link)
+      }
+    } else {
+      editor.appendChild(link)
+    }
+    state.setHTML(editor.innerHTML)
     state.backToForm()
-    // const link = `<span class='text-blue-primary'>${tag.name}</span>`
-    // const range = state.selectionRange
-    // if (range) {
-    //   const { endContainer, startOffset, endOffset } = range
-    //   if (endContainer.nodeType === 3) {
-    //     const parent = endContainer.parentNode as HTMLElement
-    //     const textNode = endContainer as HTMLElement
-    //     const text = textNode.textContent || ''
-    //     const html = text.slice(0, startOffset) + link + text.slice(endOffset)
-    //     textNode.insertAdjacentHTML('beforebegin', html)
-    //     parent.removeChild(textNode)
-    //   } else if (endContainer?.nodeType === 1) {
-    //     ;(endContainer as HTMLElement).insertAdjacentHTML('beforeend', link)
-    //   }
-    // } else {
-    //   const editor = state.editorRef.current as HTMLDivElement
-    //   editor.insertAdjacentHTML('beforeend', link)
-    //   state.setText(editor.innerHTML)
-    // }
+    editor.focus()
   }
 
   return (
@@ -107,8 +120,8 @@ export default observer(function TagModal({ state }: Props) {
           />
         </div>
         <div className="flex-grow overflow-auto" onScroll={onScroll}>
-          {data.map((page) => (
-            <>
+          {data.map((page, i) => (
+            <React.Fragment key={i}>
               {page.map((tag) => {
                 const { id, name, image, type } = tag
 
@@ -141,7 +154,7 @@ export default observer(function TagModal({ state }: Props) {
                   </label>
                 )
               })}
-            </>
+            </React.Fragment>
           ))}
           {isFetching && (
             <div className="flex-center my-5">

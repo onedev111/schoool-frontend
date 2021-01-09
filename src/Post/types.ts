@@ -39,6 +39,7 @@ export type Post = {
   date: Dayjs
   error?: string
   notebookSentence?: NotebookSentence
+  tags: Tag[]
 }
 
 export type Comment = {
@@ -56,9 +57,18 @@ export type Comment = {
   comments?: Comment[]
 }
 
-export type Tag = {
+export type TagType = 'user' | 'class' | 'studyflow'
+
+export type TagToInsert = {
   id: number
   name: string
   image: string
-  type: 'user' | 'class' | 'studyflow'
+  type: TagType
+}
+
+export type Tag = {
+  id: number
+  type: TagType
+  start: number
+  length: number
 }

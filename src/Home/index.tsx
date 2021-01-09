@@ -1,6 +1,6 @@
 import React from 'react'
 import PostForm from '../Post/Form'
-import Post from '../Post'
+import Post from 'Post/Item'
 import LevelComplete from './LevelComplete'
 import Phrase from './Phrase'
 import Notebook from './Notebook'

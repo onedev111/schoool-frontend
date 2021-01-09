@@ -3,7 +3,7 @@ import { useQuery } from 'react-query'
 import api from 'api'
 import classIcon from 'assets/images/icons/class.png'
 import Spin from 'assets/images/icons/Spin'
-import Post from 'Post'
+import Post from 'Post/Item'
 
 export default function Posts() {
   const { data, isLoading } = useQuery('posts', () =>

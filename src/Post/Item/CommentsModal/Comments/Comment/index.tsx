@@ -1,8 +1,8 @@
 import React from 'react'
 import { Comment as CommentType } from 'Post/types'
 import { Heart } from '@styled-icons/boxicons-solid/Heart'
-import Comments from 'Post/CommentsModal/Comments/index'
-import Attachments from 'Post/Attachments'
+import Comments from 'Post/Item/CommentsModal/Comments/index'
+import Attachments from 'Post/Item/Attachments'
 import dayjs from 'dayjs'
 
 type Props = {

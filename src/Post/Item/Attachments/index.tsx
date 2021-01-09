@@ -1,9 +1,9 @@
 import React from 'react'
 import { Preview as PreviewType } from 'Post/types'
-import Audio from 'Post/Audio'
-import Video from 'Post/Video'
-import Preview from 'Post/Preview'
-import Photos from 'Post/Attachments/Photos'
+import Audio from 'Post/Item/Audio'
+import Video from 'Post/Item/Video'
+import Preview from 'Post/Item/Preview'
+import Photos from 'Post/Item/Attachments/Photos'
 import useYouTubeState from 'utils/youTubeState'
 import { observer } from 'mobx-react-lite'
 

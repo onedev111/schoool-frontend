@@ -28,7 +28,7 @@ import useImageUploadState from 'utils/imageUploadState'
 import useVideoUploadState from 'utils/videoUploadState'
 import VideoPreview from 'Post/Form/VideoPreview'
 import useYouTubeState from 'utils/youTubeState'
-import Audio from 'Post/Audio'
+import Audio from 'Post/Item/Audio'
 import AddMediaPanel from 'Post/Form/AddMediaPanel'
 import Modal from 'Shared/Modal'
 

@@ -6,14 +6,21 @@ import dayjs from 'dayjs'
 import { Post } from 'Post/types'
 import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 import { UploadingVideo } from 'utils/videoUploadState'
+import parseEditorContent from 'Post/Form/parseEditorContent'
 
 export default async function submitPost({ state }: { state: State }) {
   const { images, video, audio } = state.values
   const videos = [video].filter((video) => video) as UploadingVideo[]
   const audios = [audio].filter((audio) => audio) as UploadingAudio[]
 
+  const { text, tags } = parseEditorContent({
+    editor: state.editorRef.current as HTMLDivElement,
+  })
+
   const post: Post = {
     ...state.values,
+    text,
+    tags,
     images: images
       .map(({ preview }) => preview)
       .filter((preview) => preview) as string[],

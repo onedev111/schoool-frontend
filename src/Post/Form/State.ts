@@ -46,7 +46,7 @@ export const createFormState = () =>
       likesCount: 0,
       repliesCount: 0,
       saved: false,
-      text: '',
+      html: '',
       privacy: 'Only for me',
       notebookSentence: undefined as NotebookSentence | undefined,
       previews: [] as Preview[],
@@ -55,15 +55,16 @@ export const createFormState = () =>
       youtubeId: undefined,
       loopingAudioVoices: [],
       loopingAudio: undefined,
-    } as Omit<Post, 'images' | 'video' | 'audio'> & {
+    } as Omit<Post, 'images' | 'video' | 'audio' | 'text' | 'tags'> & {
+      html: string
       privacy: string
       images: UploadingImage[]
       video?: UploadingVideo
       audio?: UploadingAudio
       loopingAudioVoices: Voice[]
     },
-    setText(text: string) {
-      this.values.text = text
+    setHTML(html: string) {
+      this.values.html = html
     },
     setPrivacy(privacy: string) {
       this.values.privacy = privacy
@@ -93,16 +94,21 @@ export const createFormState = () =>
     },
     openTagModal() {
       const range = window.getSelection()?.getRangeAt(0)
-      this.selectionRange = range && {
-        startContainer: range.startContainer,
-        endContainer: range.endContainer,
-        startOffset: range.startOffset,
-        endOffset: range.endOffset,
-      }
+      const parent = range?.endContainer.parentElement
+      this.selectionRange =
+        (range &&
+          parent &&
+          parent.closest('.js-editor') && {
+            startContainer: range.startContainer,
+            endContainer: range.endContainer,
+            startOffset: range.startOffset,
+            endOffset: range.endOffset,
+          }) ||
+        undefined
       this.currentScreen = 'tag'
     },
     get isValid() {
-      return this.values.text.trim().length > 0
+      return this.values.html.trim().length > 0
     },
   })
 

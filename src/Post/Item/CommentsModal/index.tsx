@@ -3,9 +3,9 @@ import { Post } from 'Post/types'
 import Modal from 'Shared/Modal'
 import { X } from '@styled-icons/boxicons-regular/X'
 import avatar from 'assets/images/avatar.svg'
-import CommentForm from 'Post/CommentForm'
+import CommentForm from 'Post/Item/CommentForm'
 import { Comment } from 'Post/types'
-import Comments from 'Post/CommentsModal/Comments'
+import Comments from 'Post/Item/CommentsModal/Comments'
 
 type Props = {
   post: Post

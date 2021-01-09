@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactSwipe from 'react-swipe'
-import Fullscreen from 'Post/Attachments/Fullscreen'
+import Fullscreen from 'Post/Item/Attachments/Fullscreen'
 import { ChevronLeft } from '@styled-icons/fa-solid/ChevronLeft'
 import { ChevronRight } from '@styled-icons/fa-solid/ChevronRight'
 import { useKey } from 'react-use'

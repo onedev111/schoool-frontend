@@ -3,7 +3,7 @@ import { Preview as PreviewType } from 'Post/types'
 import postLinkImage from 'assets/images/post-link.svg'
 import studyflowImage from 'assets/images/icons/studyflow.svg'
 import cn from 'classnames'
-import style from 'Post/Preview/style.module.css'
+import style from 'Post/Item/Preview/style.module.css'
 
 type Props = {
   preview: PreviewType

@@ -29,7 +29,7 @@ const UserRoutes = () => (
         <Layout>
           <Switch>
             <Route path={routes.home()} exact component={Home} />
-            <Route path={routes.class()} exact component={Class} />
+            <Route path={routes.classes()} exact component={Class} />
             <Route
               path={routes.notifications()}
               exact

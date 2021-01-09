@@ -1,6 +1,6 @@
 import React from 'react'
 import { Comment as CommentType } from 'Post/types'
-import Comment from 'Post/CommentsModal/Comments/Comment'
+import Comment from 'Post/Item/CommentsModal/Comments/Comment'
 
 type Props = {
   comments: CommentType[]

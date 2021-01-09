@@ -42,7 +42,7 @@ export default observer(function Layout({ children }: Props) {
                 Home
               </NavLink>
               <NavLink
-                to={routes.class()}
+                to={routes.classes()}
                 exact
                 className="text-xl ml-4"
                 activeClassName="text-blue-primary"
