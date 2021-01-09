@@ -1,4 +1,4 @@
-import { get, post } from 'Shared/apiUtils'
+import { get, post } from 'utils/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
 import { Link, Post, Tag, TagToInsert, TagType, ZoomLink } from 'Post/types'
 import dayjs from 'dayjs'

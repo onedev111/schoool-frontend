@@ -23,6 +23,7 @@ import AddMediaPanel from 'Post/Form/AddMediaPanel'
 import Modal from 'Shared/Modal'
 import Zoom from 'Post/Form/Zoom'
 import Link from 'Post/Item/Link'
+import { useOnChangeSelectionRange } from 'utils/contentEditable'
 
 type Props = {
   onClose(): void
@@ -30,6 +31,8 @@ type Props = {
 
 export default observer(function PostFormModal({ onClose }: Props) {
   const [state] = React.useState(() => createFormState())
+
+  useOnChangeSelectionRange((range) => state.setSelectionRange(range))
 
   const youTubeState = useYouTubeState({
     close: true,

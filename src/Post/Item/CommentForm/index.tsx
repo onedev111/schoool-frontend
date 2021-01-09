@@ -8,8 +8,9 @@ import * as yup from 'yup'
 import { UseFormMethods } from 'react-hook-form'
 import Textarea from 'Shared/Form/Textarea'
 import { X } from '@styled-icons/boxicons-regular/X'
-import useEmojiPicker from 'Shared/useEmojiPicker'
+import useEmojiPicker from 'utils/useEmojiPicker'
 import useImageUploadState from 'utils/imageUploadState'
+import { useOnChangeSelectionRange } from 'utils/contentEditable'
 
 const schema = yup.object({
   text: yup.string().min(5).required(),
@@ -29,9 +30,15 @@ export default observer(function CommentForm({ className, rows = 1 }: Props) {
 
   const imageUploadState = useImageUploadState()
 
-  const editorRef = React.useRef(null)
+  const editorRef = React.useRef<HTMLTextAreaElement>(null)
+  const [state] = React.useState(() => ({
+    editorRef,
+    selectionRange: undefined as Range | undefined,
+  }))
 
-  const toggleEmoji = useEmojiPicker({ editorRef })
+  useOnChangeSelectionRange((range) => (state.selectionRange = range))
+
+  const toggleEmoji = useEmojiPicker({ state })
 
   const submit = (values: { text: string }) => {
     console.log(values)

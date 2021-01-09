@@ -1,5 +1,5 @@
 import React from 'react'
-import dragOverState from 'Shared/dragOverState'
+import dragOverState from 'utils/dragOverState'
 
 type Props = {
   children: React.ReactNode

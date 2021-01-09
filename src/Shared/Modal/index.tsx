@@ -1,5 +1,6 @@
 import React from 'react'
 import cn from 'classnames'
+import useHideBodyScroll from 'utils/useHideBodyScroll'
 
 export const sizes = {
   small: '400px',
@@ -24,12 +25,7 @@ export default function Modal({
   width,
   ...props
 }: Props) {
-  React.useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [])
+  useHideBodyScroll()
 
   return (
     <div

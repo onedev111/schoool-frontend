@@ -8,6 +8,7 @@ import { useInfiniteQuery } from 'react-query'
 import api from 'api'
 import { TagToInsert } from 'Post/types'
 import Spin from 'assets/images/icons/Spin'
+import { insertElementToContentEditable } from 'utils/contentEditable'
 
 const typeName: Record<TagToInsert['type'], string> = {
   user: 'Friend',
@@ -55,39 +56,16 @@ export default observer(function TagModal({ state }: Props) {
   }
 
   const addTag = (tag: TagToInsert) => {
-    const editor = state.editorRef.current as HTMLDivElement
+    const editor = state.editorRef.current as HTMLElement
     const link = document.createElement('span')
     link.setAttribute('contenteditable', 'false')
     link.className = 'text-blue-primary pointer-events-none'
-    link.textContent = '' + tag.name
+    link.textContent = tag.name
     link.setAttribute('data-tag-id', String(tag.id))
     link.setAttribute('data-tag-type', tag.type)
-    const range = state.selectionRange
-    if (range) {
-      const { endContainer, startOffset, endOffset } = range
-      if (endContainer.nodeType === 3) {
-        const parent = endContainer.parentNode as HTMLElement
-        const textNode = endContainer as HTMLElement
-        const text = textNode.textContent || ''
-        parent.insertBefore(
-          document.createTextNode(text.slice(0, startOffset)),
-          textNode,
-        )
-        parent.insertBefore(link, textNode)
-        parent.insertBefore(
-          document.createTextNode(text.slice(endOffset)),
-          textNode,
-        )
-        parent.removeChild(textNode)
-      } else if (endContainer?.nodeType === 1) {
-        ;(endContainer as HTMLElement).appendChild(link)
-      }
-    } else {
-      editor.appendChild(link)
-    }
+    insertElementToContentEditable(link, editor, state.selectionRange)
     state.setHTML(editor.innerHTML)
     state.backToForm()
-    editor.focus()
   }
 
   return (

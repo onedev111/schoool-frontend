@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from 'assets/images/logo.svg'
 import FormContent from './Content'
-import useToggle from 'Shared/useToggle'
+import useToggle from 'utils/useToggle'
 
 export default function PostForm() {
   const [showModal, toggleModal] = useToggle(false)

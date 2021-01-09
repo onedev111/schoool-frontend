@@ -24,14 +24,7 @@ export const createFormState = () =>
   makeAutoObservable({
     editorRef: { current: null } as { current: null | HTMLDivElement },
     currentScreen: 'form' as Screen,
-    selectionRange: undefined as
-      | {
-          startContainer: Node
-          endContainer: Node
-          startOffset: number
-          endOffset: number
-        }
-      | undefined,
+    selectionRange: undefined as Range | undefined,
     setCurrentScreen(screen: Screen) {
       this.currentScreen = screen
     },
@@ -64,6 +57,9 @@ export const createFormState = () =>
       audio?: UploadingAudio
       loopingAudioVoices: Voice[]
     },
+    setSelectionRange(range: Range) {
+      this.selectionRange = range
+    },
     setHTML(html: string) {
       this.values.html = html
     },
@@ -92,21 +88,6 @@ export const createFormState = () =>
     },
     setLoopingAudio(url?: string) {
       this.values.loopingAudio = url
-    },
-    openTagModal() {
-      const range = window.getSelection()?.getRangeAt(0)
-      const parent = range?.endContainer.parentElement
-      this.selectionRange =
-        (range &&
-          parent &&
-          parent.closest('.js-editor') && {
-            startContainer: range.startContainer,
-            endContainer: range.endContainer,
-            startOffset: range.startOffset,
-            endOffset: range.endOffset,
-          }) ||
-        undefined
-      this.currentScreen = 'tag'
     },
     setLinks(links: Link[]) {
       this.values.links = links

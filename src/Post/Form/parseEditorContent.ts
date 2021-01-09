@@ -7,7 +7,7 @@ export default function parseEditorContent({
 }) {
   const text = editor.textContent || ''
 
-  const mark = String(Date.now())
+  const mark = String(Math.random()).slice(2)
 
   const div = editor.cloneNode(true) as HTMLDivElement
   const tagElements: HTMLElement[] = Array.from(

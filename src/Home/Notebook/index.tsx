@@ -2,7 +2,7 @@ import React from 'react'
 import cn from 'classnames'
 import Notebook from './Notebook'
 import Studyflow from './Studyflow'
-import useToggle from 'Shared/useToggle'
+import useToggle from 'utils/useToggle'
 
 export default function NotebookWidget() {
   const [currentTab, setCurrentTab] = React.useState('notebook')

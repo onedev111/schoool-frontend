@@ -21,7 +21,7 @@ type Props = {
     inputError?: string
     error?: string
   }
-  elementRef?: React.MutableRefObject<null>
+  elementRef?: React.RefObject<HTMLTextAreaElement>
   errorOnlyForSubmitted?: boolean
   [key: string]: unknown
 }

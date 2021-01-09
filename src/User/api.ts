@@ -1,4 +1,4 @@
-import { post, getMutation } from 'Shared/apiUtils'
+import { post, getMutation } from 'utils/apiUtils'
 import { EnglishLevel, User } from './types'
 import { getUploadingUrls } from 'Upload/api'
 import { getCurrentUser, getUserToken, setCurrentUser } from 'User/currentUser'

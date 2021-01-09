@@ -1,4 +1,4 @@
-import { setItem, useLocalStorage } from 'Shared/localStorage'
+import { setItem, useLocalStorage } from 'utils/localStorage'
 import { User } from './types'
 
 const storageKey = 'currentUser'

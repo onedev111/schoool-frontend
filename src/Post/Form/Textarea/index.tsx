@@ -20,12 +20,20 @@ const TextArea = React.memo(
       <div
         ref={state.editorRef}
         contentEditable
-        className="focus:outline-none w-full js-editor h-40"
+        className="focus:outline-none w-full js-editor"
+        style={{ minHeight: '170px' }}
         onFocus={onFocus}
         onBlur={onBlur}
         dangerouslySetInnerHTML={{ __html: state.values.html }}
         onInput={(e) => {
-          console.log('onInput')
+          state.setHTML((e.target as HTMLElement).innerHTML)
+        }}
+        onPaste={(e: any) => {
+          e.preventDefault()
+          const text = (e.originalEvent || e).clipboardData.getData(
+            'text/plain',
+          )
+          document.execCommand('insertHTML', false, text)
           state.setHTML((e.target as HTMLElement).innerHTML)
         }}
       />

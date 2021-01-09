@@ -1,4 +1,4 @@
-import { get, post } from 'Shared/apiUtils'
+import { get, post } from 'utils/apiUtils'
 import { getUserToken } from 'User/currentUser'
 
 type UploadUrls = {

@@ -9,7 +9,7 @@ import Notebook from 'assets/images/icons/notebook'
 import tag from 'assets/images/icons/tag.png'
 import { Smile } from '@styled-icons/fa-regular'
 import ReactTooltip from 'react-tooltip'
-import useEmojiPicker from 'Shared/useEmojiPicker'
+import useEmojiPicker from 'utils/useEmojiPicker'
 import { State as ImageUploadState } from 'utils/imageUploadState'
 import { State as VideoUploadState } from 'utils/videoUploadState'
 import ZoomIcon from 'assets/images/icons/Zoom'
@@ -26,7 +26,13 @@ export default function AddMediaPanel({
   imageUploadState,
   videoUploadState,
 }: Props) {
-  const toggleEmoji = useEmojiPicker({ editorRef: state.editorRef })
+  const toggleEmoji = useEmojiPicker({
+    state,
+    onChange: () => {
+      const editor = state.editorRef.current
+      if (editor) state.setHTML(editor.innerHTML)
+    },
+  })
 
   const hasLinkOtherThanZoom = state.values.links?.some(
     (link) => link.type !== 'zoom',
@@ -85,7 +91,7 @@ export default function AddMediaPanel({
         <button
           type="button"
           data-tip="Tag Friends or Class"
-          onMouseDown={() => state.openTagModal()}
+          onMouseDown={() => state.setCurrentScreen('tag')}
         >
           <img src={tag} alt="add tag" />
         </button>

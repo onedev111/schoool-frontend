@@ -72,7 +72,11 @@ export default function Attachments({
 
       {video && <Video video={video} className={videoClass} />}
 
-      {youtubeId && <YouTube youtubeId={youtubeId} />}
+      {youtubeId && (
+        <div className={videoClass}>
+          <YouTube youtubeId={youtubeId} />
+        </div>
+      )}
     </>
   )
 }

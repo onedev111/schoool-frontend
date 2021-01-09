@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeAutoObservable } from 'mobx'
-import dragOverState from 'Shared/dragOverState'
+import dragOverState from 'utils/dragOverState'
 import cn from 'classnames'
 import Alert from 'Shared/Modal/Alert'
 

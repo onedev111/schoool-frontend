@@ -1,4 +1,4 @@
-import { get } from 'Shared/apiUtils'
+import { get } from 'utils/apiUtils'
 
 type ConstantsResponse = {
   result_code: string

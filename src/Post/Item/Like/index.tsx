@@ -1,6 +1,6 @@
 import React from 'react'
 import { Heart } from '@styled-icons/boxicons-solid/Heart'
-import useToggle from 'Shared/useToggle'
+import useToggle from 'utils/useToggle'
 import cn from 'classnames'
 import { Post } from 'Post/types'
 

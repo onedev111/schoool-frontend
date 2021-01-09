@@ -1,6 +1,6 @@
 import React from 'react'
 import { Search as SearchIcon } from '@styled-icons/fa-solid/Search'
-import useToggle from 'Shared/useToggle'
+import useToggle from 'utils/useToggle'
 import { CloseCircle } from '@styled-icons/ionicons-solid/CloseCircle'
 import cn from 'classnames'
 

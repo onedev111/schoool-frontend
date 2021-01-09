@@ -1,9 +1,10 @@
 import React from 'react'
-import ReactSwipe from 'react-swipe'
 import Fullscreen from 'Post/Item/Attachments/Fullscreen'
 import { ChevronLeft } from '@styled-icons/fa-solid/ChevronLeft'
 import { ChevronRight } from '@styled-icons/fa-solid/ChevronRight'
 import { useKey } from 'react-use'
+import Swiper from 'swiper'
+import 'swiper/swiper-bundle.css'
 
 type Props = {
   images: string[]
@@ -16,44 +17,41 @@ export default function FullscreenGallery({
   openImageIndex = 0,
   onClose,
 }: Props) {
-  let reactSwipe: ReactSwipe | null = null
+  const [swiperRef] = React.useState<{ current: Swiper | null }>({
+    current: null,
+  })
 
-  useKey('ArrowLeft', () => reactSwipe?.prev())
-  useKey('ArrowRight', () => reactSwipe?.next())
+  const prev = () => swiperRef.current?.slidePrev()
+  const next = () => swiperRef.current?.slideNext()
+  useKey('ArrowLeft', prev)
+  useKey('ArrowRight', next)
+
+  React.useEffect(() => {
+    swiperRef.current = new Swiper('.swiper-container')
+  }, [])
 
   return (
     <Fullscreen onClose={onClose}>
-      <div className="w-full h-full flex-center relative px-5">
+      <div className="w-full h-full flex-center px-5">
         {images.length > 1 && (
-          <button
-            type="button"
-            className="text-gray-bb mr-5"
-            onClick={() => reactSwipe?.prev()}
-          >
+          <button type="button" className="text-gray-bb mr-5" onClick={prev}>
             <ChevronLeft size={52} />
           </button>
         )}
-        <ReactSwipe
-          className="w-full"
-          ref={(el) => {
-            reactSwipe = el
-          }}
-        >
-          {images
-            .slice(openImageIndex)
-            .concat(images.slice(0, openImageIndex))
-            .map((image, i) => (
-              <div key={i} className="w-full h-full flex-center">
-                <img src={image} className="max-w-full max-h-full" />
-              </div>
-            ))}
-        </ReactSwipe>
+        <div className="swiper-container h-full w-full">
+          <div className="swiper-wrapper">
+            {images
+              .slice(openImageIndex)
+              .concat(images.slice(0, openImageIndex))
+              .map((image, i) => (
+                <div key={i} className="flex-center swiper-slide">
+                  <img src={image} className="max-w-full max-h-full" />
+                </div>
+              ))}
+          </div>
+        </div>
         {images.length > 1 && (
-          <button
-            type="button"
-            className="text-gray-bb ml-5"
-            onClick={() => reactSwipe?.next()}
-          >
+          <button type="button" className="text-gray-bb ml-5" onClick={next}>
             <ChevronRight size={52} />
           </button>
         )}

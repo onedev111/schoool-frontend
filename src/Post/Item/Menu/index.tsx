@@ -1,6 +1,6 @@
 import React from 'react'
 import Dropdown from 'Shared/Dropdown'
-import useToggle from 'Shared/useToggle'
+import useToggle from 'utils/useToggle'
 import SavePostModal from 'Post/Item/Menu/SavePostModal'
 import SendToNotebook from 'Post/Item/Menu/SendToNotebook'
 import { Post } from 'Post/types'

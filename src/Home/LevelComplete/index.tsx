@@ -4,7 +4,7 @@ import style from 'Home/style.module.css'
 import { Equalizer } from '@styled-icons/remix-fill/Equalizer'
 import Volume from 'assets/images/icons/volume'
 import Notebook from 'assets/images/icons/notebook'
-import useToggle from 'Shared/useToggle'
+import useToggle from 'utils/useToggle'
 import SelectLevel from './SelectLevel'
 
 export default function Phrase() {

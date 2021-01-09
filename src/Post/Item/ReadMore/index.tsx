@@ -1,5 +1,5 @@
 import React from 'react'
-import useToggle from 'Shared/useToggle'
+import useToggle from 'utils/useToggle'
 import { Post } from 'Post/types'
 import Modal from 'Shared/Modal'
 
