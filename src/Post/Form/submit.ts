@@ -21,9 +21,7 @@ export default async function submitPost({ state }: { state: State }) {
     ...state.values,
     text,
     tags,
-    images: images
-      .map(({ preview }) => preview)
-      .filter((preview) => preview) as string[],
+    images: images.map(({ link }) => link).filter((link) => link) as string[],
     video: video && URL.createObjectURL(video),
     audio: audio && audio.url,
     date: dayjs(),

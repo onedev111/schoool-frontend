@@ -38,7 +38,7 @@ export default observer(function YouTube({
           <ArrowLeft size={26} />
         </button>
         <div className="text-2xl uppercase text-center pt-8 pb-6">
-          Add Index video
+          Add YouTube video
         </div>
       </div>
       <div className="py-8 px-7">

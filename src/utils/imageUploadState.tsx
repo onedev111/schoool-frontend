@@ -6,7 +6,7 @@ import Alert from 'Shared/Modal/Alert'
 
 export type UploadingImage = {
   file: File
-  preview?: string
+  link?: string
 }
 
 const maxImagesCount = 4
@@ -66,7 +66,7 @@ const createImageUploadState = ({
           this.changeImages(
             this.images.map((image) => {
               return image.file === file
-                ? { file, preview: reader.result as string }
+                ? { file, link: reader.result as string }
                 : image
             }),
           )
@@ -96,9 +96,7 @@ const createImageUploadState = ({
       e.target.value = []
     },
     get hasPreviews() {
-      return this.images.some(
-        ({ preview }: { preview: string | undefined }) => preview,
-      )
+      return this.images.some(({ link }: { link: string | undefined }) => link)
     },
     get dragArea() {
       return (

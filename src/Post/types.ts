@@ -1,8 +1,11 @@
 import { Dayjs } from 'dayjs'
 
-export type Preview =
+export type ZoomLink = { type: 'zoom'; link: string }
+
+export type Link =
   | { type: 'post' | 'studyflow'; title: string; text: string }
   | { type: 'link'; image: string; title: string; text: string }
+  | ZoomLink
 
 export type Video = {
   src: string
@@ -18,7 +21,7 @@ export type Post = {
   id: number
   text: string
   isMine: boolean
-  previews: Preview[]
+  links: Link[]
   user: {
     id: number
     name: string
@@ -49,7 +52,7 @@ export type Comment = {
   date: Date
   liked: number
   comment: string
-  previews?: Preview[]
+  links?: Link[]
   audio?: string
   loopingAudio?: string
   images: string[]

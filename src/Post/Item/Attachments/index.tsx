@@ -1,8 +1,8 @@
 import React from 'react'
-import { Preview as PreviewType } from 'Post/types'
+import { Link as LinkType } from 'Post/types'
 import Audio from 'Post/Item/Audio'
 import Video from 'Post/Item/Video'
-import Preview from 'Post/Item/Preview'
+import Link from 'Post/Item/Link'
 import Photos from 'Post/Item/Attachments/Photos'
 import useYouTubeState from 'utils/youTubeState'
 import { observer } from 'mobx-react-lite'
@@ -15,7 +15,7 @@ type Props = {
   attachments: {
     audio?: string
     loopingAudio?: string
-    previews?: PreviewType[]
+    links?: LinkType[]
     images: string[]
     video?: string
     youtubeId?: string
@@ -33,7 +33,7 @@ export default function Attachments({
   previewsClass,
   imageClass,
   videoClass,
-  attachments: { audio, loopingAudio, previews, images, video, youtubeId },
+  attachments: { audio, loopingAudio, links, images, video, youtubeId },
 }: Props) {
   return (
     <>
@@ -58,12 +58,12 @@ export default function Attachments({
       )}
 
       <Photos className={imageClass} images={images} />
-      {(previews as PreviewType[])?.length > 0 && (
+      {links && links.length > 0 && (
         <div className={previewsClass}>
-          {previews?.map((preview, i) => (
-            <Preview
+          {links?.map((link, i) => (
+            <Link
               className={i !== 0 ? 'mt-4' : undefined}
-              preview={preview}
+              link={link}
               key={i}
             />
           ))}

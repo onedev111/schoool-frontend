@@ -4,14 +4,14 @@ import { UploadingImage } from 'utils/imageUploadState'
 
 type Props = {
   images: UploadingImage[]
-  removeImage(preview: UploadingImage): void
+  removeImage(link: UploadingImage): void
 }
 
 export default function ImagePreviews({ images, removeImage }: Props) {
   return (
     <>
       {images.map((image, i) => {
-        if (!image.preview) return <React.Fragment key={i} />
+        if (!image.link) return <React.Fragment key={i} />
 
         return (
           <div
@@ -27,7 +27,7 @@ export default function ImagePreviews({ images, removeImage }: Props) {
             >
               <X size={28} />
             </button>
-            <img className="max-w-full" src={image.preview} alt="image" />
+            <img className="max-w-full" src={image.link} alt="image" />
           </div>
         )
       })}

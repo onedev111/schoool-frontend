@@ -1,6 +1,6 @@
 import { get, post } from 'Shared/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
-import { Post, Tag, TagToInsert, TagType } from 'Post/types'
+import { Link, Post, Tag, TagToInsert, TagType, ZoomLink } from 'Post/types'
 import dayjs from 'dayjs'
 
 type ListPostResponse = {
@@ -130,6 +130,10 @@ export const list = get(
       const userId = getCurrentUserId()
 
       return data.data.map((post) => {
+        const links: Link[] = []
+
+        if (post.zoom_link) links.push({ type: 'zoom', link: post.zoom_link })
+
         const tags: Tag[] = [
           ...getTagsFromResponse(
             'user',
@@ -171,7 +175,7 @@ export const list = get(
           youtubeId: post.youtube_id,
           audio: post.sound_dir,
           loopingAudio: post.looping_url,
-          previews: [],
+          links,
           date: dayjs(`${post.date} UTC`),
           notebookSentence: post.title
             ? { text: post.title, translation: post.translated_title }
@@ -247,6 +251,7 @@ export const create = post(
     audio,
     loopingAudio,
     tags = [],
+    links = [],
   }: Partial<Post>) => ({
     path: '/add_share_post',
     data: {
@@ -261,6 +266,7 @@ export const create = post(
       youtube_id: youtubeId,
       sound: audio,
       looping_url: loopingAudio,
+      zoom_link: (links.find((link) => link.type === 'zoom') as ZoomLink)?.link,
       ...makeTagsParams(tags, 'user', 'tagged_user_ids', 'tagged_user_ranges'),
       ...makeTagsParams(
         tags,

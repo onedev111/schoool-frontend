@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 import { NotebookSentence, Post } from 'Post/types'
-import { Preview } from 'Post/types'
+import { Link } from 'Post/types'
 import { getCurrentUser } from 'User/currentUser'
 import dayjs from 'dayjs'
 import { UploadingImage } from 'utils/imageUploadState'
@@ -16,6 +16,7 @@ type Screen =
   | 'tag'
   | 'audio'
   | 'loopingAudio'
+  | 'zoom'
 
 let id = 0
 
@@ -49,7 +50,7 @@ export const createFormState = () =>
       html: '',
       privacy: 'Only for me',
       notebookSentence: undefined as NotebookSentence | undefined,
-      previews: [] as Preview[],
+      links: [] as Link[],
       images: [],
       video: undefined,
       youtubeId: undefined,
@@ -106,6 +107,9 @@ export const createFormState = () =>
           }) ||
         undefined
       this.currentScreen = 'tag'
+    },
+    setLinks(links: Link[]) {
+      this.values.links = links
     },
     get isValid() {
       return this.values.html.trim().length > 0

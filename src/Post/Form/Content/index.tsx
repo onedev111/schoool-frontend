@@ -1,17 +1,7 @@
 import React from 'react'
 import { X } from '@styled-icons/boxicons-regular/X'
-import camera from 'assets/images/icons/camera.png'
-import youtube from 'assets/images/icons/youtube.png'
-import record from 'assets/images/icons/record-audio.png'
-import looping from 'assets/images/icons/looping.png'
-import Notebook from 'assets/images/icons/notebook'
-import tag from 'assets/images/icons/tag.png'
-import { Smile } from '@styled-icons/fa-regular'
-import ReactTooltip from 'react-tooltip'
 import cn from 'classnames'
 import { observer } from 'mobx-react-lite'
-import photos from 'assets/images/icons/photos.png'
-import useEmojiPicker from 'Shared/useEmojiPicker'
 import SelectTarget from 'Post/Form/SelectTarget'
 import { CaretDown } from '@styled-icons/boxicons-regular/CaretDown'
 import YouTube from 'Post/Form/YouTube'
@@ -31,6 +21,8 @@ import useYouTubeState from 'utils/youTubeState'
 import Audio from 'Post/Item/Audio'
 import AddMediaPanel from 'Post/Form/AddMediaPanel'
 import Modal from 'Shared/Modal'
+import Zoom from 'Post/Form/Zoom'
+import Link from 'Post/Item/Link'
 
 type Props = {
   onClose(): void
@@ -84,6 +76,7 @@ export default observer(function PostFormModal({ onClose }: Props) {
         {state.currentScreen === 'loopingAudio' && (
           <LoopingAudioModal state={state} />
         )}
+        {state.currentScreen === 'zoom' && <Zoom state={state} />}
         {(state.currentScreen === 'form' || state.currentScreen === 'tag') && (
           <div>
             {imageUploadState.warningModal}
@@ -154,6 +147,23 @@ export default observer(function PostFormModal({ onClose }: Props) {
 
               {state.values.notebookSentence && (
                 <Sentence state={state} className="mt-4" />
+              )}
+
+              {state.values.links && state.values.links.length > 0 && (
+                <div className="mt-4">
+                  {state.values.links?.map((link, i) => (
+                    <Link
+                      className={i !== 0 ? 'mt-4' : undefined}
+                      link={link}
+                      key={i}
+                      onDelete={() =>
+                        state.setLinks(
+                          state.values.links.filter((item) => item !== link),
+                        )
+                      }
+                    />
+                  ))}
+                </div>
               )}
             </div>
 

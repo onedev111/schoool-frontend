@@ -29,7 +29,7 @@ const comments: Comment[] = [
     // },
     comment:
       'comment is written here. comment is written here. what you write is written here. comment is written here. what you write is written here.',
-    previews: [
+    links: [
       {
         type: 'post',
         title:
@@ -38,7 +38,7 @@ const comments: Comment[] = [
       },
       {
         type: 'link',
-        image: '/link-preview.svg',
+        image: '/link-link.svg',
         title:
           'website title is written here, body text is written here, up to two lines are written here',
         text: 'http://example.com',

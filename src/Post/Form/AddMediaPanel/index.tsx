@@ -12,6 +12,8 @@ import ReactTooltip from 'react-tooltip'
 import useEmojiPicker from 'Shared/useEmojiPicker'
 import { State as ImageUploadState } from 'utils/imageUploadState'
 import { State as VideoUploadState } from 'utils/videoUploadState'
+import ZoomIcon from 'assets/images/icons/Zoom'
+import cn from 'classnames'
 
 type Props = {
   state: State
@@ -25,6 +27,10 @@ export default function AddMediaPanel({
   videoUploadState,
 }: Props) {
   const toggleEmoji = useEmojiPicker({ editorRef: state.editorRef })
+
+  const hasLinkOtherThanZoom = state.values.links?.some(
+    (link) => link.type !== 'zoom',
+  )
 
   return (
     <div className="pt-3 px-7 pb-7">
@@ -79,11 +85,18 @@ export default function AddMediaPanel({
         <button
           type="button"
           data-tip="Tag Friends or Class"
-          onMouseDown={() => {
-            state.openTagModal()
-          }}
+          onMouseDown={() => state.openTagModal()}
         >
           <img src={tag} alt="add tag" />
+        </button>
+        <button
+          type="button"
+          data-tip="Zoom Meeting"
+          className={cn(hasLinkOtherThanZoom && 'opacity-25')}
+          disabled={hasLinkOtherThanZoom}
+          onClick={() => state.setCurrentScreen('zoom')}
+        >
+          <ZoomIcon size={32} />
         </button>
         <button className="text-gray-a4" data-tip="Emoji" onClick={toggleEmoji}>
           <Smile size={28} />

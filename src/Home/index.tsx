@@ -20,7 +20,7 @@ import Spin from 'assets/images/icons/Spin'
 //   state: 'uploading',
 //   text,
 //   image: '/beer.svg',
-//   previews: [],
+//   links: [],
 //   date: dayjs(),
 // }
 // const posts: PostType[] = ([
@@ -40,7 +40,7 @@ import Spin from 'assets/images/icons/Spin'
 // },
 // {
 //   ...post,
-//   previews: [
+//   links: [
 //     {
 //       type: 'post',
 //       title:
@@ -49,7 +49,7 @@ import Spin from 'assets/images/icons/Spin'
 //     },
 //     {
 //       type: 'link',
-//       image: '/link-preview.svg',
+//       image: '/link-link.svg',
 //       title:
 //         'website title is written here, body text is written here, up to two lines are written here',
 //       text: 'http://example.com',
