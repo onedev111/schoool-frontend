@@ -3,7 +3,7 @@ import Post from 'Post/Item'
 import LevelComplete from './LevelComplete'
 import Phrase from './Phrase'
 import Notebook from './Notebook'
-import { useQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 import api from 'api'
 import UploadingPostsStore from 'Post/UploadingPostsStore'
 import { observer } from 'mobx-react-lite'
@@ -12,11 +12,53 @@ import useToggle from 'utils/useToggle'
 import PostForm from 'Post/Form'
 import logo from 'assets/images/logo.svg'
 
+const postsPerPage = 5
+const loadNextThreshold = 500
+
 export default observer(function Home() {
-  const { data, isLoading } = useQuery('posts', () =>
-    api.post.list({ limit: 20, offset: 0 }),
+  const query = useInfiniteQuery(
+    'posts',
+    (key, page = 0) => {
+      return api.post.list({
+        limit: postsPerPage,
+        offset: postsPerPage * (page as number),
+      })
+    },
+    {
+      getFetchMore: (lastPage, pages) => {
+        return lastPage.length > 0 ? pages.length : undefined
+      },
+    },
   )
+
+  const { data: pages, isLoading, isFetching } = query
+
   const [showPostForm, togglePostForm] = useToggle(false)
+  const postsWrapRef = React.useRef<HTMLDivElement>(null)
+
+  const [queryRef] = React.useState({ current: query })
+  queryRef.current = query
+
+  React.useEffect(() => {
+    const scrollListener = () => {
+      const postsWrap = postsWrapRef.current
+      if (!postsWrap) return
+
+      const query = queryRef.current
+
+      if (
+        query.canFetchMore &&
+        !query.isLoading &&
+        !query.isFetching &&
+        postsWrap.getBoundingClientRect().bottom - document.body.offsetHeight <
+          loadNextThreshold
+      )
+        query.fetchMore()
+    }
+
+    window.addEventListener('scroll', scrollListener)
+    return () => window.removeEventListener('scroll', scrollListener)
+  }, [queryRef])
 
   return (
     <>
@@ -45,14 +87,22 @@ export default observer(function Home() {
           {UploadingPostsStore.posts.map((post) => (
             <Post key={post.id} post={post} uploading={true} />
           ))}
-          {isLoading && (
+          {!isLoading && pages && (
+            <div ref={postsWrapRef}>
+              {pages.map((page, i) => (
+                <React.Fragment key={i}>
+                  {page.map((post) => (
+                    <Post key={post.id} post={post} />
+                  ))}
+                </React.Fragment>
+              ))}
+            </div>
+          )}
+          {isFetching && (
             <div className="flex-center mb-5">
               <Spin className="w-10 h-10 text-blue-primary animate-spin" />
             </div>
           )}
-          {!isLoading &&
-            data &&
-            data.map((post) => <Post key={post.id} post={post} />)}
           <LevelComplete />
           <Phrase />
         </div>

@@ -88,7 +88,8 @@ export default observer(function PostFormModal({ onClose }: Props) {
             imageUploadState={imageUploadState}
             videoUploadState={videoUploadState}
             youTubeState={youTubeState}
-            onClose={tryToClose}
+            onClose={onClose}
+            tryToClose={tryToClose}
           />
         )}
       </Modal>

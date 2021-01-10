@@ -23,6 +23,7 @@ type Props = {
   videoUploadState: VideoUploadState
   youTubeState: YouTubeState
   onClose(): void
+  tryToClose(): void
 }
 
 export default observer(function PostFormMainScreen({
@@ -31,6 +32,7 @@ export default observer(function PostFormMainScreen({
   videoUploadState,
   youTubeState,
   onClose,
+  tryToClose,
 }: Props) {
   const classesCount = state.values.classIds.length
 
@@ -41,7 +43,7 @@ export default observer(function PostFormMainScreen({
       <button
         type="button"
         className="absolute top-0 right-0 text-gray-5f mt-8 mr-6"
-        onClick={onClose}
+        onClick={tryToClose}
       >
         <X size={32} />
       </button>
