@@ -49,7 +49,7 @@ export default function Text({ post, textRef, showFullText }: Props) {
     <div
       ref={textRef}
       className={cn(
-        `text-gray-02 mb-3`,
+        `text-gray-02 mb-3 whitespace-pre-wrap`,
         style.text,
         !showFullText && style.clampedText,
       )}

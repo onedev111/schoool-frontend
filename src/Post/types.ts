@@ -19,6 +19,8 @@ export type NotebookSentence = {
 
 export type Post = {
   id: number
+  isPublic: boolean
+  classIds: number[]
   text: string
   isMine: boolean
   links: Link[]

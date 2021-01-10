@@ -10,7 +10,7 @@ import { Voice } from 'Upload/api'
 
 type Screen =
   | 'form'
-  | 'privacy'
+  | 'selectTarget'
   | 'youtube'
   | 'sentence'
   | 'tag'
@@ -33,6 +33,8 @@ export const createFormState = () =>
     },
     values: {
       id: id--,
+      isPublic: true,
+      classIds: [],
       isMine: true,
       user: getCurrentUser(),
       date: dayjs(),
@@ -41,7 +43,6 @@ export const createFormState = () =>
       repliesCount: 0,
       saved: false,
       html: '',
-      privacy: 'Only for me',
       notebookSentence: undefined as NotebookSentence | undefined,
       links: [] as Link[],
       images: [],
@@ -51,7 +52,6 @@ export const createFormState = () =>
       loopingAudio: undefined,
     } as Omit<Post, 'images' | 'video' | 'audio' | 'text' | 'tags'> & {
       html: string
-      privacy: string
       images: UploadingImage[]
       video?: UploadingVideo
       audio?: UploadingAudio
@@ -62,9 +62,6 @@ export const createFormState = () =>
     },
     setHTML(html: string) {
       this.values.html = html
-    },
-    setPrivacy(privacy: string) {
-      this.values.privacy = privacy
     },
     setSentence(sentence?: NotebookSentence) {
       this.values.notebookSentence = sentence
@@ -92,8 +89,24 @@ export const createFormState = () =>
     setLinks(links: Link[]) {
       this.values.links = links
     },
-    get isValid() {
-      return this.values.html.trim().length > 0
+    setIsPublic(value: boolean) {
+      this.values.isPublic = value
+    },
+    setClassIds(classIds: number[]) {
+      this.values.classIds = classIds
+    },
+    get canPost() {
+      const { values } = this
+      return (
+        values.html.trim().length > 0 ||
+        values.images.length > 0 ||
+        values.video ||
+        values.youtubeId ||
+        values.audio ||
+        values.loopingAudio ||
+        values.notebookSentence ||
+        values.links.length > 0
+      )
     },
   })
 

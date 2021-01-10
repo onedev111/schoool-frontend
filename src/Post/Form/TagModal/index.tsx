@@ -9,6 +9,7 @@ import api from 'api'
 import { TagToInsert } from 'Post/types'
 import Spin from 'assets/images/icons/Spin'
 import { insertElementToContentEditable } from 'utils/contentEditable'
+import useHideBodyScroll from 'utils/useHideBodyScroll'
 
 const typeName: Record<TagToInsert['type'], string> = {
   user: 'Friend',
@@ -40,6 +41,8 @@ export default observer(function TagModal({ state }: Props) {
         lastPage.length > 0 ? pages.length : undefined,
     },
   )
+
+  useHideBodyScroll()
 
   const onClose = () => state.backToForm()
 

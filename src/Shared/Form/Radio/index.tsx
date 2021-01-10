@@ -9,6 +9,7 @@ type Props = {
   value: string
   size?: number
   label?: string
+  type?: 'radio' | 'checkbox'
   classes?: {
     root?: string
     label?: string
@@ -24,6 +25,7 @@ export default function Radio({
   label,
   classes = {},
   size = 16,
+  type = 'radio',
 }: Props) {
   return (
     <label className={classes.root}>
@@ -39,7 +41,7 @@ export default function Radio({
         style={{ width: `${size}px`, height: `${size}px` }}
       >
         <input
-          type="radio"
+          type={type}
           value={value}
           name={name}
           checked={checked}

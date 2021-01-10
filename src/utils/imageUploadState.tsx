@@ -45,7 +45,7 @@ const createImageUploadState = ({
     addFiles(files: File[]) {
       const filesArray = Array.from(files)
       const filtered = filesArray
-        .slice(this.images.length, maxImagesCount)
+        .slice(0, maxImagesCount - this.images.length)
         .filter((file) => supportedMimes.includes(file.type))
 
       if (files.length > maxImagesCount)

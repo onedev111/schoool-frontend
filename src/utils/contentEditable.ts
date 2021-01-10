@@ -3,7 +3,11 @@ import React from 'react'
 export const useOnChangeSelectionRange = (onChange: (range: Range) => void) => {
   React.useEffect(() => {
     const listener = () => {
-      const range = window.getSelection()?.getRangeAt(0)
+      const selection = window.getSelection()
+      const range =
+        selection && selection.rangeCount > 0
+          ? selection.getRangeAt(0)
+          : undefined
       const parent = range?.endContainer.parentElement
       if (range && parent && parent.closest('.js-editor')) onChange(range)
     }

@@ -1,12 +1,14 @@
 import * as user from 'User/api'
 import * as post from 'Post/api'
 import * as upload from 'Upload/api'
+import * as classes from 'Class/api'
 import * as constants from 'Constants/api'
 
 export default {
   user,
   post,
   upload,
+  classes,
   constants,
   // posts: {
   //   list: ({ offset, limit }: { limit?: number; offset?: number }) =>

@@ -154,6 +154,8 @@ export const list = get(
 
         return {
           id: post.share_post_id,
+          isPublic: Boolean(post.is_public),
+          classIds: post.class_ids.split(',').map((id) => parseInt(id)),
           text: post.comment,
           isMine: post.user_id === userId,
           user: {
@@ -244,6 +246,8 @@ const makeTagsParams = (
 
 export const create = post(
   ({
+    isPublic,
+    classIds = [],
     text,
     images = [],
     video,
@@ -256,7 +260,8 @@ export const create = post(
     path: '/add_share_post',
     data: {
       access_token: getUserToken(),
-      is_public: 0,
+      is_public: isPublic ? 1 : 0,
+      class_ids: classIds,
       comment: text,
       photo: images[0],
       photo_second: images[1],

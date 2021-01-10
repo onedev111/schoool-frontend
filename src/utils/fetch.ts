@@ -2,6 +2,7 @@ import history from 'utils/history'
 import { getUserToken } from 'User/currentUser'
 import routes from 'routes'
 import Form from 'Home/Notebook/Studyflow/Form'
+import { array } from 'yup'
 
 export type HTTPMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 
@@ -27,7 +28,10 @@ export const request = async <T>(
     const record = data as Record<string, string>
     for (const key in record) {
       const value = record[key]
-      if (value !== undefined) formData.append(key, value)
+      if (Array.isArray(value)) {
+        const arrayKey = `${key}[]`
+        value.forEach((item) => formData.append(arrayKey, item))
+      } else if (value !== undefined) formData.append(key, value)
     }
     options.body = formData
   }

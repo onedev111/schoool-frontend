@@ -1,12 +1,16 @@
 import React from 'react'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 import { useCurrentUser } from 'User/currentUser'
-import Radio from 'Shared/Form/Radio'
 import publicIcon from 'assets/images/icons/public.png'
 import useToggle from 'utils/useToggle'
 import Alert from 'Shared/Modal/Alert'
 import { State } from 'Post/Form/State'
 import { observer } from 'mobx-react-lite'
+import { useQuery } from 'react-query'
+import SelectTargetOption from 'Post/Form/SelectTarget/Option'
+import api from 'api'
+import Spin from 'assets/images/icons/Spin'
+import { Class } from 'Class/types'
 
 type Props = {
   state: State
@@ -15,32 +19,30 @@ type Props = {
 export default observer(function SelectTarget({ state }: Props) {
   const [{ avatar }] = useCurrentUser()
   const [showNotice, toggleNotice] = useToggle()
+  const { data, isLoading } = useQuery('classes', api.classes.list)
+
+  const joined = data?.joined || []
+  const owning = data?.owning || []
+  const classes = [...joined, ...owning]
+  const classIds = state.values.classIds
 
   const onClose = () => state.backToForm()
 
-  const options: {
-    label: string
-    text: string
-    image: string
-    notice?: boolean
-  }[] = [
-    {
-      label: 'Public',
-      text: 'Anyone can see this post.',
-      image: publicIcon,
-    },
-    {
-      label: 'Only for me',
-      text: 'Only you can see this post.',
-      image: avatar,
-    },
-    {
-      label: 'Let’s Study English',
-      text: 'Only this class memebers can see this post.',
-      image: avatar,
-      notice: true,
-    },
-  ]
+  const toggleClass = (item: Class, add: boolean) => {
+    if (!add) return state.setClassIds(classIds.filter((id) => id !== item.id))
+
+    let ids = [...classIds, item.id]
+
+    const { isPublic } = item
+    const otherPublicFilter = (isPublic: boolean) => (id: number) =>
+      classes.find((item) => item.id === id && item.isPublic === isPublic)
+    if (ids.some(otherPublicFilter(!isPublic))) {
+      toggleNotice()
+      ids = ids.filter(otherPublicFilter(isPublic))
+    }
+
+    state.setClassIds(ids)
+  }
 
   return (
     <>
@@ -60,46 +62,54 @@ export default observer(function SelectTarget({ state }: Props) {
           </div>
           Select Target
         </div>
-        {options.map(({ label, text, image, notice }, i) => {
-          const checked = label === state.values.privacy
+        <SelectTargetOption
+          image={publicIcon}
+          title="Public"
+          text="Anyone can see this post."
+          checked={state.values.isPublic && classIds.length === 0}
+          onChange={() => {
+            state.setIsPublic(true)
+            state.setClassIds([])
+          }}
+        />
+        <SelectTargetOption
+          image={avatar}
+          title="Only for me"
+          text="Only you can see this post."
+          checked={!state.values.isPublic && classIds.length === 0}
+          onChange={() => {
+            state.setIsPublic(false)
+            state.setClassIds([])
+          }}
+        />
+        {isLoading && (
+          <div className="flex-center my-5">
+            <Spin className="w-10 h-10 text-blue-primary animate-spin" />
+          </div>
+        )}
+        {classes.map((item) => {
+          const checked = classIds.includes(item.id)
 
           return (
-            <label
-              key={i}
-              className="block border-b border-gray-c5 flex items-center justify-between py-2 px-4 pr-7"
-            >
-              <div className="flex-center">
-                <img
-                  src={image}
-                  alt="image"
-                  style={{ width: '45px', height: '45px' }}
-                  className="rounded-full"
-                />
-                <div className="ml-3 flex flex-col justify-center">
-                  <div className="text-lg font-bold">{label}</div>
-                  <div className="text-gray-6b text-sm">{text}</div>
-                </div>
-              </div>
-              <Radio
-                size={22}
-                checked={checked}
-                onChange={(e: any) => {
-                  state.setPrivacy(e.target.value)
-                  if (notice) toggleNotice()
-                }}
-                name={name}
-                value={label}
-              />
-            </label>
+            <SelectTargetOption
+              key={item.id}
+              image={item.image}
+              title={item.name}
+              text="Only this class memebers can see this post."
+              checked={checked}
+              onChange={() => toggleClass(item, !checked)}
+            />
           )
         })}
-        <div
-          className="pt-8 pb-4 text-gray-6b text-center w-full mx-auto"
-          style={{ width: '400px' }}
-        >
-          You have no target class as you haven’t created or joined any class
-          yet.
-        </div>
+        {!isLoading && data?.joined.length === 0 && data?.owning.length === 0 && (
+          <div
+            className="pt-8 pb-4 text-gray-6b text-center w-full mx-auto"
+            style={{ width: '400px' }}
+          >
+            You have no target class as you haven’t created or joined any class
+            yet.
+          </div>
+        )}
       </div>
     </>
   )

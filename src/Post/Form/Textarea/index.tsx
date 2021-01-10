@@ -20,7 +20,7 @@ const TextArea = React.memo(
       <div
         ref={state.editorRef}
         contentEditable
-        className="focus:outline-none w-full js-editor"
+        className="focus:outline-none w-full js-editor whitespace-pre-wrap"
         style={{ minHeight: '170px' }}
         onFocus={onFocus}
         onBlur={onBlur}

@@ -10,7 +10,12 @@ type Props = {
   onChange?(video: UploadingVideo | undefined): void
 }
 
-const supportedMimes = ['video/mp4', 'video/webm', 'video/ogg']
+const supportedMimes = [
+  'video/mp4',
+  'video/webm',
+  'video/ogg',
+  'video/quicktime',
+]
 
 const createVideoUploadState = ({ onChange }: Props = {}) =>
   makeAutoObservable({
