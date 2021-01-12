@@ -282,7 +282,8 @@ export const save = post(
       youtube_id: youtubeId,
       sound: audio || -1,
       looping_url: loopingAudio,
-      zoom_link: (links.find((link) => link.type === 'zoom') as ZoomLink)?.link,
+      zoom_link:
+        (links.find((link) => link.type === 'zoom') as ZoomLink)?.link || -1,
       title: notebookSentence?.text,
       translated_title: notebookSentence?.translation,
       ...makeTagsParams(tags, 'user', 'tagged_user_ids', 'tagged_user_ranges'),
