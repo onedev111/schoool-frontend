@@ -1,7 +1,8 @@
-import { get, post } from 'utils/apiUtils'
+import { get, getMutation, post } from 'utils/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
 import { Link, Post, Tag, TagToInsert, TagType, ZoomLink } from 'Post/types'
 import dayjs from 'dayjs'
+import { queryCache } from 'react-query'
 
 type ListPostResponse = {
   base_language: string
@@ -154,8 +155,11 @@ export const list = get(
 
         return {
           id: post.share_post_id,
+          isUploading: false,
           isPublic: Boolean(post.is_public),
-          classIds: post.class_ids.split(',').map((id) => parseInt(id)),
+          classIds: post.class_ids
+            ? post.class_ids.split(',').map((id) => parseInt(id))
+            : [],
           text: post.comment,
           isMine: post.user_id === userId,
           user: {
@@ -244,8 +248,13 @@ const makeTagsParams = (
   }
 }
 
-export const create = post(
+const invalidatePosts = () => {
+  queryCache.invalidateQueries(['posts'])
+}
+
+export const save = post(
   ({
+    id,
     isPublic,
     classIds = [],
     text,
@@ -256,9 +265,11 @@ export const create = post(
     loopingAudio,
     tags = [],
     links = [],
+    notebookSentence,
   }: Partial<Post>) => ({
-    path: '/add_share_post',
+    path: id ? '/edit_share_post' : '/add_share_post',
     data: {
+      share_post_id: id,
       access_token: getUserToken(),
       is_public: isPublic ? 1 : 0,
       class_ids: classIds,
@@ -267,11 +278,13 @@ export const create = post(
       photo_second: images[1],
       photo_third: images[2],
       photo_fourth: images[3],
-      video,
+      video: video || -1,
       youtube_id: youtubeId,
-      sound: audio,
+      sound: audio || -1,
       looping_url: loopingAudio,
       zoom_link: (links.find((link) => link.type === 'zoom') as ZoomLink)?.link,
+      title: notebookSentence?.text,
+      translated_title: notebookSentence?.translation,
       ...makeTagsParams(tags, 'user', 'tagged_user_ids', 'tagged_user_ranges'),
       ...makeTagsParams(
         tags,
@@ -287,10 +300,24 @@ export const create = post(
       ),
     },
     response: (data: { result_code: string; data: CreatePostResponse }) => {
-      if (data.result_code !== '01.00') throw new Error('Something went wrong')
+      if (data.result_code !== '01.00' && data.result_code !== '02.00')
+        throw new Error('Something went wrong')
     },
+    onSuccess: invalidatePosts,
   }),
 )
+
+export const remove = getMutation(({ id }: { id: number }) => ({
+  path: '/delete_share_post',
+  params: {
+    access_token: getUserToken(),
+    share_post_id: id,
+  },
+  response({ result_code }: { result_code: string }) {
+    if (result_code !== '03.00') throw new Error('Something went wrong')
+  },
+  onSuccess: invalidatePosts,
+}))
 
 type SearchTagsResponse = {
   result_code: string

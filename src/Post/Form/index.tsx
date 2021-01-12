@@ -16,13 +16,15 @@ import { useOnChangeSelectionRange } from 'utils/contentEditable'
 import PostFormMainScreen from 'Post/Form/MainScreen'
 import LeaveWarning from 'Post/Form/LeaveWarning'
 import useToggle from 'utils/useToggle'
+import { Post } from 'Post/types'
 
 type Props = {
+  post?: Post
   onClose(): void
 }
 
-export default observer(function PostFormModal({ onClose }: Props) {
-  const [state] = React.useState(() => createFormState())
+export default observer(function PostFormModal({ post, onClose }: Props) {
+  const [state] = React.useState(() => createFormState({ post }))
   const [leaveWarning, toggleLeaveWarning] = useToggle()
 
   useOnChangeSelectionRange((range) => state.setSelectionRange(range))
@@ -30,16 +32,19 @@ export default observer(function PostFormModal({ onClose }: Props) {
   const youTubeState = useYouTubeState({
     close: true,
     className: 'mt-4',
+    youtubeId: state.values.youtubeId,
     onChange(id) {
       state.setYouTubeId(id)
     },
   })
 
   const imageUploadState = useImageUploadState({
+    images: state.values.images,
     onChange: (images) => state.setImages(images),
   })
 
   const videoUploadState = useVideoUploadState({
+    video: state.values.video,
     onChange: (video) => state.setVideo(video),
   })
 

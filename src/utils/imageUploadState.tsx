@@ -4,29 +4,30 @@ import dragOverState from 'utils/dragOverState'
 import cn from 'classnames'
 import Alert from 'Shared/Modal/Alert'
 
-export type UploadingImage = {
-  file: File
-  link?: string
-}
+export type SavedImage = { isNew: false; url: string }
+export type NewImage = { isNew: true; file: File; url?: string }
+export type UploadingImage = SavedImage | NewImage
 
 const maxImagesCount = 4
 
 const supportedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']
 
 type Props = {
+  images?: UploadingImage[]
   dragAreaAlwaysVisible?: boolean
   dragAreaText?: string
   onChange?(images: UploadingImage[]): void
 }
 
 const createImageUploadState = ({
+  images = [],
   dragAreaAlwaysVisible,
   dragAreaText = 'Drag & Drop files here',
   onChange,
 }: Props = {}) =>
   makeAutoObservable({
     onChange,
-    images: [] as UploadingImage[],
+    images,
     setImages(images: UploadingImage[]) {
       this.images = images
     },
@@ -44,11 +45,12 @@ const createImageUploadState = ({
     },
     addFiles(files: File[]) {
       const filesArray = Array.from(files)
+      const maxCount = maxImagesCount - this.images.length
       const filtered = filesArray
-        .slice(0, maxImagesCount - this.images.length)
+        .slice(0, maxCount)
         .filter((file) => supportedMimes.includes(file.type))
 
-      if (files.length > maxImagesCount)
+      if (files.length > maxCount)
         this.setWarning('You can only choose 4 photos')
       else if (filesArray.some((file) => !supportedMimes.includes(file.type)))
         this.setWarning('Supported image formats are jpeg, png, svg and gif')
@@ -57,6 +59,7 @@ const createImageUploadState = ({
       this.changeImages([
         ...this.images,
         ...filtered.map((file) => ({
+          isNew: true as const,
           file,
         })),
       ])
@@ -65,8 +68,8 @@ const createImageUploadState = ({
         reader.onload = () => {
           this.changeImages(
             this.images.map((image) => {
-              return image.file === file
-                ? { file, link: reader.result as string }
+              return 'file' in image && image.file === file
+                ? { isNew: true, file, url: reader.result as string }
                 : image
             }),
           )
@@ -96,7 +99,7 @@ const createImageUploadState = ({
       e.target.value = []
     },
     get hasPreviews() {
-      return this.images.some(({ link }: { link: string | undefined }) => link)
+      return this.images.some(({ url }: { url: string | undefined }) => url)
     },
     get dragArea() {
       return (

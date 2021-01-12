@@ -4,7 +4,7 @@ import { StopFill } from '@styled-icons/bootstrap/StopFill'
 import { PauseFill } from '@styled-icons/bootstrap/PauseFill'
 import dayjs from 'dayjs'
 import { observer } from 'mobx-react-lite'
-import { createState } from 'Post/Item/Audio/state'
+import { AudioState, createState } from 'Post/Item/Audio/state'
 import ProgressBar from 'Post/Item/Audio/ProgressBar'
 import { useKey } from 'react-use'
 import useToggle from 'utils/useToggle'
@@ -18,7 +18,12 @@ const formatTime = (seconds: number) => {
   else return time.format('mm:ss')
 }
 
-const useKeyWhenFocused = (focused: boolean, key: string, fn: () => void) =>
+const useKeyWhenFocused = (
+  focused: boolean,
+  key: string,
+  fn: () => void,
+  deps: unknown[],
+) =>
   useKey(
     key,
     (e) => {
@@ -27,7 +32,7 @@ const useKeyWhenFocused = (focused: boolean, key: string, fn: () => void) =>
       fn()
     },
     {},
-    [focused],
+    [focused, ...deps],
   )
 
 type Props = {
@@ -45,24 +50,30 @@ export default observer(function Audio({
   className,
   onDelete,
 }: Props) {
-  const [state] = React.useState(createState)
+  const [state, setState] = React.useState<AudioState>()
+  const [audio, setAudio] = React.useState<HTMLAudioElement>()
 
-  const [audio] = React.useState(() => {
+  React.useEffect(() => {
+    const state = createState()
+    setState(state)
+
     const audio = new window.Audio(src)
     audio.loop = Boolean(loop)
     audio.onloadedmetadata = () => state.setDuration(audio.duration)
     audio.onplay = () => state.setPlaying(true)
     audio.onpause = () => state.setPlaying(false)
     audio.onended = () => state.setCurrentTime(0)
-    return audio
-  })
+    setAudio(audio)
+  }, [src, loop])
 
   const togglePlay = () => {
-    if (state.playing) audio.pause()
-    else audio.play()
+    if (state?.playing) audio?.pause()
+    else audio?.play()
   }
 
   React.useEffect(() => {
+    if (!state || !audio) return
+
     if (state.playing) {
       const animation = () => {
         state.setCurrentTime(audio.currentTime)
@@ -74,18 +85,34 @@ export default observer(function Audio({
     } else {
       state.setCurrentTime(audio.currentTime)
     }
-  }, [state.playing])
+  }, [audio, state?.playing])
 
   const [focused, toggleFocused] = useToggle()
-  useKeyWhenFocused(focused, ' ', togglePlay)
-  useKeyWhenFocused(focused, 'ArrowLeft', () => {
-    const value = audio.currentTime
-    audio.currentTime = Math.max(value - 1, 0)
-  })
-  useKeyWhenFocused(focused, 'ArrowRight', () => {
-    const value = audio.currentTime as number
-    audio.currentTime = Math.min(value + 1, state.duration)
-  })
+  useKeyWhenFocused(focused, ' ', togglePlay, [audio])
+  useKeyWhenFocused(
+    focused,
+    'ArrowLeft',
+    () => {
+      if (!audio) return
+
+      const value = audio.currentTime
+      audio.currentTime = Math.max(value - 1, 0)
+    },
+    [audio],
+  )
+  useKeyWhenFocused(
+    focused,
+    'ArrowRight',
+    () => {
+      if (!audio || !state) return
+
+      const value = audio.currentTime as number
+      audio.currentTime = Math.min(value + 1, state.duration)
+    },
+    [audio],
+  )
+
+  if (!state || !audio) return null
 
   return (
     <div

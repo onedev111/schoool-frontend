@@ -56,7 +56,14 @@ export default function Form({ toggleMenu }: Props) {
 
   return (
     <>
-      {showDeleteModal && <DeleteModal onClose={toggleDeleteModal} />}
+      {showDeleteModal && (
+        <DeleteModal
+          onClose={toggleDeleteModal}
+          onDelete={() => {
+            // todo
+          }}
+        />
+      )}
       <form onSubmit={form.handleSubmit(submit)}>
         <div className="text-xl uppercase flex-center py-7 relative border-b border-gray-c5">
           <button

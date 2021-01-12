@@ -14,8 +14,9 @@ type Props = {
 }
 
 export default observer(function RecordAudio({ state: postState }: Props) {
+  const audio = postState.values.audio
   const [state] = React.useState(() =>
-    createAudioRecordingState({ audio: postState.values.audio }),
+    createAudioRecordingState({ audio: audio?.isNew ? audio : undefined }),
   )
 
   const onClose = () => postState.backToForm()

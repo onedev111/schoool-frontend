@@ -19,6 +19,7 @@ export type NotebookSentence = {
 
 export type Post = {
   id: number
+  isUploading: boolean
   isPublic: boolean
   classIds: number[]
   text: string

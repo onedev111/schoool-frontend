@@ -15,7 +15,9 @@ export default observer(function YouTube({
   youtubeState,
   onClose,
 }: Props) {
-  const [url, setUrl] = React.useState('')
+  const [url, setUrl] = React.useState(
+    youtubeId ? `https://www.youtube.com/watch?v=${youtubeId}` : '',
+  )
   const state = useYouTubeState({
     youtubeId,
     className: 'mt-10',

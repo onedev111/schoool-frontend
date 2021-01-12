@@ -68,7 +68,7 @@ export default observer(function CommentForm({ className, rows = 1 }: Props) {
             errorOnlyForSubmitted
           />
           {imageUploadState.images.map((image, i) => {
-            if (!image.link) return <React.Fragment key={i} />
+            if (!image.url) return <React.Fragment key={i} />
 
             return (
               <div
@@ -84,7 +84,7 @@ export default observer(function CommentForm({ className, rows = 1 }: Props) {
                   <X size={20} />
                 </button>
                 <img
-                  src={image.link}
+                  src={image.url}
                   alt="image link"
                   style={{ maxHeight: '72px' }}
                 />

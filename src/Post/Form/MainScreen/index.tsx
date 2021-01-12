@@ -48,14 +48,14 @@ export default observer(function PostFormMainScreen({
         <X size={32} />
       </button>
       <div className="text-2xl uppercase text-center pt-8 pb-6 border-b border-gray-c5">
-        Create
+        {state.values.id ? 'Edit Post' : 'Create'}
       </div>
       <div
         className={cn(
           'p-6',
           imageUploadState.hasPreviews ||
             youTubeState.video ||
-            videoUploadState.url
+            videoUploadState.video
             ? 'pb-0'
             : 'border-b border-gray-c5',
         )}
@@ -132,10 +132,10 @@ export default observer(function PostFormMainScreen({
 
       {youTubeState.video}
 
-      {videoUploadState.url && (
+      {videoUploadState.video && (
         <VideoPreview
-          video={videoUploadState.url}
-          removeVideo={() => videoUploadState.setVideo(undefined)}
+          video={videoUploadState.video.url}
+          removeVideo={() => videoUploadState.setFile(undefined)}
           className="mt-4"
         />
       )}

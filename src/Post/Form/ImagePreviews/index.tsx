@@ -11,7 +11,7 @@ export default function ImagePreviews({ images, removeImage }: Props) {
   return (
     <>
       {images.map((image, i) => {
-        if (!image.link) return <React.Fragment key={i} />
+        if (!image.url) return <React.Fragment key={i} />
 
         return (
           <div
@@ -27,7 +27,7 @@ export default function ImagePreviews({ images, removeImage }: Props) {
             >
               <X size={28} />
             </button>
-            <img className="max-w-full" src={image.link} alt="image" />
+            <img className="max-w-full" src={image.url} alt="image" />
           </div>
         )
       })}

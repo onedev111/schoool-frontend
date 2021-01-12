@@ -7,6 +7,7 @@ import { UploadingImage } from 'utils/imageUploadState'
 import { UploadingVideo } from 'utils/videoUploadState'
 import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 import { Voice } from 'Upload/api'
+import { getTaggedEditorHTML } from 'utils/tags'
 
 type Screen =
   | 'form'
@@ -18,10 +19,8 @@ type Screen =
   | 'loopingAudio'
   | 'zoom'
 
-let id = 0
-
-export const createFormState = () =>
-  makeAutoObservable({
+export const createFormState = ({ post }: { post?: Post }) => {
+  return makeAutoObservable({
     editorRef: { current: null } as { current: null | HTMLDivElement },
     currentScreen: 'form' as Screen,
     selectionRange: undefined as Range | undefined,
@@ -32,24 +31,26 @@ export const createFormState = () =>
       this.currentScreen = 'form'
     },
     values: {
-      id: id--,
-      isPublic: true,
-      classIds: [],
+      id: post?.id || 0,
+      isUploading: true,
+      isPublic: post?.isPublic || true,
+      classIds: post?.classIds || [],
       isMine: true,
       user: getCurrentUser(),
       date: dayjs(),
-      liked: false,
-      likesCount: 0,
-      repliesCount: 0,
+      liked: post?.liked || false,
+      likesCount: post?.likesCount || 0,
+      repliesCount: post?.repliesCount || 0,
       saved: false,
-      html: '',
-      notebookSentence: undefined as NotebookSentence | undefined,
-      links: [] as Link[],
-      images: [],
-      video: undefined,
-      youtubeId: undefined,
+      html: getTaggedEditorHTML(post),
+      notebookSentence: post?.notebookSentence,
+      links: post?.links || [],
+      images: post?.images.map((url) => ({ isNew: false, url })) || [],
+      video: post?.video && { isNew: false, url: post.video },
+      audio: post?.audio && { isNew: false, url: post.audio },
+      youtubeId: post?.youtubeId,
       loopingAudioVoices: [],
-      loopingAudio: undefined,
+      loopingAudio: post?.loopingAudio,
     } as Omit<Post, 'images' | 'video' | 'audio' | 'text' | 'tags'> & {
       html: string
       images: UploadingImage[]
@@ -109,5 +110,6 @@ export const createFormState = () =>
       )
     },
   })
+}
 
 export type State = ReturnType<typeof createFormState>

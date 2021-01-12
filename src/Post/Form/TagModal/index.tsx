@@ -10,6 +10,7 @@ import { TagToInsert } from 'Post/types'
 import Spin from 'assets/images/icons/Spin'
 import { insertElementToContentEditable } from 'utils/contentEditable'
 import useHideBodyScroll from 'utils/useHideBodyScroll'
+import { createTagElement } from 'utils/tags'
 
 const typeName: Record<TagToInsert['type'], string> = {
   user: 'Friend',
@@ -60,12 +61,7 @@ export default observer(function TagModal({ state }: Props) {
 
   const addTag = (tag: TagToInsert) => {
     const editor = state.editorRef.current as HTMLElement
-    const link = document.createElement('span')
-    link.setAttribute('contenteditable', 'false')
-    link.className = 'text-blue-primary pointer-events-none'
-    link.textContent = tag.name
-    link.setAttribute('data-tag-id', String(tag.id))
-    link.setAttribute('data-tag-type', tag.type)
+    const link = createTagElement(tag)
     insertElementToContentEditable(link, editor, state.selectionRange)
     state.setHTML(editor.innerHTML)
     state.backToForm()

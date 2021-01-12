@@ -5,12 +5,12 @@ import Phrase from './Phrase'
 import Notebook from './Notebook'
 import { useInfiniteQuery } from 'react-query'
 import api from 'api'
-import UploadingPostsStore from 'Post/UploadingPostsStore'
 import { observer } from 'mobx-react-lite'
 import Spin from 'assets/images/icons/Spin'
 import useToggle from 'utils/useToggle'
 import PostForm from 'Post/Form'
 import logo from 'assets/images/logo.svg'
+import PostStore from 'Post/PostStore'
 
 const postsPerPage = 5
 const loadNextThreshold = 500
@@ -60,6 +60,10 @@ export default observer(function Home() {
     return () => window.removeEventListener('scroll', scrollListener)
   }, [queryRef])
 
+  React.useEffect(() => {
+    PostStore.setPages(pages)
+  }, [pages])
+
   return (
     <>
       {showPostForm && <PostForm onClose={togglePostForm} />}
@@ -84,17 +88,10 @@ export default observer(function Home() {
               placeholder="What do you want to post?"
             />
           </div>
-          {UploadingPostsStore.posts.map((post) => (
-            <Post key={post.id} post={post} uploading={true} />
-          ))}
           {!isLoading && pages && (
             <div ref={postsWrapRef}>
-              {pages.map((page, i) => (
-                <React.Fragment key={i}>
-                  {page.map((post) => (
-                    <Post key={post.id} post={post} />
-                  ))}
-                </React.Fragment>
+              {PostStore.posts.map((post) => (
+                <Post key={post.id} post={post} />
               ))}
             </div>
           )}

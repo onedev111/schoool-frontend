@@ -4,9 +4,12 @@ import dragOverState from 'utils/dragOverState'
 import cn from 'classnames'
 import Alert from 'Shared/Modal/Alert'
 
-export type UploadingVideo = File
+export type SavedVideo = { isNew: false; url: string }
+export type NewVideo = { isNew: true; file: File; url: string }
+export type UploadingVideo = SavedVideo | NewVideo
 
 type Props = {
+  video?: UploadingVideo
   onChange?(video: UploadingVideo | undefined): void
 }
 
@@ -17,19 +20,23 @@ const supportedMimes = [
   'video/quicktime',
 ]
 
-const createVideoUploadState = ({ onChange }: Props = {}) =>
+const createVideoUploadState = ({ video, onChange }: Props = {}) =>
   makeAutoObservable({
     onChange,
-    video: undefined as UploadingVideo | undefined,
-    setVideo(video: UploadingVideo | undefined) {
-      if (video && !supportedMimes.includes(video.type)) {
+    video,
+    setFile(file: File | undefined) {
+      if (file && !supportedMimes.includes(file.type)) {
         this.setWarning('Supported video formats are mp4, ogg and webm')
-        this.setVideo(undefined)
+        this.setFile(undefined)
         return
       }
 
-      if (onChange) onChange(video)
-      this.video = video
+      this.video = file && {
+        isNew: true,
+        file,
+        url: URL.createObjectURL(file),
+      }
+      if (onChange) onChange(this.video)
     },
     isDragOver: false,
     setDragOver(value: boolean) {
@@ -45,7 +52,7 @@ const createVideoUploadState = ({ onChange }: Props = {}) =>
         dataTransfer: { items, files },
       } = e
 
-      const video = items
+      const file = items
         ? (Array.from(items)
             .filter(
               (item) => item.kind === 'file' && item.type.startsWith('video'),
@@ -53,14 +60,11 @@ const createVideoUploadState = ({ onChange }: Props = {}) =>
             .getAsFile() as File)
         : Array.from(files).filter((item) => item.type.startsWith('video'))[0]
 
-      this.setVideo(video)
+      this.setFile(file)
     },
     onChangeVideo(e: any) {
-      this.setVideo(e.target.files[0])
+      this.setFile(e.target.files[0])
       e.target.value = []
-    },
-    get url() {
-      return this.video && URL.createObjectURL(this.video)
     },
     get dragArea() {
       return (

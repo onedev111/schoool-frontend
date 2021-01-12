@@ -5,15 +5,18 @@ import {
   RecorderState,
 } from 'utils/audioRecorder'
 
-export type UploadingAudio = {
+export type SavedAudio = { isNew: false; url: string }
+export type NewAudio = {
+  isNew: true
   arrayBuffer: ArrayBuffer
   blob: Blob
   url: string
   duration: number
 }
+export type UploadingAudio = SavedAudio | NewAudio
 
 type Props = {
-  audio?: UploadingAudio
+  audio?: NewAudio
 }
 
 export default function createAudioRecordingState({ audio }: Props) {
@@ -111,6 +114,7 @@ export default function createAudioRecordingState({ audio }: Props) {
     const blob = new Blob([e.data], { type: 'audio/wav' })
     const url = URL.createObjectURL(blob)
     state.result = {
+      isNew: true,
       arrayBuffer: e.data,
       blob,
       url,

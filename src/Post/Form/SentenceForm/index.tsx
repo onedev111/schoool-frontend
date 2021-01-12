@@ -17,11 +17,9 @@ export default observer(function SentenceForm({ state }: Props) {
       contentClass="pt-6 px-8 pb-12"
       buttonWrapClass="flex-center mt-12"
       title={
-        notebookSentence
-          ? 'Edit Notebook SentenceForm'
-          : 'Add Notebook SentenceForm'
+        notebookSentence ? 'Edit Notebook Sentence' : 'Add Notebook Sentence'
       }
-      buttonText={notebookSentence ? 'Save SentenceForm' : 'Add SentenceForm'}
+      buttonText={notebookSentence ? 'Save Sentence' : 'Add Sentence'}
       onClose={() => state.backToForm()}
       onSubmit={(sentence) => state.setSentence(sentence)}
       backButton={true}

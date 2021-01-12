@@ -2,6 +2,7 @@ import React from 'react'
 import useToggle from 'utils/useToggle'
 import { Post } from 'Post/types'
 import Modal from 'Shared/Modal'
+import { observer } from 'mobx-react-lite'
 
 type Props = {
   showFullText: boolean
@@ -10,7 +11,7 @@ type Props = {
   textRef: React.MutableRefObject<null>
 }
 
-export default function ReadMore({
+export default observer(function ReadMore({
   showFullText,
   toggleShowFullText,
   post,
@@ -69,4 +70,4 @@ export default function ReadMore({
       </button>
     </>
   )
-}
+})

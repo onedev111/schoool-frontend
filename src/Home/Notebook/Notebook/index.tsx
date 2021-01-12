@@ -71,7 +71,14 @@ export default function Notebook() {
 
   return (
     <>
-      {deleteModal && <DeleteModal onClose={toggleDeleteModal} />}
+      {deleteModal && (
+        <DeleteModal
+          onClose={toggleDeleteModal}
+          onDelete={() => {
+            // todo
+          }}
+        />
+      )}
       {addModal && false && <NotebookMaxSentences onClose={toggleAddModal} />}
       {addModal && true && (
         <Modal onClose={toggleAddModal} className="text-center" size="small">

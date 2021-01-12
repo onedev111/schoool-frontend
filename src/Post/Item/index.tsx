@@ -16,13 +16,13 @@ import Attachments from 'Post/Item/Attachments'
 import Spin from 'assets/images/icons/Spin'
 import { formatDate } from 'utils/date'
 import Text from 'Post/Item/Text'
+import { observer } from 'mobx-react-lite'
 
 type Props = {
   post: PostType
-  uploading?: boolean
 }
 
-export default function Post({ post, uploading }: Props) {
+export default observer(function Post({ post }: Props) {
   const textRef = React.useRef(null)
   const [showFullText, toggleShowFullText] = useToggle()
   const [openComments, toggleComments] = useToggle()
@@ -42,7 +42,7 @@ export default function Post({ post, uploading }: Props) {
         />
 
         <div className="px-5 pt-5">
-          {(uploading || post.error) && (
+          {(post.isUploading || post.error) && (
             <div
               className={cn(
                 'flex-center mb-4',
@@ -136,24 +136,18 @@ export default function Post({ post, uploading }: Props) {
           >
             <Check size={40} />
           </button>
-          <Menu
-            post={post}
-            button={({ onClick }) => (
-              <Notebook
-                className={cn(
-                  'transition duration-200',
-                  post.notebookSentence ? 'text-blue-primary' : 'text-gray-5f',
-                )}
-                onClick={onClick}
-              />
-            )}
-            className="relative z-10 w-1/4 flex-center"
-            notebookMenu
-          />
+          <button type="button">
+            <Notebook
+              className={cn(
+                'transition duration-200',
+                post.notebookSentence ? 'text-blue-primary' : 'text-gray-5f',
+              )}
+            />
+          </button>
         </div>
 
         <CommentForm className="pt-6 pb-3 pl-5 pr-8 flex-center" />
       </div>
     </>
   )
-}
+})

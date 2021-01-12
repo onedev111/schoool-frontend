@@ -25,7 +25,7 @@ export default observer(function Cropper({ state, onClose }: Props) {
     dragAreaText: 'Drag & Drop files here or click to browse',
     onChange: (images) => {
       const image = images[0]
-      if (image?.link) setImage(image.link)
+      if (image?.url) setImage(image.url)
     },
   })
 

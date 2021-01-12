@@ -28,7 +28,7 @@ export default function Zoom({ state }: Props) {
       className="pb-12"
       onSubmit={() => {
         state.setLinks([
-          ...state.values.links.filter((link) => link.type === 'zoom'),
+          ...state.values.links.filter((link) => link.type !== 'zoom'),
           { type: 'zoom', link },
         ])
         onClose()

@@ -126,7 +126,6 @@ export function createAudioRecorder({
   const { sampleRate } = context
   const events = document.createDocumentFragment()
   let stream: MediaStream
-  let streamClone: MediaStream
   let input: MediaStreamAudioSourceNode
   let processor: ScriptProcessorNode
   let audioRequested = false
@@ -191,8 +190,7 @@ export function createAudioRecorder({
       if (!stream)
         stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
-      streamClone = stream.clone()
-      input = context.createMediaStreamSource(streamClone)
+      input = context.createMediaStreamSource(stream)
       processor = context.createScriptProcessor(bufferLength, 1, 1)
       processor.onaudioprocess = (e) => {
         if (this.state === 'recording') {
@@ -213,7 +211,7 @@ export function createAudioRecorder({
       if (this.state === 'inactive') return
 
       setState(this, 'inactive')
-      streamClone.getAudioTracks().forEach((track) => track.stop())
+      stream.getAudioTracks().forEach((track) => track.stop())
       processor.disconnect()
       input.disconnect()
     },
