@@ -6,7 +6,7 @@ type Props = {
   onChange(e: React.ChangeEvent<HTMLTextAreaElement>): void
   onBlur?(e: React.ChangeEvent<HTMLTextAreaElement>): void
   error?: string
-  name: string
+  name?: string
   label?: string
   required?: boolean
   className?: string

@@ -4,10 +4,11 @@ import { Plus } from '@styled-icons/boxicons-regular/Plus'
 import Item from './Item'
 
 type Props = {
+  toggleCreateModal(): void
   className?: string
 }
 
-export default function ClassesList({ className }: Props) {
+export default function ClassesList({ toggleCreateModal, className }: Props) {
   const hasClasses = true
 
   return (
@@ -20,7 +21,11 @@ export default function ClassesList({ className }: Props) {
             Explore Classes
           </div>
         )}
-        <button type="button" className="flex-center mb-4">
+        <button
+          type="button"
+          className="flex-center mb-4"
+          onClick={toggleCreateModal}
+        >
           <div className="w-15 h-15 rounded-full border border-gray-a4 text-gray-a4 flex-center mr-3 font-bold text-lg">
             <Plus size={32} />
           </div>
