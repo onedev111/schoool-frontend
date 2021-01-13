@@ -19,6 +19,42 @@ type Screen =
   | 'zoom'
 
 export const createFormState = ({ post }: { post?: Partial<Post> }) => {
+  const values = {
+    id: post?.id || 0,
+    isUploading: true,
+    isPublic: post?.isPublic || true,
+    classIds: post?.classIds || [],
+    isMine: true,
+    user: getCurrentUser(),
+    date: dayjs(),
+    liked: post?.liked || false,
+    likesCount: post?.likesCount || 0,
+    commentsCount: post?.commentsCount || 0,
+    saved: false,
+    html:
+      (post?.text !== undefined &&
+        post?.tags &&
+        getTaggedEditorHTML({ text: post.text, tags: post.tags })) ||
+      '',
+    notebookSentence: post?.notebookSentence,
+    images: post?.images?.map((url) => ({ isNew: false, url })) || [],
+    video: post?.video && { isNew: false, url: post.video },
+    audio: post?.audio && { isNew: false, url: post.audio },
+    youtubeId: post?.youtubeId,
+    loopingAudioVoices: [],
+    loopingAudio: post?.loopingAudio,
+    zoomLink: post?.zoomLink,
+    sharedPost: post?.sharedPost,
+  } as Omit<Post, 'images' | 'video' | 'audio' | 'text' | 'tags'> & {
+    html: string
+    images: UploadingImage[]
+    video?: UploadingVideo
+    audio?: UploadingAudio
+    loopingAudioVoices: Voice[]
+  }
+
+  type Values = typeof values
+
   return makeAutoObservable({
     editorRef: { current: null } as { current: null | HTMLDivElement },
     currentScreen: 'form' as Screen,
@@ -29,39 +65,7 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     backToForm() {
       this.currentScreen = 'form'
     },
-    values: {
-      id: post?.id || 0,
-      isUploading: true,
-      isPublic: post?.isPublic || true,
-      classIds: post?.classIds || [],
-      isMine: true,
-      user: getCurrentUser(),
-      date: dayjs(),
-      liked: post?.liked || false,
-      likesCount: post?.likesCount || 0,
-      commentsCount: post?.commentsCount || 0,
-      saved: false,
-      html:
-        (post?.text !== undefined &&
-          post?.tags &&
-          getTaggedEditorHTML({ text: post.text, tags: post.tags })) ||
-        '',
-      notebookSentence: post?.notebookSentence,
-      images: post?.images?.map((url) => ({ isNew: false, url })) || [],
-      video: post?.video && { isNew: false, url: post.video },
-      audio: post?.audio && { isNew: false, url: post.audio },
-      youtubeId: post?.youtubeId,
-      loopingAudioVoices: [],
-      loopingAudio: post?.loopingAudio,
-      zoomLink: post?.zoomLink,
-      sharedPost: post?.sharedPost,
-    } as Omit<Post, 'images' | 'video' | 'audio' | 'text' | 'tags'> & {
-      html: string
-      images: UploadingImage[]
-      video?: UploadingVideo
-      audio?: UploadingAudio
-      loopingAudioVoices: Voice[]
-    },
+    values,
     setSelectionRange(range: Range) {
       this.selectionRange = range
     },
@@ -104,7 +108,8 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
       this.values.classIds = classIds
     },
     get canPost() {
-      const { values } = this
+      const values = this.values as Values
+
       return (
         values.html.trim().length > 0 ||
         values.images.length > 0 ||
@@ -114,8 +119,7 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
         values.loopingAudio ||
         values.notebookSentence ||
         values.zoomLink ||
-        values.sharedPost ||
-        values.links.length > 0
+        values.sharedPost
       )
     },
   })
