@@ -3,10 +3,10 @@ import { X } from '@styled-icons/boxicons-regular/X'
 import cn from 'classnames'
 import { CaretDown } from '@styled-icons/boxicons-regular/CaretDown'
 import submit from 'Post/Form/submit'
-import FormTextarea from 'Post/Form/Textarea'
+import ContentEditable from 'Shared/Form/ContentEditable'
 import Audio from 'Post/Item/Audio'
 import Sentence from 'Home/Sentence'
-import Link from 'Post/Item/Link'
+import Link from 'Post/Attachments/Link'
 import VideoPreview from 'Post/Form/VideoPreview'
 import ImagePreviews from 'Post/Form/ImagePreviews'
 import AddMediaPanel from 'Post/Form/MainScreen/AddMediaPanel'
@@ -16,6 +16,9 @@ import { State as VideoUploadState } from 'utils/videoUploadState'
 import { State as YouTubeState } from 'utils/youTubeState'
 import pluralize from 'utils/pluralize'
 import { observer } from 'mobx-react-lite'
+import ZoomIcon from 'assets/images/icons/Zoom'
+import ZoomLink from 'Post/Attachments/Link/ZoomLink'
+import SharedPostLink from 'Post/Attachments/Link/SharedPostLink'
 
 type Props = {
   state: State
@@ -89,7 +92,14 @@ export default observer(function PostFormMainScreen({
           </button>
         </div>
 
-        <FormTextarea state={state} />
+        <div className="mt-7 mb-4 text-lg block">
+          <ContentEditable
+            placeholder="Post anything about English learning."
+            editorRef={state.editorRef}
+            getValue={() => state.values.html}
+            setValue={(html) => state.setHTML(html)}
+          />
+        </div>
 
         {state.values.audio && (
           <Audio
@@ -112,21 +122,20 @@ export default observer(function PostFormMainScreen({
           <Sentence state={state} className="mt-4" />
         )}
 
-        {state.values.links && state.values.links.length > 0 && (
-          <div className="mt-4">
-            {state.values.links?.map((link, i) => (
-              <Link
-                className={i !== 0 ? 'mt-4' : undefined}
-                link={link}
-                key={i}
-                onDelete={() =>
-                  state.setLinks(
-                    state.values.links.filter((item) => item !== link),
-                  )
-                }
-              />
-            ))}
-          </div>
+        {state.values.sharedPost && (
+          <SharedPostLink
+            sharedPost={state.values.sharedPost}
+            className="mt-4"
+            onDelete={() => state.setSharedPost()}
+          />
+        )}
+
+        {state.values.zoomLink && (
+          <ZoomLink
+            className="mt-4"
+            zoomLink={state.values.zoomLink}
+            onDelete={() => state.setZoomLink()}
+          />
         )}
       </div>
 

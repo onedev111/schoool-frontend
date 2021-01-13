@@ -4,6 +4,7 @@ import * as yup from 'yup'
 import Textarea from 'Shared/Form/Textarea'
 import { NotebookSentence } from 'Post/types'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
+import Loader from 'Shared/Loader'
 
 type Props = {
   backButton?: boolean
@@ -43,9 +44,20 @@ export default function SentenceForm({
     defaultValues: sentence || { text: '', translation: '' },
   })
 
-  const submit = (values: NotebookSentence) => {
-    onSubmit(values)
-    onClose()
+  const [error, setError] = React.useState<Error | undefined>()
+  const [isLoading, setLoading] = React.useState(false)
+
+  const submit = async (values: NotebookSentence) => {
+    if (isLoading) return
+    setLoading(true)
+    try {
+      await onSubmit(values)
+      setError(undefined)
+      onClose()
+    } catch (err) {
+      setLoading(false)
+      setError(err)
+    }
   }
 
   return (
@@ -63,6 +75,9 @@ export default function SentenceForm({
         {title}
       </div>
       <hr className="text-gray-c5" />
+      {error && (
+        <div className="text-red-500 text-center mb-2">{error.message}</div>
+      )}
       <div className={contentClass}>
         <Textarea
           className="mb-6 flex flex-col"
@@ -83,11 +98,13 @@ export default function SentenceForm({
           placeholder="Add translation in your native language"
         />
         <div className={buttonWrapClass}>
-          <input
-            type="submit"
+          <button
             className="rounded-full bg-blue-primary text-white h-8 px-7 font-bold cursor-pointer"
-            value={buttonText}
-          />
+            disabled={isLoading}
+          >
+            {isLoading && <Loader className="w-5 h-5" />}
+            {!isLoading && buttonText}
+          </button>
         </div>
       </div>
     </form>

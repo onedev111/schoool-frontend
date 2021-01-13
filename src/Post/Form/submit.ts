@@ -3,7 +3,7 @@ import api from 'api'
 import dayjs from 'dayjs'
 import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 import { UploadingVideo } from 'utils/videoUploadState'
-import PostStore from 'Post/PostStore'
+import PostStore from 'Post/Store'
 import { Post } from 'Post/types'
 import { getTextAndTagsFromEditor } from 'utils/tags'
 

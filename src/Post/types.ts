@@ -1,17 +1,5 @@
 import { Dayjs } from 'dayjs'
 
-export type ZoomLink = { type: 'zoom'; link: string }
-
-export type Link =
-  | { type: 'post' | 'studyflow'; title: string; text: string }
-  | { type: 'link'; image: string; title: string; text: string }
-  | ZoomLink
-
-export type Video = {
-  src: string
-  ratio: number
-}
-
 export type NotebookSentence = {
   text: string
   translation: string
@@ -24,7 +12,6 @@ export type Post = {
   classIds: number[]
   text: string
   isMine: boolean
-  links: Link[]
   user: {
     id: number
     name: string
@@ -32,7 +19,7 @@ export type Post = {
   }
   liked: boolean
   likesCount: number
-  repliesCount: number
+  commentsCount: number
   saved: boolean
   images: string[]
   joinedToClass?: boolean
@@ -46,21 +33,8 @@ export type Post = {
   error?: string
   notebookSentence?: NotebookSentence
   tags: Tag[]
-}
-
-export type Comment = {
-  avatar: string
-  name: string
-  replyId?: number
-  date: Date
-  liked: number
-  comment: string
-  links?: Link[]
-  audio?: string
-  loopingAudio?: string
-  images: string[]
-  video?: string
-  comments?: Comment[]
+  zoomLink?: string
+  sharedPost?: SharedPost
 }
 
 export type TagType = 'user' | 'class' | 'studyflow'
@@ -77,4 +51,13 @@ export type Tag = {
   type: TagType
   start: number
   length: number
+}
+
+export type SharedPost = {
+  id: number
+  text: string
+  user: {
+    id: number
+    name: string
+  }
 }

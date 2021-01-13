@@ -1,6 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { NotebookSentence, Post } from 'Post/types'
-import { Link } from 'Post/types'
+import { NotebookSentence, Post, SharedPost } from 'Post/types'
 import { getCurrentUser } from 'User/currentUser'
 import dayjs from 'dayjs'
 import { UploadingImage } from 'utils/imageUploadState'
@@ -19,7 +18,7 @@ type Screen =
   | 'loopingAudio'
   | 'zoom'
 
-export const createFormState = ({ post }: { post?: Post }) => {
+export const createFormState = ({ post }: { post?: Partial<Post> }) => {
   return makeAutoObservable({
     editorRef: { current: null } as { current: null | HTMLDivElement },
     currentScreen: 'form' as Screen,
@@ -40,17 +39,22 @@ export const createFormState = ({ post }: { post?: Post }) => {
       date: dayjs(),
       liked: post?.liked || false,
       likesCount: post?.likesCount || 0,
-      repliesCount: post?.repliesCount || 0,
+      commentsCount: post?.commentsCount || 0,
       saved: false,
-      html: getTaggedEditorHTML(post),
+      html:
+        (post?.text !== undefined &&
+          post?.tags &&
+          getTaggedEditorHTML({ text: post.text, tags: post.tags })) ||
+        '',
       notebookSentence: post?.notebookSentence,
-      links: post?.links || [],
-      images: post?.images.map((url) => ({ isNew: false, url })) || [],
+      images: post?.images?.map((url) => ({ isNew: false, url })) || [],
       video: post?.video && { isNew: false, url: post.video },
       audio: post?.audio && { isNew: false, url: post.audio },
       youtubeId: post?.youtubeId,
       loopingAudioVoices: [],
       loopingAudio: post?.loopingAudio,
+      zoomLink: post?.zoomLink,
+      sharedPost: post?.sharedPost,
     } as Omit<Post, 'images' | 'video' | 'audio' | 'text' | 'tags'> & {
       html: string
       images: UploadingImage[]
@@ -87,8 +91,11 @@ export const createFormState = ({ post }: { post?: Post }) => {
     setLoopingAudio(url?: string) {
       this.values.loopingAudio = url
     },
-    setLinks(links: Link[]) {
-      this.values.links = links
+    setZoomLink(zoomLink?: string) {
+      this.values.zoomLink = zoomLink
+    },
+    setSharedPost(sharedPost?: SharedPost) {
+      this.values.sharedPost = sharedPost
     },
     setIsPublic(value: boolean) {
       this.values.isPublic = value
@@ -106,6 +113,8 @@ export const createFormState = ({ post }: { post?: Post }) => {
         values.audio ||
         values.loopingAudio ||
         values.notebookSentence ||
+        values.zoomLink ||
+        values.sharedPost ||
         values.links.length > 0
       )
     },

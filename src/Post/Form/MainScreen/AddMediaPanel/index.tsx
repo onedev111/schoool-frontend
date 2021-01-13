@@ -34,9 +34,7 @@ export default function AddMediaPanel({
     },
   })
 
-  const hasLinkOtherThanZoom = state.values.links?.some(
-    (link) => link.type !== 'zoom',
-  )
+  const hasLinkOtherThanZoom = Boolean(state.values.sharedPost)
 
   return (
     <div className="pt-3 px-7 pb-7">

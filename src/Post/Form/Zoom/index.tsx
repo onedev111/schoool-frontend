@@ -2,17 +2,13 @@ import React from 'react'
 import { State } from 'Post/Form/State'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 import cn from 'classnames'
-import { ZoomLink } from 'Post/types'
 
 type Props = {
   state: State
 }
 
 export default function Zoom({ state }: Props) {
-  const [link, setLink] = React.useState(
-    (state.values.links.find((link) => link.type === 'zoom') as ZoomLink)
-      ?.link || '',
-  )
+  const [link, setLink] = React.useState(state.values.zoomLink || '')
   let isValid = false
 
   try {
@@ -27,10 +23,7 @@ export default function Zoom({ state }: Props) {
     <form
       className="pb-12"
       onSubmit={() => {
-        state.setLinks([
-          ...state.values.links.filter((link) => link.type !== 'zoom'),
-          { type: 'zoom', link },
-        ])
+        state.setZoomLink(link)
         onClose()
       }}
     >

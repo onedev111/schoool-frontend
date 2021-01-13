@@ -1,17 +1,15 @@
 import React from 'react'
-import { useQuery } from 'react-query'
-import api from 'api'
 import classIcon from 'assets/images/icons/class.png'
 import Spin from 'assets/images/icons/Spin'
 import Post from 'Post/Item'
+import usePosts from 'Post/usePosts'
+import { observer } from 'mobx-react-lite'
 
-export default function Posts() {
-  const { data, isLoading } = useQuery('posts', () =>
-    api.post.list({ limit: 20, offset: 0 }),
-  )
+export default observer(function Posts() {
+  const wrapRef = React.useRef<HTMLDivElement>(null)
+  const { isFetching, posts } = usePosts({ ref: wrapRef })
 
-  const hasPosts = true
-  if (!hasPosts)
+  if (!isFetching && posts.length === 0)
     return (
       <div className="bg-white shadow p-6 h-full">
         <div className="flex-center flex-col mt-32 pt-2">
@@ -26,15 +24,15 @@ export default function Posts() {
     )
 
   return (
-    <>
-      {isLoading && (
+    <div ref={wrapRef}>
+      {isFetching && (
         <div className="flex-center mt-5">
           <Spin className="w-10 h-10 text-blue-primary animate-spin" />
         </div>
       )}
-      {!isLoading &&
-        data &&
-        data.map((post) => <Post key={post.id} post={post} />)}
-    </>
+      {!isFetching &&
+        posts &&
+        posts.map((post) => <Post key={post.id} post={post} />)}
+    </div>
   )
-}
+})

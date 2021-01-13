@@ -1,6 +1,6 @@
-import { Post, Tag, TagType } from 'Post/types'
+import { Tag, TagType } from 'Post/types'
 
-export const getTextAndTagsParts = (post: Post) => {
+export const getTextAndTagsParts = (post: { text: string; tags: Tag[] }) => {
   const parts: string[] = [post.text]
   const partsTags: (Tag | null)[] = [null]
 
@@ -103,7 +103,7 @@ export const createTagElement = (tag: {
   return link
 }
 
-export const getTaggedEditorHTML = (post?: Post) => {
+export const getTaggedEditorHTML = (post?: { text: string; tags: Tag[] }) => {
   if (!post) return ''
 
   const { parts, partsTags } = getTextAndTagsParts(post)

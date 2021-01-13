@@ -14,6 +14,7 @@ type Props = {
   size?: keyof typeof sizes
   className?: string
   width?: number
+  scrollingElementRef?: { current: HTMLDivElement | null }
   [key: string]: any
 }
 
@@ -23,6 +24,7 @@ export default function Modal({
   onClose,
   className,
   width,
+  scrollingElementRef,
   ...props
 }: Props) {
   useHideBodyScroll()
@@ -34,10 +36,13 @@ export default function Modal({
       onClick={onClose}
       {...props}
     >
-      <div className="overflow-auto max-h-full w-full py-10 flex flex-wrap justify-center">
+      <div
+        className="overflow-auto max-h-full w-full py-10 flex flex-wrap justify-center"
+        ref={scrollingElementRef}
+      >
         <div
           className={cn(
-            'bg-white rounded-lg border border-gray-bb shadow w-full',
+            'bg-white rounded-lg border border-gray-bb shadow max-w-full',
             className,
           )}
           style={{ width: width ? `${width}px` : sizes[size] }}

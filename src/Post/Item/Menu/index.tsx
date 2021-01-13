@@ -7,7 +7,7 @@ import style from './style.module.css'
 import PostForm from 'Post/Form'
 import DeleteModal from 'Shared/Modal/Delete'
 import api from 'api'
-import PostStore from 'Post/PostStore'
+import PostStore from 'Post/Store'
 
 const itemClass = `w-full flex-center transition duration-200 hover:bg-gray-f2 cursor-pointer ${style.menuItem}`
 
@@ -22,10 +22,14 @@ export default function Menu({ post, button, className }: Props) {
   const { isMine } = post
   const [showPostForm, togglePostForm] = useToggle()
   const [showDeleteModal, toggleDeleteModal] = useToggle()
+  const [showShare, toggleShare] = useToggle()
 
   return (
     <>
       {showPostForm && <PostForm post={post} onClose={togglePostForm} />}
+      {showShare && (
+        <PostForm post={{ sharedPost: post }} onClose={toggleShare} />
+      )}
       {showDeleteModal && (
         <DeleteModal
           onClose={toggleDeleteModal}
@@ -43,12 +47,16 @@ export default function Menu({ post, button, className }: Props) {
         {!isMine && <div className={`${itemClass}`}>Send Message</div>}
         {!isMine && <div className={`${itemClass} text-blue-deep`}>Follow</div>}
 
-        {savePostOpen && <SavePostModal onClose={toggleSavePost} />}
-        <div onClick={toggleSavePost} className={`${itemClass} text-blue-deep`}>
-          Save Post
-        </div>
+        {/*{savePostOpen && <SavePostModal onClose={toggleSavePost} />}*/}
+        {/*<div onClick={toggleSavePost} className={`${itemClass} text-blue-deep`}>*/}
+        {/*  Save Post*/}
+        {/*</div>*/}
 
-        {!isMine && <div className={`${itemClass}`}>Share This Post</div>}
+        {!isMine && (
+          <div className={`${itemClass}`} onClick={toggleShare}>
+            Share This Post
+          </div>
+        )}
         {!isMine && <div className={`${itemClass} text-blue-deep`}>Report</div>}
         {isMine && (
           <button
@@ -65,7 +73,11 @@ export default function Menu({ post, button, className }: Props) {
         >
           Delete
         </div>
-        {isMine && <div className={`${itemClass}`}>Share This Post</div>}
+        {isMine && (
+          <div className={`${itemClass}`} onClick={toggleShare}>
+            Share This Post
+          </div>
+        )}
       </Dropdown>
     </>
   )

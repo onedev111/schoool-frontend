@@ -3,24 +3,25 @@ import { makeAutoObservable } from 'mobx'
 import dragOverState from 'utils/dragOverState'
 import cn from 'classnames'
 import Alert from 'Shared/Modal/Alert'
+import pluralize from 'utils/pluralize'
 
 export type SavedImage = { isNew: false; url: string }
 export type NewImage = { isNew: true; file: File; url?: string }
 export type UploadingImage = SavedImage | NewImage
 
-const maxImagesCount = 4
-
 const supportedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']
 
 type Props = {
   images?: UploadingImage[]
+  maxImagesCount?: number
   dragAreaAlwaysVisible?: boolean
   dragAreaText?: string
   onChange?(images: UploadingImage[]): void
 }
 
-const createImageUploadState = ({
+export const createImageUploadState = ({
   images = [],
+  maxImagesCount = 4,
   dragAreaAlwaysVisible,
   dragAreaText = 'Drag & Drop files here',
   onChange,
@@ -30,6 +31,9 @@ const createImageUploadState = ({
     images,
     setImages(images: UploadingImage[]) {
       this.images = images
+    },
+    reset() {
+      this.changeImages([])
     },
     isDragOver: false,
     setDragOver(value: boolean) {
@@ -51,7 +55,12 @@ const createImageUploadState = ({
         .filter((file) => supportedMimes.includes(file.type))
 
       if (files.length > maxCount)
-        this.setWarning('You can only choose 4 photos')
+        this.setWarning(
+          `You can only choose ${maxImagesCount} ${pluralize(
+            'photo',
+            maxImagesCount,
+          )}`,
+        )
       else if (filesArray.some((file) => !supportedMimes.includes(file.type)))
         this.setWarning('Supported image formats are jpeg, png, svg and gif')
       else this.setWarning(undefined)

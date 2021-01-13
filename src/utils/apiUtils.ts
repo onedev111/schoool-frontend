@@ -60,3 +60,4 @@ const mutate = (method: HTTPMethod) => <Response, Args extends any[]>(
 
 export const getMutation = mutate('GET')
 export const post = mutate('POST')
+export const del = mutate('DELETE')

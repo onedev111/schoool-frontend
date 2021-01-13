@@ -1,10 +1,10 @@
-import { get, getMutation, post } from 'utils/apiUtils'
+import { del, get, getMutation, post } from 'utils/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
-import { Link, Post, Tag, TagToInsert, TagType, ZoomLink } from 'Post/types'
+import { Post, Tag, TagToInsert, TagType } from 'Post/types'
 import dayjs from 'dayjs'
-import { queryCache } from 'react-query'
+import PostStore from 'Post/Store'
 
-type ListPostResponse = {
+type PostResponse = {
   base_language: string
   check_like: number
   check_notebook: number
@@ -120,6 +120,78 @@ const getTagsFromResponse = (type: TagType, ids = '', ranges = '') => {
     )
 }
 
+const mapPost = ({
+  post,
+  userId,
+}: {
+  post: PostResponse
+  userId: number
+}): Post => {
+  const tags: Tag[] = [
+    ...getTagsFromResponse(
+      'user',
+      post.tagged_user_ids,
+      post.tagged_user_ranges,
+    ),
+    ...getTagsFromResponse(
+      'class',
+      post.tagged_class_ids,
+      post.tagged_class_ranges,
+    ),
+    ...getTagsFromResponse(
+      'studyflow',
+      post.tagged_flow_ids,
+      post.tagged_flow_ranges,
+    ),
+  ].sort((a, b) => (a.start > b.start ? 1 : -1))
+
+  return {
+    id: post.share_post_id,
+    isUploading: false,
+    isPublic: Boolean(post.is_public),
+    classIds: post.class_ids
+      ? post.class_ids.split(',').map((id) => parseInt(id))
+      : [],
+    text: post.comment,
+    isMine: post.user_id === userId,
+    user: {
+      id: post.user_id,
+      name: post.name,
+      avatar: post.profile_image_dir,
+    },
+    liked: Boolean(post.liked),
+    likesCount: post.like_count,
+    commentsCount: post.reply_count,
+    saved: Boolean(post.check_notebook),
+    images: [
+      post.photo_dir,
+      post.photo_dir_second,
+      post.photo_dir_third,
+      post.photo_dir_fourth,
+    ].filter((image) => image),
+    video: post.video,
+    youtubeId: post.youtube_id,
+    audio: post.sound_dir,
+    loopingAudio: post.looping_url,
+    date: dayjs(`${post.date} UTC`),
+    notebookSentence: post.title
+      ? { text: post.title, translation: post.translated_title }
+      : undefined,
+    tags,
+    zoomLink: post.zoom_link,
+    sharedPost: !post.shared_share_id
+      ? undefined
+      : {
+          id: post.shared_share_id,
+          text: post.shared_comment,
+          user: {
+            id: post.shared_share_user_id,
+            name: post.shared_share_user_name,
+          },
+        },
+  }
+}
+
 export const list = get(
   ({ limit, offset }: { limit: number; offset: number }) => ({
     path: '/rest_share',
@@ -127,71 +199,32 @@ export const list = get(
       limit_posts: limit,
       num_of_posts: offset,
     },
-    response: (data: { data: ListPostResponse[] }): Post[] => {
+    response: (data: { data: PostResponse[] }): Post[] => {
       const userId = getCurrentUserId()
 
-      return data.data.map((post) => {
-        const links: Link[] = []
-
-        if (post.zoom_link) links.push({ type: 'zoom', link: post.zoom_link })
-
-        const tags: Tag[] = [
-          ...getTagsFromResponse(
-            'user',
-            post.tagged_user_ids,
-            post.tagged_user_ranges,
-          ),
-          ...getTagsFromResponse(
-            'class',
-            post.tagged_class_ids,
-            post.tagged_class_ranges,
-          ),
-          ...getTagsFromResponse(
-            'studyflow',
-            post.tagged_flow_ids,
-            post.tagged_flow_ranges,
-          ),
-        ].sort((a, b) => (a.start > b.start ? 1 : -1))
-
-        return {
-          id: post.share_post_id,
-          isUploading: false,
-          isPublic: Boolean(post.is_public),
-          classIds: post.class_ids
-            ? post.class_ids.split(',').map((id) => parseInt(id))
-            : [],
-          text: post.comment,
-          isMine: post.user_id === userId,
-          user: {
-            id: post.user_id,
-            name: post.name,
-            avatar: post.profile_image_dir,
-          },
-          liked: Boolean(post.liked),
-          likesCount: post.like_count,
-          repliesCount: post.reply_count,
-          saved: Boolean(post.check_notebook),
-          images: [
-            post.photo_dir,
-            post.photo_dir_second,
-            post.photo_dir_third,
-            post.photo_dir_fourth,
-          ].filter((image) => image),
-          video: post.video,
-          youtubeId: post.youtube_id,
-          audio: post.sound_dir,
-          loopingAudio: post.looping_url,
-          links,
-          date: dayjs(`${post.date} UTC`),
-          notebookSentence: post.title
-            ? { text: post.title, translation: post.translated_title }
-            : undefined,
-          tags,
-        }
-      })
+      return data.data.map((post) => mapPost({ post, userId }))
     },
   }),
 )
+
+export const findById = get(({ id }: { id: number }) => ({
+  path: '/get_share_by_post_id',
+  params: {
+    access_token: getUserToken(),
+    share_post_id: id,
+  },
+  response({
+    result_code,
+    data: post,
+  }: {
+    result_code: string
+    data: PostResponse
+  }) {
+    if (result_code !== '23.00') throw new Error('Something went wrong')
+
+    return mapPost({ post, userId: getCurrentUserId() })
+  },
+}))
 
 type CreatePostResponse = {
   comment: string
@@ -249,7 +282,7 @@ const makeTagsParams = (
 }
 
 const invalidatePosts = () => {
-  queryCache.invalidateQueries(['posts'])
+  PostStore.fetch({ reset: true })
 }
 
 export const save = post(
@@ -264,8 +297,9 @@ export const save = post(
     audio,
     loopingAudio,
     tags = [],
-    links = [],
     notebookSentence,
+    zoomLink,
+    sharedPost,
   }: Partial<Post>) => ({
     path: id ? '/edit_share_post' : '/add_share_post',
     data: {
@@ -278,14 +312,14 @@ export const save = post(
       photo_second: images[1],
       photo_third: images[2],
       photo_fourth: images[3],
-      video: video || -1,
+      video: video || id ? -1 : undefined,
       youtube_id: youtubeId,
-      sound: audio || -1,
+      sound: audio || id ? -1 : undefined,
       looping_url: loopingAudio,
-      zoom_link:
-        (links.find((link) => link.type === 'zoom') as ZoomLink)?.link || -1,
+      zoom_link: zoomLink || id ? '' : undefined,
       title: notebookSentence?.text,
       translated_title: notebookSentence?.translation,
+      shared_share_id: sharedPost ? sharedPost.id : id ? -1 : undefined,
       ...makeTagsParams(tags, 'user', 'tagged_user_ids', 'tagged_user_ranges'),
       ...makeTagsParams(
         tags,
@@ -362,3 +396,17 @@ export const searchTags = get(
     },
   }),
 )
+
+export const like = post(({ postId }: { postId: number }) => ({
+  path: `/rest_share/${postId}/like`,
+  response() {
+    // noop
+  },
+}))
+
+export const unlike = del(({ postId }: { postId: number }) => ({
+  path: `/rest_share/${postId}/like`,
+  response() {
+    // noop
+  },
+}))

@@ -19,7 +19,7 @@ import useToggle from 'utils/useToggle'
 import { Post } from 'Post/types'
 
 type Props = {
-  post?: Post
+  post?: Partial<Post>
   onClose(): void
 }
 
