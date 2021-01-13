@@ -46,3 +46,22 @@ export const insertElementToContentEditable = (
     editor.appendChild(element)
   }
 }
+
+export const focusAtTheEnd = (el: HTMLDivElement) => {
+  el.focus()
+  if (window.getSelection && document.createRange) {
+    const range = document.createRange()
+    range.selectNodeContents(el)
+    range.collapse(false)
+    const sel = window.getSelection()
+    if (sel) {
+      sel.removeAllRanges()
+      sel.addRange(range)
+    }
+  } else if ('createTextRange' in document.body) {
+    const textRange = (document.body as any).createTextRange()
+    textRange.moveToElementText(el)
+    textRange.collapse(false)
+    textRange.select()
+  }
+}

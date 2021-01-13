@@ -7,12 +7,14 @@ import { observer } from 'mobx-react-lite'
 import ZoomLink from 'Post/Attachments/Link/ZoomLink'
 import { SharedPost } from 'Post/types'
 import SharedPostLink from 'Post/Attachments/Link/SharedPostLink'
+import File from 'Post/Attachments/File'
 
 type Props = {
   audioClass?: string
   linkClass?: string
   imageClass?: string
   videoClass?: string
+  fileClass?: string
   attachments: {
     audio?: string
     loopingAudio?: string
@@ -21,6 +23,7 @@ type Props = {
     youtubeId?: string
     zoomLink?: string
     sharedPost?: SharedPost
+    file?: string
   }
 }
 
@@ -35,6 +38,7 @@ export default function Attachments({
   linkClass,
   imageClass,
   videoClass,
+  fileClass,
   attachments: {
     audio,
     loopingAudio,
@@ -43,6 +47,7 @@ export default function Attachments({
     youtubeId,
     zoomLink,
     sharedPost,
+    file,
   },
 }: Props) {
   return (
@@ -67,13 +72,15 @@ export default function Attachments({
         </>
       )}
 
-      <Photos className={imageClass} images={images} />
-
       {sharedPost && (
         <SharedPostLink sharedPost={sharedPost} className={linkClass} />
       )}
 
       {zoomLink && <ZoomLink zoomLink={zoomLink} className={linkClass} />}
+
+      {file && <File file={file} className={fileClass} />}
+
+      <Photos className={imageClass} images={images} />
 
       {video && <Video video={video} className={videoClass} />}
 

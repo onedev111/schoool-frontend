@@ -1,5 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite'
+import { focusAtTheEnd } from 'utils/contentEditable'
 
 type EditorRef = { current: HTMLDivElement | null }
 
@@ -9,41 +10,52 @@ const ContentEditableDiv = React.memo(
     minHeight,
     getValue,
     setValue,
+    autoFocus,
     onFocus,
     onBlur,
   }: {
     editorRef: EditorRef
     minHeight: number
+    autoFocus?: boolean
     getValue(): string
     setValue(value: string): void
     onFocus(): void
     onBlur(): void
-  }) => (
-    <div
-      ref={editorRef}
-      contentEditable
-      className="focus:outline-none w-full js-editor whitespace-pre-wrap"
-      style={{ minHeight: `${minHeight}px` }}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      dangerouslySetInnerHTML={{ __html: getValue() }}
-      onInput={(e) => {
-        setValue((e.target as HTMLElement).innerHTML)
-      }}
-      onPaste={(e: any) => {
-        e.preventDefault()
-        const text = (e.originalEvent || e).clipboardData.getData('text/plain')
-        document.execCommand('insertHTML', false, text)
-        setValue((e.target as HTMLElement).innerHTML)
-      }}
-    />
-  ),
+  }) => {
+    React.useEffect(() => {
+      if (autoFocus && editorRef.current) focusAtTheEnd(editorRef.current)
+    }, [])
+
+    return (
+      <div
+        ref={editorRef}
+        contentEditable
+        className="focus:outline-none w-full js-editor whitespace-pre-wrap"
+        style={{ minHeight: `${minHeight}px` }}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        dangerouslySetInnerHTML={{ __html: getValue() }}
+        onInput={(e) => {
+          setValue((e.target as HTMLElement).innerHTML)
+        }}
+        onPaste={(e: any) => {
+          e.preventDefault()
+          const text = (e.originalEvent || e).clipboardData.getData(
+            'text/plain',
+          )
+          document.execCommand('insertHTML', false, text)
+          setValue((e.target as HTMLElement).innerHTML)
+        }}
+      />
+    )
+  },
 )
 
 type Props = {
   placeholder: string
   minHeight?: number
   editorRef: EditorRef
+  autoFocus?: boolean
   getValue(): string
   setValue(value: string): void
 }
@@ -54,6 +66,7 @@ export default observer(function ContentEditable({
   editorRef,
   getValue,
   setValue,
+  autoFocus,
 }: Props) {
   const [focused, setFocused] = React.useState(false)
 
@@ -82,6 +95,7 @@ export default observer(function ContentEditable({
         onFocus={onFocus}
         onBlur={onBlur}
         minHeight={minHeight}
+        autoFocus={autoFocus}
       />
     </div>
   )

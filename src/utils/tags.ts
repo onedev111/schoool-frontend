@@ -1,10 +1,30 @@
-import { Tag, TagType } from 'Post/types'
+import { Tag, TagType, TagWithReply } from 'Post/types'
+import { InReplyTo } from 'Post/Comment/types'
 
-export const getTextAndTagsParts = (post: { text: string; tags: Tag[] }) => {
-  const parts: string[] = [post.text]
-  const partsTags: (Tag | null)[] = [null]
+export const getTextAndTagsParts = ({
+  text,
+  tags = [],
+  inReplyTo,
+}: {
+  text: string
+  tags?: Tag[]
+  inReplyTo?: InReplyTo
+}) => {
+  const repliedUser = inReplyTo?.user
+  const parts = repliedUser ? [repliedUser.name, ` ${text}`] : [text]
+  const partsTags: (TagWithReply | null)[] = repliedUser
+    ? [
+        {
+          id: repliedUser.id,
+          type: 'reply',
+          start: 0,
+          length: repliedUser.name.length,
+        },
+        null,
+      ]
+    : [null]
 
-  post.tags.forEach((tag) => {
+  tags.forEach((tag) => {
     const { start, length } = tag
     let pos = 0
     for (let i = 0; i < parts.length; i++) {
@@ -30,7 +50,7 @@ export const getTextAndTagsParts = (post: { text: string; tags: Tag[] }) => {
     }
   })
 
-  return { parts, partsTags, text: post.text }
+  return { parts, partsTags, text }
 }
 
 export const getTextAndTagsFromEditor = ({
@@ -38,7 +58,7 @@ export const getTextAndTagsFromEditor = ({
 }: {
   editor: HTMLDivElement
 }) => {
-  const text = editor.innerText || ''
+  let text = editor.innerText || ''
 
   const mark = String(Math.random()).slice(2)
 
@@ -57,19 +77,27 @@ export const getTextAndTagsFromEditor = ({
   const tags: Tag[] = []
 
   let position = 0
-  ;(div.innerText || '').split(mark).forEach((text, i) => {
+  let containsRepliedUserName = false
+
+  ;(div.innerText || '').split(mark).forEach((partText, i) => {
     if (i % 2 === 0) {
-      position += text.length
+      position += partText.length
       return
     }
 
     const tag: {
       id: number
-      type: TagType
+      type: TagType | 'reply'
       name: string
-    } = JSON.parse(text)
+    } = JSON.parse(partText)
 
     const length = tag.name.length
+
+    if (tag.type === 'reply') {
+      containsRepliedUserName = true
+      text = text.slice(0, position) + text.slice(position + length).trimLeft()
+      return
+    }
 
     tags.push({
       id: tag.id,
@@ -84,6 +112,7 @@ export const getTextAndTagsFromEditor = ({
   return {
     text,
     tags,
+    containsRepliedUserName,
   }
 }
 
@@ -103,10 +132,12 @@ export const createTagElement = (tag: {
   return link
 }
 
-export const getTaggedEditorHTML = (post?: { text: string; tags: Tag[] }) => {
-  if (!post) return ''
-
-  const { parts, partsTags } = getTextAndTagsParts(post)
+export const getTaggedEditorHTML = ({
+  text = '',
+  tags = [],
+  inReplyTo,
+}: { text?: string; tags?: Tag[]; inReplyTo?: InReplyTo } = {}) => {
+  const { parts, partsTags } = getTextAndTagsParts({ text, tags, inReplyTo })
   return parts
     .map((part, index) => {
       const tag = partsTags[index]

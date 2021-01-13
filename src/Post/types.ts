@@ -61,3 +61,5 @@ export type SharedPost = {
     name: string
   }
 }
+
+export type TagWithReply = Omit<Tag, 'type'> & { type: TagType | 'reply' }

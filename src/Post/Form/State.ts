@@ -31,11 +31,7 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     likesCount: post?.likesCount || 0,
     commentsCount: post?.commentsCount || 0,
     saved: false,
-    html:
-      (post?.text !== undefined &&
-        post?.tags &&
-        getTaggedEditorHTML({ text: post.text, tags: post.tags })) ||
-      '',
+    html: getTaggedEditorHTML(post),
     notebookSentence: post?.notebookSentence,
     images: post?.images?.map((url) => ({ isNew: false, url })) || [],
     video: post?.video && { isNew: false, url: post.video },

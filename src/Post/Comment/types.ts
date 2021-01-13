@@ -1,5 +1,13 @@
 import { Dayjs } from 'dayjs'
 
+export type InReplyTo = {
+  id?: number
+  user?: {
+    id: number
+    name: string
+  }
+}
+
 export type Comment = {
   id: number
   isUploading: boolean
@@ -21,11 +29,5 @@ export type Comment = {
   audio?: string
   loopingAudio?: string
   parentCommentId?: number
-  inReplyTo?: {
-    id?: number
-    user?: {
-      id: number
-      name: string
-    }
-  }
+  inReplyTo?: InReplyTo
 }

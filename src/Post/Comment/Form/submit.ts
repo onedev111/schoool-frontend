@@ -8,21 +8,23 @@ import CommentStore from 'Post/Comment/Store'
 
 type Props = {
   state: State
+  onSuccess?(comment: Comment): void
 }
 
-export default async function submit({ state }: Props) {
+export default async function submit({ state, onSuccess }: Props) {
   if (state.isSubmitting) return
   state.setIsSubmitting(true)
 
+  const { post } = state
   const { image } = state.values
 
-  const { text, tags } = getTextAndTagsFromEditor({
+  const { text, containsRepliedUserName } = getTextAndTagsFromEditor({
     editor: state.editorRef.current as HTMLDivElement,
   })
 
   const comment: Comment = {
     id: 0,
-    postId: state.values.postId,
+    postId: post.id,
     isMine: true,
     isUploading: true,
     user: getCurrentUser(),
@@ -31,6 +33,8 @@ export default async function submit({ state }: Props) {
     liked: false,
     likesCount: 0,
     image: image?.url,
+    parentCommentId: state.values.parentCommentId,
+    inReplyTo: !containsRepliedUserName ? undefined : state.values.inReplyTo,
   }
 
   if (image?.isNew) {
@@ -57,7 +61,9 @@ export default async function submit({ state }: Props) {
       postOwnerId: state.postOwnerId,
     })
     CommentStore.addComment({ comment, highlight: true })
+    post.commentsCount++
     state.reset()
+    if (onSuccess) onSuccess(comment)
   } catch (err) {
     state.setError(err)
   }

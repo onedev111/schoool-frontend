@@ -10,23 +10,29 @@ import createCommentFormState from 'Post/Comment/Form/State'
 import ContentEditable from 'Shared/Form/ContentEditable'
 import submit from 'Post/Comment/Form/submit'
 import { Post } from 'Post/types'
-import CommentStore from 'Post/Comment/Store'
 import Spin from 'assets/images/icons/Spin'
+import { Comment } from 'Post/Comment/types'
 
 type Props = {
+  comment?: Partial<Comment>
   post: Post
   className?: string
   minHeight: number
+  autoFocus?: boolean
+  onSuccess?(comment: Comment): void
 }
 
 export default observer(function CommentForm({
+  comment,
   post,
   className,
   minHeight,
+  autoFocus,
+  onSuccess,
 }: Props) {
   const editorRef = React.useRef<HTMLDivElement>(null)
   const [state] = React.useState(() =>
-    createCommentFormState({ post, editorRef }),
+    createCommentFormState({ comment, post, editorRef }),
   )
 
   useOnChangeSelectionRange((range) => state.setSelectionRange(range))
@@ -35,7 +41,7 @@ export default observer(function CommentForm({
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    submit({ state })
+    submit({ state, onSuccess })
   }
 
   return (
@@ -49,6 +55,7 @@ export default observer(function CommentForm({
           editorRef={state.editorRef}
           getValue={() => state.values.html}
           setValue={(html) => state.setHTML(html)}
+          autoFocus={autoFocus}
         />
         {state.imageUpload.images.map((image, i) => {
           if (!image.url) return <React.Fragment key={i} />

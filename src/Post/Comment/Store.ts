@@ -29,6 +29,9 @@ const CommentStore = makeAutoObservable({
     if (highlight && this.comments)
       this.highlightedComment = this.comments[this.comments.length - 1]
   },
+  setHighlightedComment(comment?: Comment) {
+    this.highlightedComment = comment
+  },
   async fetch({ postId }: { postId: number }) {
     if (this.isFetching && this.postId === postId) return
     if (this.postId !== postId) {

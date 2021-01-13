@@ -1,21 +1,29 @@
 import { makeAutoObservable } from 'mobx'
 import { createImageUploadState, UploadingImage } from 'utils/imageUploadState'
 import { Post } from 'Post/types'
-
-export type ReplyingComment = {
-  id: number
-  user: {
-    id: number
-    name: string
-  }
-}
+import { getTaggedEditorHTML } from 'utils/tags'
+import { Comment } from 'Post/Comment/types'
 
 type Props = {
+  comment?: Partial<Comment>
   post: Post
   editorRef: { current: HTMLDivElement | null }
 }
 
-export default function createCommentFormState({ post, editorRef }: Props) {
+export default function createCommentFormState({
+  comment,
+  post,
+  editorRef,
+}: Props) {
+  const values = {
+    parentCommentId: comment?.parentCommentId,
+    inReplyTo: comment?.inReplyTo,
+    html: getTaggedEditorHTML(comment),
+    image: undefined as UploadingImage | undefined,
+  }
+
+  type Values = typeof values
+
   const state = makeAutoObservable({
     imageUpload: createImageUploadState({
       maxImagesCount: 1,
@@ -27,21 +35,14 @@ export default function createCommentFormState({ post, editorRef }: Props) {
     selectionRange: undefined as Range | undefined,
     isSubmitting: false,
     postOwnerId: post.user.id,
-    values: {
-      postId: post.id,
-      html: '',
-      image: undefined as UploadingImage | undefined,
-      replyingComment: undefined as ReplyingComment | undefined,
-    },
+    post,
+    values,
     error: undefined as Error | undefined,
     setHTML(html: string) {
       this.values.html = html
     },
     setImage(image: UploadingImage) {
       this.values.image = image
-    },
-    setReplyingComment(comment: ReplyingComment) {
-      this.values.replyingComment = comment
     },
     setSelectionRange(range?: Range) {
       this.selectionRange = range
@@ -63,7 +64,8 @@ export default function createCommentFormState({ post, editorRef }: Props) {
       this.values.html = ''
     },
     get canSubmit() {
-      return this.values.image || this.values.html.trim().length > 0
+      const values = this.values as Values
+      return values.image || values.html.trim().length > 0
     },
   })
 

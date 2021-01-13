@@ -3,32 +3,24 @@ import { Post } from 'Post/types'
 import Like from 'Post/Item/Like'
 import { Comment } from '@styled-icons/fa-solid/Comment'
 import cn from 'classnames'
-import { Check } from '@styled-icons/boxicons-regular/Check'
 import Notebook from 'assets/images/icons/notebook'
 import useToggle from 'utils/useToggle'
-import CommentsModal from 'Post/Comment/Modal'
 import Modal from 'Shared/Modal'
 import SentenceForm from 'Home/Sentence/Form'
-import { NotebookSentence } from 'NotebookAndStudyflow/Notebook/types'
 import { useMutation } from 'react-query'
 import api from 'api'
 
 type Props = {
   post: Post
+  toggleComments(): void
 }
 
-export default function PostBottomPanel({ post }: Props) {
-  const [openComments, toggleComments] = useToggle()
+export default function PostBottomPanel({ post, toggleComments }: Props) {
   const [openAddToNotebook, toggleAddToNotebook] = useToggle()
   const [createSentence] = useMutation(api.notebook.create)
 
-  const handleNotebookClick = () => {
-    toggleAddToNotebook()
-  }
-
   return (
     <>
-      {openComments && <CommentsModal post={post} onClose={toggleComments} />}
       {openAddToNotebook && (
         <Modal onClose={toggleAddToNotebook} size="small">
           <SentenceForm
@@ -67,7 +59,7 @@ export default function PostBottomPanel({ post }: Props) {
         <button
           type="button"
           className="w-1/3 flex-center"
-          onClick={handleNotebookClick}
+          onClick={toggleAddToNotebook}
         >
           <Notebook
             className={cn(

@@ -1,32 +1,40 @@
 import React from 'react'
-import { Post, Tag } from 'Post/types'
+import { Tag } from 'Post/types'
 import cn from 'classnames'
 import style from 'Home/style.module.css'
 import { Link } from 'react-router-dom'
 import routes from 'routes'
 import { observer } from 'mobx-react-lite'
 import { getTextAndTagsParts } from 'utils/tags'
+import { InReplyTo } from 'Post/Comment/types'
 
 type Props = {
-  post: Post
-  textRef: { current: null | HTMLDivElement }
-  showFullText: boolean
+  data: { text: string; tags?: Tag[]; inReplyTo?: InReplyTo }
+  textRef?: { current: null | HTMLDivElement }
+  showFullText?: boolean
+  className?: string
 }
 
-export default observer(function Text({ post, textRef, showFullText }: Props) {
+export default observer(function Text({
+  data,
+  textRef,
+  showFullText = true,
+  className,
+}: Props) {
   const [{ parts, partsTags, text }, setTextParts] = React.useState(() =>
-    getTextAndTagsParts(post),
+    getTextAndTagsParts(data),
   )
 
   React.useEffect(() => {
-    if (post.text !== text) setTextParts(getTextAndTagsParts(post))
-  }, [post.text, post.tags])
+    if (data.text !== text) setTextParts(getTextAndTagsParts(data))
+  }, [data.text, data.tags, data.inReplyTo])
 
   return (
     <div
       ref={textRef}
       className={cn(
-        `text-gray-02 mb-3 whitespace-pre-wrap`,
+        `whitespace-pre-wrap`,
+        className,
         style.text,
         !showFullText && style.clampedText,
       )}
@@ -40,7 +48,7 @@ export default observer(function Text({ post, textRef, showFullText }: Props) {
           <Link
             key={i}
             to={
-              type === 'user'
+              type === 'user' || type === 'reply'
                 ? routes.user(id)
                 : type === 'class'
                 ? routes.class(id)
