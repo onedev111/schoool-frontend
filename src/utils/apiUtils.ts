@@ -50,7 +50,7 @@ const mutate = (method: HTTPMethod) => <Response, Args extends any[]>(
 ) => {
   return async (...args: Args) => {
     const { path, response, params, data, options, onSuccess } = fn(...args)
-    const result = response(
+    const result = await response(
       await request(method, `${path}${paramsToSearch(params)}`, data, options),
     )
     if (onSuccess) onSuccess()

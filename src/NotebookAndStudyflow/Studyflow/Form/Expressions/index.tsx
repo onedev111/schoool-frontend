@@ -1,41 +1,62 @@
 import React from 'react'
 import { UseFormMethods, Controller, useFieldArray } from 'react-hook-form'
 import cn from 'classnames'
+import { StudyFlowType } from 'NotebookAndStudyflow/Studyflow/types'
 
 type Props = {
+  type: StudyFlowType
   form: UseFormMethods<any>
 }
 
-const fieldsDef = [
+const inputClass = 'bg-gray-e2 px-3 py-2 w-full mb-1'
+const inputNativeClass = 'bg-gray-f7 px-3 py-2 w-full mb-1'
+
+const conversationFields = [
   {
-    name: 'questionEnglish',
-    className: 'bg-gray-e2 px-3 py-2 w-full mb-1',
+    name: 'question',
+    className: inputClass,
     placeholder: 'Question in English',
   },
   {
     name: 'questionNative',
-    className: 'bg-gray-e2 px-3 py-2 w-full mb-1',
+    className: inputClass,
     placeholder: 'Question in your native language',
   },
   {
-    name: 'answerEnglish',
-    className: 'bg-gray-f7 px-3 py-2 w-full mb-1',
+    name: 'answer',
+    className: inputNativeClass,
     placeholder: 'Answer in English',
   },
   {
     name: 'answerNative',
-    className: 'bg-gray-f7 px-3 py-2 w-full mb-1',
+    className: inputNativeClass,
     placeholder: 'Answer in your native language',
   },
 ]
 
-export default function Expressions({ form }: Props) {
+const repetitionFields = [
+  {
+    name: 'sentence',
+    className: inputClass,
+    placeholder: 'Sentence in English',
+  },
+  {
+    name: 'sentenceNative',
+    className: inputNativeClass,
+    placeholder: 'Sentence in your native language',
+  },
+]
+
+export default function Expressions({ type, form }: Props) {
   const { errors, control } = form
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'expressions',
   })
   const fieldsLen = fields.length
+
+  const fieldsDef =
+    type === 'conversation' ? conversationFields : repetitionFields
 
   return (
     <>
@@ -87,9 +108,9 @@ export default function Expressions({ form }: Props) {
                   style={{ width: '95px' }}
                   onClick={() =>
                     append({
-                      questionEnglish: '',
+                      question: '',
                       questionNative: '',
-                      answerEnglish: '',
+                      answer: '',
                       answerNative: '',
                     })
                   }

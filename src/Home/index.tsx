@@ -20,11 +20,8 @@ export default observer(function Home() {
   return (
     <>
       {showPostForm && <PostForm onClose={togglePostForm} />}
-      <div className="mt-8 flex">
-        <div
-          style={{ maxWidth: '640px' }}
-          className="w-full pb-12 flex-shrink-0"
-        >
+      <div className="h-full flex">
+        <div style={{ maxWidth: '640px' }} className="w-full pt-8 pb-12">
           <div
             className="bg-white p-5 flex-center mb-5 shadow"
             onClick={togglePostForm}
@@ -57,7 +54,10 @@ export default observer(function Home() {
           <LevelComplete />
           <Phrase />
         </div>
-        <div className="ml-10 flex-grow">
+        <div
+          className="ml-10 pt-8 pb-8 w-full h-full"
+          style={{ maxWidth: '420px' }}
+        >
           <Notebook />
         </div>
       </div>

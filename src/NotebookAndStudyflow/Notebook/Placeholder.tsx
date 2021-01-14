@@ -3,10 +3,7 @@ import { Book } from '@styled-icons/fa-solid/Book'
 
 export default function Placeholder() {
   return (
-    <div
-      className="flex-center flex-col mx-16 mb-16"
-      style={{ marginTop: '244px' }}
-    >
+    <div className="flex-center flex-col mx-16 mb-16">
       <div
         style={{ width: '60px', height: '60px' }}
         className="bg-mustard-primary flex-center rounded-full mb-3"

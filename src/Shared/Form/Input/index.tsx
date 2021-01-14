@@ -3,7 +3,7 @@ import cn from 'classnames'
 import { Controller, UseFormMethods } from 'react-hook-form'
 
 type Props = {
-  form: UseFormMethods<Record<string, unknown>>
+  form: UseFormMethods<any>
   name: string
   label?: string
   required?: boolean

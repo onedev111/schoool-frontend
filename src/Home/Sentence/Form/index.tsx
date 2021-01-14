@@ -99,7 +99,7 @@ export default function SentenceForm({
         />
         <div className={buttonWrapClass}>
           <button
-            className="rounded-full bg-blue-primary text-white h-8 px-7 font-bold cursor-pointer"
+            className="rounded-full bg-blue-primary text-white h-8 px-7 font-bold cursor-pointer flex-center"
             disabled={isLoading}
           >
             {isLoading && <Loader className="w-5 h-5" />}

@@ -18,6 +18,7 @@ module.exports = {
       15: '3.75rem',
       '5px': '5px',
       '10px': '10px',
+      '400px': '400px',
     },
     fontSize: {
       ...defaultTheme.fontSize,

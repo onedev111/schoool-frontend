@@ -7,9 +7,10 @@ export const setItem = (key: string, value: string | null) => {
 
 export const useLocalStorage = (
   key: string,
+  defaultValue?: string | null,
 ): [string | null, (value: string | null) => void] => {
-  const [value, setValueFromEvent] = React.useState<string | null>(() =>
-    localStorage.getItem(key),
+  const [value, setValueFromEvent] = React.useState<string | null>(
+    () => localStorage.getItem(key) || defaultValue || null,
   )
 
   React.useEffect(() => {

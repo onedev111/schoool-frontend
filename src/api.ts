@@ -5,6 +5,7 @@ import * as upload from 'Upload/api'
 import * as classes from 'Class/api'
 import * as constants from 'Constants/api'
 import * as notebook from 'NotebookAndStudyflow/Notebook/api'
+import * as studyFlow from 'NotebookAndStudyflow/Studyflow/api'
 
 export default {
   user,
@@ -14,4 +15,5 @@ export default {
   classes,
   constants,
   notebook,
+  studyFlow,
 }

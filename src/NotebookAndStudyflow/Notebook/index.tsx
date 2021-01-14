@@ -6,36 +6,17 @@ import { TrashAlt } from '@styled-icons/fa-regular/TrashAlt'
 import useToggle from 'utils/useToggle'
 import CircleCheckbox from 'Shared/CircleCheckbox'
 import cn from 'classnames'
-import List from 'NotebookAndStudyflow/Notebook/List'
-import DeleteModal from 'Shared/Modal/Delete'
 import Placeholder from 'NotebookAndStudyflow/Notebook/Placeholder'
-import NotebookMaxSentences from 'Shared/Modal/NotebookMaxSentences'
-import { NotebookSentence } from 'Post/types'
-import Modal from 'Shared/Modal'
-import SentenceForm from 'Home/Sentence/Form'
+import { useSentences } from 'NotebookAndStudyflow/Notebook/Store'
+import { observer } from 'mobx-react-lite'
+import SentencesDelete from 'NotebookAndStudyflow/Notebook/Delete'
+import SentenceItem from 'NotebookAndStudyflow/Notebook/Item'
+import AddSentence from 'NotebookAndStudyflow/Notebook/AddSentence'
+import Spin from 'assets/images/icons/Spin'
 
-const list = [
-  {
-    text:
-      'Notebook sentences are written. Font 17. Regular. The full sentence must be shown.',
-    translation:
-      'Translated sentences are written here. Font 17. Regular. The full sentence must be shown.',
-  },
-  {
-    text:
-      'Notebook sentences are written. Font 17. Regular. The full sentence must be shown.',
-    translation:
-      'Translated sentences are written here. Font 17. Regular. The full sentence must be shown.',
-  },
-  {
-    text:
-      'Notebook sentences are written. Font 17. Regular. The full sentence must be shown.',
-    translation:
-      'Translated sentences are written here. Font 17. Regular. The full sentence must be shown.',
-  },
-].map((item, i) => ({ ...item, id: i }))
-
-export default function Notebook() {
+export default observer(function Notebook() {
+  const ref = React.useRef<HTMLDivElement>(null)
+  const { items, isFetching } = useSentences({ ref })
   const [selecting, toggleSelecting] = useToggle()
   const [allChecked, setCheckAll] = React.useState(false)
   const [checkedIds, setCheckedIds] = React.useState<Record<number, boolean>>(
@@ -57,7 +38,7 @@ export default function Notebook() {
     if (allChecked) setCheckedIds({})
     else {
       const all: Record<number, boolean> = {}
-      list.forEach(({ id }) => (all[id] = true))
+      items.forEach(({ id }) => (all[id] = true))
       setCheckedIds(all)
     }
     setCheckAll(!allChecked)
@@ -65,34 +46,12 @@ export default function Notebook() {
 
   const selectedIds = Object.keys(checkedIds)
 
-  const addSentence = (sentence: NotebookSentence) => {
-    console.log(sentence)
-  }
-
   return (
     <>
       {deleteModal && (
-        <DeleteModal
-          onClose={toggleDeleteModal}
-          onDelete={() => {
-            // todo
-          }}
-        />
+        <SentencesDelete checkedIds={checkedIds} onClose={toggleDeleteModal} />
       )}
-      {addModal && false && <NotebookMaxSentences onClose={toggleAddModal} />}
-      {addModal && true && (
-        <Modal onClose={toggleAddModal} size="small">
-          <SentenceForm
-            onClose={toggleAddModal}
-            onSubmit={addSentence}
-            title="Add Expressions"
-            buttonText="Add"
-            contentClass="pt-4 px-5 pb-6"
-            buttonWrapClass="flex-center mt-5"
-          />
-        </Modal>
-      )}
-
+      {addModal && true && <AddSentence onClose={toggleAddModal} />}
       <div className="flex justify-between p-4">
         {!selecting && (
           <>
@@ -101,7 +60,7 @@ export default function Notebook() {
               <button type="button" onClick={toggleAddModal}>
                 <Plus size={17} />
               </button>
-              {list.length > 0 && (
+              {items.length > 0 && (
                 <button type="button" onClick={toggleSelecting}>
                   <Edit className="ml-2" size={20} />
                 </button>
@@ -138,15 +97,30 @@ export default function Notebook() {
           </>
         )}
       </div>
-      {list.length === 0 && <Placeholder />}
-      {list.length !== 0 && (
-        <List
-          list={list}
-          selecting={selecting}
-          checkedIds={checkedIds}
-          toggleItem={toggleItem}
-        />
-      )}
+      <div className="flex-grow flex flex-1 min-h-0">
+        {items.length === 0 && <Placeholder />}
+        {items.length !== 0 && (
+          <div
+            className="border-t border-gray-c5 flex-1 overflow-auto"
+            ref={ref}
+          >
+            {items.map((item) => (
+              <SentenceItem
+                key={item.id}
+                sentence={item}
+                selecting={selecting}
+                checkedIds={checkedIds}
+                toggleItem={toggleItem}
+              />
+            ))}
+            {isFetching && (
+              <div className="flex-center my-5">
+                <Spin className="w-10 h-10 text-blue-primary animate-spin" />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </>
   )
-}
+})

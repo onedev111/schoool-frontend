@@ -1,15 +1,14 @@
 import React from 'react'
+import { StudyFlow } from 'NotebookAndStudyflow/Studyflow/types'
 
 type Props = {
-  list: {
-    title: string
-  }[]
+  items: StudyFlow[]
 }
 
-export default function List({ list }: Props) {
+export default function List({ items }: Props) {
   return (
     <>
-      {list.map((item, i) => (
+      {items.map((item, i) => (
         <div key={i} className="p-3 border-b border-gray-c5">
           <span className="mr-2 relative text-17" style={{ top: '-1px' }}>
             •

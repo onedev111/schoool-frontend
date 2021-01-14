@@ -48,6 +48,7 @@ const PostStore = makeAutoObservable({
       if (posts.length === 0) PostStore.setCanFetchMore(false)
       else if (reset) PostStore.setPosts(posts)
       else PostStore.appendPosts(posts)
+
       PostStore.setError()
     } catch (error) {
       PostStore.setError(error)

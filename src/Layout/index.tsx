@@ -25,7 +25,7 @@ export default observer(function Layout({ children }: Props) {
           </Link>
         </div>
         <div
-          className="w-full mx-auto font-bold"
+          className="w-full mx-auto font-bold min-h-0"
           style={{ maxWidth: '1100px' }}
         >
           <div
@@ -86,7 +86,7 @@ export default observer(function Layout({ children }: Props) {
           </a>
         </div>
       </div>
-      <div style={{ maxWidth: '1100px' }} className="w-full mx-auto h-full">
+      <div style={{ maxWidth: '1100px' }} className="w-full mx-auto flex-grow">
         {children}
       </div>
     </div>
