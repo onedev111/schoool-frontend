@@ -1,13 +1,12 @@
 import React from 'react'
 import Dropdown from 'Shared/Dropdown'
 import useToggle from 'utils/useToggle'
-import SavePostModal from 'Post/Item/Menu/SavePostModal'
 import { Post } from 'Post/types'
 import style from './style.module.css'
 import PostForm from 'Post/Form'
 import DeleteModal from 'Shared/Modal/Delete'
 import api from 'api'
-import PostStore from 'Post/Store'
+import { PostStore } from 'Post/Store'
 
 const itemClass = `w-full flex-center transition duration-200 hover:bg-gray-f2 cursor-pointer ${style.menuItem}`
 
@@ -18,7 +17,6 @@ type Props = {
 }
 
 export default function Menu({ post, button, className }: Props) {
-  const [savePostOpen, toggleSavePost] = useToggle()
   const { isMine } = post
   const [showPostForm, togglePostForm] = useToggle()
   const [showDeleteModal, toggleDeleteModal] = useToggle()
@@ -35,7 +33,8 @@ export default function Menu({ post, button, className }: Props) {
           onClose={toggleDeleteModal}
           onDelete={() => {
             api.post.remove({ id: post.id })
-            PostStore.removePost(post)
+            PostStore.remove(post)
+            PostStore.fetch({ reset: true })
           }}
         />
       )}

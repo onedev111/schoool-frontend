@@ -45,8 +45,21 @@ export function makeStore<ItemType>(params: Params<ItemType>) {
         return false
       })
     },
-    async fetch() {
-      if (!store.canFetchMore || store.isFetching) return
+    update(item: ItemType, params: Partial<ItemType>) {
+      Object.assign(item, params)
+      return item
+    },
+    remove(removing: ItemType) {
+      this.items = this.items.filter((item) => item !== removing)
+    },
+    reset() {
+      this.items = []
+      this.error = undefined
+      this.canFetchMore = true
+      this.isFetching = false
+    },
+    async fetch({ reset }: { reset?: boolean } = {}) {
+      if ((!reset && !store.canFetchMore) || store.isFetching) return
       store.setIsFetching(true)
 
       try {
@@ -54,13 +67,14 @@ export function makeStore<ItemType>(params: Params<ItemType>) {
         if ('limit' in params) {
           items = await params.fetchList({
             limit: params.limit,
-            offset: this.items.length,
+            offset: reset ? 0 : this.items.length,
           })
         } else {
           items = await params.fetchList()
         }
 
         if (items.length === 0) store.setCanFetchMore(false)
+        else if (reset) store.setItems(items)
         else store.push(...items)
 
         store.setError()
@@ -94,10 +108,12 @@ export const useRecords = <ItemType>({
   loadOnScroll?: {
     ref: { current: HTMLElement | null }
     threshold: number
+    direction?: 'vertical' | 'horizontal'
   }
 }) => {
   React.useEffect(() => {
     store.fetch()
+    return () => store.reset()
   }, [])
 
   React.useEffect(() => {
@@ -106,18 +122,42 @@ export const useRecords = <ItemType>({
     const wrap = loadOnScroll.ref.current
     if (!wrap) return
 
+    const isWrapScrolling = ['auto', 'scroll'].includes(
+      getComputedStyle(wrap).overflow,
+    )
+
     const scrollListener = () => {
-      if (
-        store.canFetchMore &&
-        !store.isFetching &&
-        wrap.scrollHeight - wrap.scrollTop - wrap.offsetHeight <
-          loadOnScroll.threshold
-      )
-        store.fetch()
+      if (!store.canFetchMore || store.isFetching) return
+
+      let value: number
+      if (loadOnScroll.direction === 'horizontal') {
+        if (isWrapScrolling)
+          value = wrap.scrollWidth - wrap.scrollLeft - wrap.offsetWidth
+        else
+          value =
+            wrap.getBoundingClientRect().right -
+            Math.max(
+              document.body.offsetWidth,
+              document.documentElement.offsetWidth,
+            )
+      } else {
+        if (isWrapScrolling)
+          value = wrap.scrollHeight - wrap.scrollTop - wrap.offsetHeight
+        else
+          value =
+            wrap.getBoundingClientRect().bottom -
+            Math.max(
+              document.body.offsetHeight,
+              document.documentElement.offsetHeight,
+            )
+      }
+
+      if (value < loadOnScroll.threshold) store.fetch()
     }
 
-    wrap.addEventListener('scroll', scrollListener)
-    return () => wrap.removeEventListener('scroll', scrollListener)
+    const scrolling = isWrapScrolling ? wrap : window
+    scrolling.addEventListener('scroll', scrollListener)
+    return () => scrolling.removeEventListener('scroll', scrollListener)
   }, [loadOnScroll])
 
   return {

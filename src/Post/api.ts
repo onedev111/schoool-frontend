@@ -2,7 +2,6 @@ import { del, get, getMutation, post } from 'utils/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
 import { Post, Tag, TagToInsert, TagType } from 'Post/types'
 import dayjs from 'dayjs'
-import PostStore from 'Post/Store'
 
 type PostResponse = {
   base_language: string
@@ -173,7 +172,7 @@ const mapPost = ({
     youtubeId: post.youtube_id,
     audio: post.sound_dir,
     loopingAudio: post.looping_url,
-    date: dayjs(`${post.date} UTC`),
+    date: dayjs(post.date).utc(),
     notebookSentence: post.title
       ? { text: post.title, translation: post.translated_title }
       : undefined,
@@ -281,10 +280,6 @@ const makeTagsParams = (
   }
 }
 
-const invalidatePosts = () => {
-  PostStore.fetch({ reset: true })
-}
-
 export const save = post(
   ({
     id,
@@ -338,7 +333,6 @@ export const save = post(
       if (data.result_code !== '01.00' && data.result_code !== '02.00')
         throw new Error('Something went wrong')
     },
-    onSuccess: invalidatePosts,
   }),
 )
 
@@ -351,7 +345,6 @@ export const remove = getMutation(({ id }: { id: number }) => ({
   response({ result_code }: { result_code: string }) {
     if (result_code !== '03.00') throw new Error('Something went wrong')
   },
-  onSuccess: invalidatePosts,
 }))
 
 type SearchTagsResponse = {

@@ -2,14 +2,14 @@ import React from 'react'
 import classIcon from 'assets/images/icons/class.png'
 import Spin from 'assets/images/icons/Spin'
 import Post from 'Post/Item'
-import usePosts from 'Post/usePosts'
+import { PostStore, useData } from 'Post/Store'
 import { observer } from 'mobx-react-lite'
 
 export default observer(function Posts() {
   const wrapRef = React.useRef<HTMLDivElement>(null)
-  const { isFetching, posts } = usePosts({ ref: wrapRef })
+  const { isFetching, items } = useData({ ref: wrapRef, threshold: 500 })
 
-  if (!isFetching && posts.length === 0)
+  if (!isFetching && items?.length === 0)
     return (
       <div className="bg-white shadow p-6 h-full">
         <div className="flex-center flex-col mt-32 pt-2">
@@ -25,14 +25,14 @@ export default observer(function Posts() {
 
   return (
     <div ref={wrapRef}>
+      {PostStore.items?.map((post) => (
+        <Post key={post.id} post={post} />
+      ))}
       {isFetching && (
         <div className="flex-center mt-5">
           <Spin className="w-10 h-10 text-blue-primary animate-spin" />
         </div>
       )}
-      {!isFetching &&
-        posts &&
-        posts.map((post) => <Post key={post.id} post={post} />)}
     </div>
   )
 })

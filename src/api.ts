@@ -4,8 +4,8 @@ import * as comment from 'Post/Comment/api'
 import * as upload from 'Upload/api'
 import * as classes from 'Class/api'
 import * as constants from 'Constants/api'
-import * as notebook from 'NotebookAndStudyflow/Notebook/api'
-import * as studyFlow from 'NotebookAndStudyflow/Studyflow/api'
+import * as notebook from 'Notebook/api'
+import * as studyFlow from 'Studyflow/api'
 
 export default {
   user,

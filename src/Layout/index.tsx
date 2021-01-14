@@ -26,7 +26,7 @@ export default observer(function Layout({ children }: Props) {
         </div>
         <div
           className="w-full mx-auto font-bold min-h-0"
-          style={{ maxWidth: '1100px' }}
+          style={{ width: '1300px', padding: '0 100px' }}
         >
           <div
             className="w-full flex justify-between"

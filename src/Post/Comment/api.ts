@@ -73,7 +73,7 @@ export const list = get(({ postId }: { postId: number }) => ({
       },
       isMine: comment.user_id === currentUserId,
       text: comment.comment,
-      date: dayjs(comment.date),
+      date: dayjs(comment.date).utc(),
       liked: Boolean(comment.check_like),
       likesCount: comment.like_count,
       image: comment.photo_dir || undefined,

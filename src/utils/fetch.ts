@@ -1,7 +1,7 @@
 import history from 'utils/history'
 import { getUserToken } from 'User/currentUser'
 import routes from 'routes'
-import Form from 'NotebookAndStudyflow/Studyflow/Form'
+import Form from 'Studyflow/Form'
 import { array } from 'yup'
 
 export type HTTPMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'

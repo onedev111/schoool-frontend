@@ -3,7 +3,7 @@ import api from 'api'
 import dayjs from 'dayjs'
 import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 import { UploadingVideo } from 'utils/videoUploadState'
-import PostStore from 'Post/Store'
+import { PostStore } from 'Post/Store'
 import { Post } from 'Post/types'
 import { getTextAndTagsFromEditor } from 'utils/tags'
 
@@ -26,10 +26,13 @@ export default async function submitPost({ state }: { state: State }) {
 
   const { id } = state.values
   const updatingPost =
-    id !== 0 && PostStore.posts.find((post) => post.id === id)
-  const post = updatingPost
-    ? PostStore.updatePost(updatingPost, postData)
-    : PostStore.unshiftPost(postData)
+    id !== 0 && PostStore.items.find((post) => post.id === id)
+  let post: Post
+  if (updatingPost) post = PostStore.update(updatingPost, postData)
+  else {
+    PostStore.unshift(postData)
+    post = PostStore.items[0]
+  }
 
   const uploadingImages: { file: File; index: number }[] = []
   images.forEach((image, index) => {
@@ -103,7 +106,8 @@ export default async function submitPost({ state }: { state: State }) {
 
   try {
     await api.post.save(post)
-    PostStore.updatePost(post, { isUploading: false })
+    PostStore.update(post, { isUploading: false })
+    PostStore.fetch({ reset: true })
   } catch (err) {
     post.error = err.message
   }

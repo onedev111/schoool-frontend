@@ -2,7 +2,6 @@ import React from 'react'
 import { Comment } from 'Post/Comment/types'
 import Attachments from 'Post/Attachments'
 import Comments from 'Post/Comment/List'
-import dayjs from 'dayjs'
 import CommentStore from 'Post/Comment/Store'
 import CommentLike from 'Post/Comment/Item/Like'
 import { Post } from 'Post/types'
@@ -81,7 +80,7 @@ export default function CommentItem({
           />
           <div className="flex items-center justify-between">
             <div className="text-gray-97">
-              {dayjs(comment.date).format('MMM DD, YYYY')}
+              {comment.date.format('MMM DD, YYYY')}
             </div>
             <div className="text-gray-6e flex items-center text-xs">
               <CommentLike post={post} comment={comment} />

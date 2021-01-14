@@ -2,20 +2,20 @@ import React from 'react'
 import Post from 'Post/Item'
 import LevelComplete from './LevelComplete'
 import Phrase from './Phrase'
-import Notebook from 'NotebookAndStudyflow'
 import { observer } from 'mobx-react-lite'
 import Spin from 'assets/images/icons/Spin'
 import useToggle from 'utils/useToggle'
 import PostForm from 'Post/Form'
 import logo from 'assets/images/logo.svg'
-import PostStore from 'Post/Store'
-import usePosts from 'Post/usePosts'
+import { PostStore } from 'Post/Store'
+import Sidebar from 'Home/Sidebar'
+import { useData } from 'Post/Store'
 
 export default observer(function Home() {
   const [showPostForm, togglePostForm] = useToggle(false)
   const postsWrapRef = React.useRef<HTMLDivElement>(null)
 
-  const { isFetching, posts } = usePosts({ ref: postsWrapRef })
+  const { isFetching, items } = useData({ ref: postsWrapRef, threshold: 500 })
 
   return (
     <>
@@ -39,9 +39,9 @@ export default observer(function Home() {
               placeholder="What do you want to post?"
             />
           </div>
-          {posts.length > 0 && (
+          {items.length > 0 && (
             <div ref={postsWrapRef}>
-              {PostStore.posts.map((post) => (
+              {PostStore.items.map((post) => (
                 <Post key={post.id} post={post} />
               ))}
             </div>
@@ -54,12 +54,7 @@ export default observer(function Home() {
           <LevelComplete />
           <Phrase />
         </div>
-        <div
-          className="ml-10 pt-8 pb-8 w-full h-full"
-          style={{ maxWidth: '420px' }}
-        >
-          <Notebook />
-        </div>
+        <Sidebar />
       </div>
     </>
   )

@@ -103,14 +103,12 @@ export default observer(function Post({ post }: Props) {
                 </div>
               </div>
             )}
-            <div className="whitespace-no-wrap">
-              <ReadMore
-                showFullText={showFullText}
-                toggleShowFullText={toggleShowFullText}
-                post={post}
-                textRef={textRef}
-              />
-            </div>
+            <ReadMore
+              showFullText={showFullText}
+              toggleShowFullText={toggleShowFullText}
+              post={post}
+              textRef={textRef}
+            />
           </div>
         </div>
 

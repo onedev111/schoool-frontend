@@ -69,3 +69,23 @@ export const list = get(() => ({
     }
   },
 }))
+
+export const listRecommended = get(
+  ({ limit, offset }: { limit: number; offset: number }) => ({
+    path: '/rest_class/recommendation',
+    params: {
+      access_token: getUserToken(),
+      limit_posts: limit,
+      num_of_posts: offset,
+    },
+    response(
+      classes: { id: number; name: string; profile_image_dir: string }[],
+    ) {
+      return classes.map((item) => ({
+        id: item.id,
+        name: item.name,
+        image: item.profile_image_dir,
+      }))
+    },
+  }),
+)

@@ -59,7 +59,7 @@ export default observer(function ReadMore({
         </Modal>
       )}
       <button
-        className="font-bold ml-5"
+        className="font-bold ml-5 whitespace-no-wrap"
         onClick={
           post.joinedToClass
             ? toggleShowFullText
