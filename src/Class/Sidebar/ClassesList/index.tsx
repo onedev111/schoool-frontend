@@ -3,20 +3,22 @@ import cn from 'classnames'
 import { Plus } from '@styled-icons/boxicons-regular/Plus'
 import Item from './Item'
 import State from 'Class/State'
+import { useQuery } from 'react-query'
+import api from 'api'
 
 type Props = {
   className?: string
 }
 
 export default function ClassesList({ className }: Props) {
-  const hasClasses = true
+  const { data } = useQuery('classes', api.classes.list)
 
   return (
     <div
       className={cn('bg-white shadow p-6 flex-grow flex flex-col', className)}
     >
       <div className="flex-grow pb-6">
-        {hasClasses && (
+        {data?.owning && data.owning.length && (
           <div className="text-gray-6b text-lg uppercase mb-3">
             My Created Classes
           </div>
@@ -31,18 +33,46 @@ export default function ClassesList({ className }: Props) {
           </div>
           <div className="text-lg text-black font-bold">Create a Class</div>
         </button>
-        {hasClasses && (
+        {data?.owning && data.owning.length && (
           <>
-            <Item color="#F7B500" title="Class Name" name="Mark Kim" />
+            {data.owning.map((item) => (
+              <Item
+                key={item.id}
+                image={item.image}
+                title={item.name}
+                name={item.owner.name}
+              />
+            ))}
+          </>
+        )}
+        {data?.joined && data.joined.length > 0 && (
+          <>
             <div className="text-gray-6b text-lg uppercase mt-6 mb-3">
               My Joined Classes
             </div>
-            <Item color="#32C5FF" title="Class Name" name="Mark Kim" />
-            <Item color="#6236FF" title="Class Name" name="Mark Kim" />
+            {data.joined.map((item) => (
+              <Item
+                key={item.id}
+                image={item.image}
+                title={item.name}
+                name={item.owner.name}
+              />
+            ))}
+          </>
+        )}
+        {data?.processing && data.processing.length > 0 && (
+          <>
             <div className="text-gray-6b text-lg uppercase mt-6 mb-3">
               CLASSES IN PROGRESS
             </div>
-            <Item color="#6DD400" title="Class Name" name="Mark Kim" />
+            {data.processing.map((item) => (
+              <Item
+                key={item.id}
+                image={item.image}
+                title={item.name}
+                name={item.owner.name}
+              />
+            ))}
           </>
         )}
       </div>

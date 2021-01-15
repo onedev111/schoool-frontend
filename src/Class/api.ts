@@ -45,6 +45,10 @@ const mapClass = (item: ClassResponse): Class => {
     isPublic: Boolean(item.is_public),
     image: item.profile_image_dir,
     isOwner: item.status === 'owner',
+    owner: {
+      id: item.owner_id,
+      name: item.owner_name,
+    },
   }
 }
 
@@ -62,10 +66,12 @@ export const list = get(() => ({
   }): {
     joined: Class[]
     owning: Class[]
+    processing: Class[]
   } {
     return {
       joined: res.joined_classes.map(mapClass),
       owning: res.owning_classes.map(mapClass),
+      processing: res.processing_classes.map(mapClass),
     }
   },
 }))

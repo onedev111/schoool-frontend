@@ -4,4 +4,8 @@ export type Class = {
   isPublic: boolean
   isOwner: boolean
   image: string
+  owner: {
+    id: number
+    name: string
+  }
 }
