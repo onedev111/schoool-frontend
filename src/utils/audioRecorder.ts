@@ -100,6 +100,7 @@ const wavEncoder = () => {
       dump(data as number)
     } else if (type === 'clear') {
       recorded = []
+      prevWav = new Uint8Array(44)
     } else if (type === 'setRecordedBuffer') {
       setRecordedBuffer(data as ArrayBuffer)
     }

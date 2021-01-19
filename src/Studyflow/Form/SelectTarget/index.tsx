@@ -2,12 +2,7 @@ import React from 'react'
 import { UseFormMethods } from 'react-hook-form'
 import RadioGroup from 'Shared/Form/RadioGroup'
 import SelectTargetModal from './Modal'
-
-const values = {
-  onlyForMe: 'Only for me',
-  public: 'Public',
-  shared: 'Shared',
-}
+import { getCurrentUser } from 'User/currentUser'
 
 type Props = {
   // eslint-disable-next-line
@@ -28,6 +23,14 @@ type Props = {
   }
 }
 
+type Value = 'onlyForMe' | 'public' | 'shared'
+
+const options: Record<Value, { value: Value; label: string }> = {
+  onlyForMe: { value: 'onlyForMe', label: 'Only for me' },
+  public: { value: 'public', label: 'Public' },
+  shared: { value: 'shared', label: 'Shared' },
+}
+
 export default function SelectTarget({
   form,
   classes,
@@ -36,9 +39,13 @@ export default function SelectTarget({
   userIds,
   setUserIds,
 }: Props) {
-  const [onChange, setOnChange] = React.useState<
-    (value: keyof typeof values) => void
-  >()
+  const currentUser = getCurrentUser()
+
+  const values = currentUser.isInstructor
+    ? [options.onlyForMe, options.public, options.shared]
+    : [options.onlyForMe, options.shared]
+
+  const [onChange, setOnChange] = React.useState<(value: Value) => void>()
 
   return (
     <>
@@ -63,7 +70,7 @@ export default function SelectTarget({
           name="privacy"
           values={values}
           classes={classes.radioGroup}
-          onChange={(value: keyof typeof values, setValue) => {
+          onChange={(value: Value, setValue) => {
             setValue(value)
 
             if (value === 'shared') return setOnChange(() => setValue)

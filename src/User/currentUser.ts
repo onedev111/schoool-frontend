@@ -3,10 +3,33 @@ import { User } from './types'
 
 const storageKey = 'currentUser'
 
+const validateUser = (user: User) => {
+  if (
+    'isNew' in user &&
+    'isInstructor' in user &&
+    'id' in user &&
+    'token' in user &&
+    'name' in user &&
+    'email' in user &&
+    'avatar' in user
+  )
+    return user
+
+  return null
+}
+
+let currentUser: User | undefined
+
 export const useCurrentUser = () => {
   const [json, setJson] = useLocalStorage(storageKey)
+
+  if (!currentUser)
+    currentUser = ((json
+      ? validateUser(JSON.parse(json) as User)
+      : null) as unknown) as User
+
   return [
-    ((json ? (JSON.parse(json) as User) : null) as unknown) as User,
+    currentUser,
     (user: User | null) => {
       setJson(user ? JSON.stringify(user) : null)
     },
@@ -14,12 +37,16 @@ export const useCurrentUser = () => {
 }
 
 export const setCurrentUser = (user: User | null) => {
+  currentUser = user as User
   setItem(storageKey, user ? JSON.stringify(user) : null)
 }
 
 export const getCurrentUser = () => {
-  const json = localStorage.getItem(storageKey)
-  return JSON.parse(json as string) as User
+  if (!currentUser) {
+    const json = localStorage.getItem(storageKey)
+    currentUser = JSON.parse(json as string) as User
+  }
+  return currentUser
 }
 
 export const getUserToken = () => getCurrentUser()?.token

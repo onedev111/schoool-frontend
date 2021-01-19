@@ -19,11 +19,17 @@ export default observer(function RecordAudio({ state: postState }: Props) {
     createAudioRecordingState({ audio: audio?.isNew ? audio : undefined }),
   )
 
+  React.useEffect(() => {
+    return () => {
+      state.pauseAudio()
+      state.stopRecording()
+    }
+  }, [])
+
   const onClose = () => postState.backToForm()
 
   const submit = () => {
     postState.setAudio(state.result)
-    state.stopRecording()
     onClose()
   }
 

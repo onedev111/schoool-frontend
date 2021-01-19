@@ -1,6 +1,6 @@
 import React from 'react'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
-import { useCurrentUser } from 'User/currentUser'
+import { getCurrentUser } from 'User/currentUser'
 import publicIcon from 'assets/images/icons/public.png'
 import { observer } from 'mobx-react-lite'
 import { useQuery } from 'react-query'
@@ -25,7 +25,7 @@ export default observer(function SelectTargetModal({
   setIsPublic,
   onClose,
 }: Props) {
-  const [{ avatar }] = useCurrentUser()
+  const currentUser = getCurrentUser()
   const {
     data: users,
     isLoading,
@@ -44,18 +44,20 @@ export default observer(function SelectTargetModal({
           </div>
           Select Target
         </div>
+        {currentUser.isInstructor && (
+          <SelectTargetOption
+            image={publicIcon}
+            title="Public"
+            text="Anyone can see this study flow."
+            checked={isPublic && userIds.length === 0}
+            onChange={() => {
+              setIsPublic(true)
+              setUserIds([])
+            }}
+          />
+        )}
         <SelectTargetOption
-          image={publicIcon}
-          title="Public"
-          text="Anyone can see this study flow."
-          checked={isPublic && userIds.length === 0}
-          onChange={() => {
-            setIsPublic(true)
-            setUserIds([])
-          }}
-        />
-        <SelectTargetOption
-          image={avatar}
+          image={currentUser.avatar}
           title="Only for me"
           text="Only you can see this post."
           checked={!isPublic && userIds.length === 0}

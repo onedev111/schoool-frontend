@@ -29,6 +29,12 @@ const classes = {
   },
 }
 
+const levelOptions = [
+  { value: 'basic', label: 'Basic' },
+  { value: 'intermediate', label: 'Intermediate' },
+  { value: 'advanced', label: 'Advanced' },
+]
+
 export default function Form({ type, onClose }: Props) {
   const form = useStudyFlowForm({ type })
   const [showDeleteModal, toggleDeleteModal] = useToggle()
@@ -94,11 +100,7 @@ export default function Form({ type, onClose }: Props) {
           <RadioGroup
             form={form}
             name="level"
-            values={{
-              basic: 'Basic',
-              intermediate: 'Intermediate',
-              advanced: 'Advanced',
-            }}
+            values={levelOptions}
             classes={classes.radioGroup}
           />
         </div>

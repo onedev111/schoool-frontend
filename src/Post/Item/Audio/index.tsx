@@ -54,6 +54,10 @@ export default observer(function Audio({
   const [audio, setAudio] = React.useState<HTMLAudioElement>()
 
   React.useEffect(() => {
+    return () => audio?.pause()
+  }, [audio])
+
+  React.useEffect(() => {
     const state = createState()
     setState(state)
 
@@ -69,6 +73,13 @@ export default observer(function Audio({
   const togglePlay = () => {
     if (state?.playing) audio?.pause()
     else audio?.play()
+  }
+
+  const stop = () => {
+    if (!audio || !state) return
+    audio.pause()
+    audio.currentTime = 0
+    state.setCurrentTime(0)
   }
 
   React.useEffect(() => {
@@ -154,7 +165,7 @@ export default observer(function Audio({
           <div className={cn('text-sm', compact ? 'ml-2' : 'ml-3 mr-1')}>
             {state.duration ? formatTime(state.duration) : null}
           </div>
-          <button onClick={() => audio.pause()}>
+          <button onClick={stop}>
             <StopFill size={36} />
           </button>
         </>

@@ -18,12 +18,24 @@ type Screen =
   | 'loopingAudio'
   | 'zoom'
 
+type LoopingAudioDraft = {
+  url?: string
+  text: string
+  voices: Voice[]
+}
+
+const emptyLoopingAudioDraft: LoopingAudioDraft = {
+  url: undefined,
+  text: '',
+  voices: [],
+}
+
 export const createFormState = ({ post }: { post?: Partial<Post> }) => {
   const values = {
     id: post?.id || 0,
     isUploading: true,
-    isPublic: post?.isPublic || true,
-    classIds: post?.classIds || [],
+    isPublic: post?.isPublic || false,
+    classes: post?.classes || [],
     isMine: true,
     user: getCurrentUser(),
     date: dayjs(),
@@ -37,16 +49,15 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     video: post?.video && { isNew: false, url: post.video },
     audio: post?.audio && { isNew: false, url: post.audio },
     youtubeId: post?.youtubeId,
-    loopingAudioVoices: [],
     loopingAudio: post?.loopingAudio,
     zoomLink: post?.zoomLink,
     sharedPost: post?.sharedPost,
+    sLectures: [],
   } as Omit<Post, 'images' | 'video' | 'audio' | 'text' | 'tags'> & {
     html: string
     images: UploadingImage[]
     video?: UploadingVideo
     audio?: UploadingAudio
-    loopingAudioVoices: Voice[]
   }
 
   type Values = typeof values
@@ -55,6 +66,7 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     editorRef: { current: null } as { current: null | HTMLDivElement },
     currentScreen: 'form' as Screen,
     selectionRange: undefined as Range | undefined,
+    loopingAudioDraft: emptyLoopingAudioDraft,
     setCurrentScreen(screen: Screen) {
       this.currentScreen = screen
     },
@@ -84,12 +96,19 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
       this.values.audio = audio
     },
     toggleLoopingAudioVoice(voice: Voice) {
-      const index = this.values.loopingAudioVoices.indexOf(voice)
-      if (index !== -1) this.values.loopingAudioVoices.splice(index, 1)
-      else this.values.loopingAudioVoices.push(voice)
+      const { voices } = this.loopingAudioDraft
+      const index = voices.indexOf(voice)
+      if (index !== -1) voices.splice(index, 1)
+      else voices.push(voice)
     },
-    setLoopingAudio(url?: string) {
-      this.values.loopingAudio = url
+    updateLoopingAudioDraft(draft: Partial<LoopingAudioDraft>) {
+      Object.assign(this.loopingAudioDraft, draft)
+    },
+    saveLoopingAudio() {
+      this.values.loopingAudio = this.loopingAudioDraft?.url
+    },
+    removeLoopingAudio() {
+      this.loopingAudioDraft.url = this.values.loopingAudio = undefined
     },
     setZoomLink(zoomLink?: string) {
       this.values.zoomLink = zoomLink
@@ -100,8 +119,8 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     setIsPublic(value: boolean) {
       this.values.isPublic = value
     },
-    setClassIds(classIds: number[]) {
-      this.values.classIds = classIds
+    setClasses(classes: { id: number; name: string }[]) {
+      this.values.classes = classes
     },
     get canPost() {
       const values = this.values as Values

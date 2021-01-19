@@ -1,6 +1,6 @@
 import React from 'react'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
-import { useCurrentUser } from 'User/currentUser'
+import { getCurrentUser } from 'User/currentUser'
 import publicIcon from 'assets/images/icons/public.png'
 import useToggle from 'utils/useToggle'
 import Alert from 'Shared/Modal/Alert'
@@ -17,31 +17,35 @@ type Props = {
 }
 
 export default observer(function SelectTarget({ state }: Props) {
-  const [{ avatar }] = useCurrentUser()
+  const currentUser = getCurrentUser()
   const [showNotice, toggleNotice] = useToggle()
   const { data, isLoading } = useQuery('classes', api.classes.list)
 
   const joined = data?.joined || []
   const owning = data?.owning || []
   const classes = [...joined, ...owning]
-  const classIds = state.values.classIds
+  const selectedClasses = state.values.classes
 
   const onClose = () => state.backToForm()
 
   const toggleClass = (item: Class, add: boolean) => {
-    if (!add) return state.setClassIds(classIds.filter((id) => id !== item.id))
+    if (!add)
+      return state.setClasses(
+        selectedClasses.filter(({ id }) => id !== item.id),
+      )
 
-    let ids = [...classIds, item.id]
+    let newClasses = [...selectedClasses, { id: item.id, name: item.name }]
 
     const { isPublic } = item
-    const otherPublicFilter = (isPublic: boolean) => (id: number) =>
+    const otherPublicFilter = (isPublic: boolean) => ({ id }: { id: number }) =>
       classes.find((item) => item.id === id && item.isPublic === isPublic)
-    if (ids.some(otherPublicFilter(!isPublic))) {
+
+    if (newClasses.some(otherPublicFilter(!isPublic))) {
       toggleNotice()
-      ids = ids.filter(otherPublicFilter(isPublic))
+      newClasses = newClasses.filter(otherPublicFilter(isPublic))
     }
 
-    state.setClassIds(ids)
+    state.setClasses(newClasses)
   }
 
   return (
@@ -62,24 +66,25 @@ export default observer(function SelectTarget({ state }: Props) {
           </div>
           Select Target
         </div>
+        {currentUser.isInstructor && (
+          <SelectTargetOption
+            image={publicIcon}
+            title="Public"
+            text="Anyone can see this post."
+            checked={state.values.isPublic}
+            onChange={() => {
+              state.setIsPublic(!state.values.isPublic)
+            }}
+          />
+        )}
         <SelectTargetOption
-          image={publicIcon}
-          title="Public"
-          text="Anyone can see this post."
-          checked={state.values.isPublic && classIds.length === 0}
-          onChange={() => {
-            state.setIsPublic(true)
-            state.setClassIds([])
-          }}
-        />
-        <SelectTargetOption
-          image={avatar}
+          image={currentUser.avatar}
           title="Only for me"
           text="Only you can see this post."
-          checked={!state.values.isPublic && classIds.length === 0}
+          checked={!state.values.isPublic && selectedClasses.length === 0}
           onChange={() => {
             state.setIsPublic(false)
-            state.setClassIds([])
+            state.setClasses([])
           }}
         />
         {isLoading && (
@@ -88,7 +93,7 @@ export default observer(function SelectTarget({ state }: Props) {
           </div>
         )}
         {classes.map((item) => {
-          const checked = classIds.includes(item.id)
+          const checked = selectedClasses.some(({ id }) => id === item.id)
 
           return (
             <SelectTargetOption

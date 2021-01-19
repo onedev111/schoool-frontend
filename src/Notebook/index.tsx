@@ -13,6 +13,11 @@ import SentencesDelete from 'Notebook/Delete'
 import SentenceItem from 'Notebook/Item'
 import AddSentence from 'Notebook/AddSentence'
 import Spin from 'assets/images/icons/Spin'
+import { useQuery } from 'react-query'
+import api from 'api'
+import NotebookMaxSentences from 'Shared/Modal/NotebookMaxSentences'
+
+const maxFreeSentences = 100
 
 export default observer(function Notebook() {
   const ref = React.useRef<HTMLDivElement>(null)
@@ -24,6 +29,10 @@ export default observer(function Notebook() {
   )
   const [deleteModal, toggleDeleteModal] = useToggle()
   const [addModal, toggleAddModal] = useToggle()
+  const {
+    data: { notebookCount } = { notebookCount: 0 },
+    isLoading: notebookCountLoading,
+  } = useQuery('notebook.getTotal', api.app.getCountsAndIsPremium)
 
   const toggleItem = (id: number) => {
     if (checkedIds[id]) {
@@ -51,11 +60,22 @@ export default observer(function Notebook() {
       {deleteModal && (
         <SentencesDelete checkedIds={checkedIds} onClose={toggleDeleteModal} />
       )}
-      {addModal && true && <AddSentence onClose={toggleAddModal} />}
+      {addModal &&
+        !notebookCountLoading &&
+        notebookCount > maxFreeSentences && (
+          <NotebookMaxSentences onClose={toggleAddModal} />
+        )}
+      {addModal &&
+        !notebookCountLoading &&
+        notebookCount <= maxFreeSentences && (
+          <AddSentence onClose={toggleAddModal} />
+        )}
       <div className="flex justify-between p-4">
         {!selecting && (
           <>
-            <div className="text-blue-primary uppercase">Total 0</div>
+            <div className="text-blue-primary uppercase">
+              Total {notebookCount}
+            </div>
             <div className="text-gray-45">
               <button type="button" onClick={toggleAddModal}>
                 <Plus size={17} />

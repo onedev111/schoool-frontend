@@ -1,15 +1,22 @@
 import React from 'react'
 import { Tag } from 'Post/types'
 import cn from 'classnames'
-import style from 'Home/style.module.css'
 import { Link } from 'react-router-dom'
 import routes from 'routes'
 import { observer } from 'mobx-react-lite'
 import { getTextAndTagsParts } from 'utils/tags'
 import { InReplyTo } from 'Post/Comment/types'
+import style from 'Home/style.module.css'
 
 type Props = {
-  data: { text: string; tags?: Tag[]; inReplyTo?: InReplyTo }
+  data: {
+    text: string
+    tags?: Tag[]
+    inReplyTo?: InReplyTo
+    images?: string[]
+    video?: string
+    youtubeId?: string
+  }
   textRef?: { current: null | HTMLDivElement }
   showFullText?: boolean
   className?: string
@@ -29,6 +36,11 @@ export default observer(function Text({
     if (data.text !== text) setTextParts(getTextAndTagsParts(data))
   }, [data.text, data.tags, data.inReplyTo])
 
+  const clampSize =
+    data.images?.length || 0 > 0 || data.video || data.youtubeId
+      ? style.clampedTextMedium
+      : style.clampedTextLarge
+
   return (
     <div
       ref={textRef}
@@ -36,7 +48,7 @@ export default observer(function Text({
         `whitespace-pre-wrap`,
         className,
         style.text,
-        !showFullText && style.clampedText,
+        !showFullText && clampSize,
       )}
     >
       {parts.map((part, i) => {

@@ -12,7 +12,7 @@ export default function RadioGroup({
   // eslint-disable-next-line
   form: UseFormMethods<any>
   name: string
-  values: Record<string, string>
+  values: { value: string; label: string }[]
   classes?: {
     group?: string
     root?: string
@@ -39,14 +39,14 @@ export default function RadioGroup({
         return (
           <>
             <div className={classes.group}>
-              {Object.keys(values).map((value) => (
+              {values.map(({ value, label }) => (
                 <Radio
                   key={value}
                   checked={currentValue === value}
                   onChange={handleChange}
                   classes={classes}
                   name={name}
-                  label={values[value]}
+                  label={label}
                   value={value}
                 />
               ))}

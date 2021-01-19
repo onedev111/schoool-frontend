@@ -37,7 +37,7 @@ export default observer(function PostFormMainScreen({
   onClose,
   tryToClose,
 }: Props) {
-  const classesCount = state.values.classIds.length
+  const classesCount = state.values.classes.length
 
   return (
     <div>
@@ -55,7 +55,7 @@ export default observer(function PostFormMainScreen({
       </div>
       <div
         className={cn(
-          'p-6',
+          'p-6 flex flex-col',
           imageUploadState.hasPreviews ||
             youTubeState.video ||
             videoUploadState.video
@@ -114,7 +114,7 @@ export default observer(function PostFormMainScreen({
             src={state.values.loopingAudio}
             loop
             className="mt-4"
-            onDelete={() => state.setLoopingAudio()}
+            onDelete={() => state.removeLoopingAudio()}
           />
         )}
 

@@ -1,6 +1,6 @@
 import { del, get, getMutation, post } from 'utils/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
-import { Post, Tag, TagToInsert, TagType } from 'Post/types'
+import { Post, SLecture, Tag, TagToInsert, TagType } from 'Post/types'
 import dayjs from 'dayjs'
 
 type PostResponse = {
@@ -144,13 +144,52 @@ const mapPost = ({
     ),
   ].sort((a, b) => (a.start > b.start ? 1 : -1))
 
+  let classes: { id: number; name: string }[]
+  if (post.class_ids && post.class_names) {
+    const ids = post.class_ids.split(',').map((id) => parseInt(id))
+    const names = post.class_names.split(',')
+
+    classes = ids.map((id, index) => ({
+      id,
+      name: names[index],
+    }))
+  } else {
+    classes = []
+  }
+
+  const sLectures: SLecture[] = [
+    {
+      text: post.s_lecture_first_content,
+      link: post.s_lecture_first_link,
+      image: post.s_lecture_first_photo_dir,
+      audio: post.s_lecture_first_sound_dir,
+    },
+    {
+      text: post.s_lecture_second_content,
+      link: post.s_lecture_second_link,
+      image: post.s_lecture_second_photo_dir,
+      audio: post.s_lecture_second_sound_dir,
+    },
+    {
+      text: post.s_lecture_third_content,
+      link: post.s_lecture_third_link,
+      image: post.s_lecture_third_photo_dir,
+      audio: post.s_lecture_third_sound_dir,
+    },
+    {
+      text: post.s_lecture_fourth_content,
+      link: post.s_lecture_fourth_link,
+      image: post.s_lecture_fourth_photo_dir,
+      audio: post.s_lecture_fourth_sound_dir,
+    },
+  ].filter((item) => item.text && item.audio)
+
   return {
     id: post.share_post_id,
     isUploading: false,
     isPublic: Boolean(post.is_public),
-    classIds: post.class_ids
-      ? post.class_ids.split(',').map((id) => parseInt(id))
-      : [],
+    classes,
+    joinedToClass: Boolean(post.class_joined),
     text: post.comment,
     isMine: post.user_id === userId,
     user: {
@@ -188,6 +227,8 @@ const mapPost = ({
             name: post.shared_share_user_name,
           },
         },
+    sLectureId: post.s_lecture_id || undefined,
+    sLectures,
   }
 }
 
@@ -284,7 +325,7 @@ export const save = post(
   ({
     id,
     isPublic,
-    classIds = [],
+    classes = [],
     text,
     images = [],
     video,
@@ -301,7 +342,7 @@ export const save = post(
       share_post_id: id,
       access_token: getUserToken(),
       is_public: isPublic ? 1 : 0,
-      class_ids: classIds,
+      class_ids: classes.map(({ id }) => id),
       comment: text,
       photo: images[0],
       photo_second: images[1],

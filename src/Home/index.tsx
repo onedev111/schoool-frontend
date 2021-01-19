@@ -33,7 +33,7 @@ export default observer(function Home() {
             />
             <input
               type="text"
-              className="ml-3 w-full rounded-full border border-gray-bc bg-gray-f7 focus:outline-none px-6 placeholder-gray-6b focus:border-gray-97"
+              className="ml-3 w-full rounded-full border border-gray-bc bg-gray-f7 px-6 placeholder-gray-6b pointer-events-none"
               style={{ height: '56px' }}
               disabled
               placeholder="What do you want to post?"

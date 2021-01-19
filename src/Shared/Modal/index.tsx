@@ -37,12 +37,12 @@ export default function Modal({
       {...props}
     >
       <div
-        className="overflow-auto max-h-full w-full py-10 flex flex-wrap justify-center"
+        className="overflow-auto max-h-full w-full py-10"
         ref={scrollingElementRef}
       >
         <div
           className={cn(
-            'bg-white rounded-lg border border-gray-bb shadow max-w-full',
+            'bg-white rounded-lg border border-gray-bb shadow max-w-full mx-auto',
             className,
           )}
           style={{ width: width ? `${width}px` : sizes[size] }}

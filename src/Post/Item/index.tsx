@@ -15,6 +15,9 @@ import { observer } from 'mobx-react-lite'
 import PostBottomPanel from 'Post/Item/BottomPanel'
 import CommentsModal from 'Post/Comment/Modal'
 import CommentStore from 'Post/Comment/Store'
+import routes from 'routes'
+import { Link } from 'react-router-dom'
+import PostTitle from 'Post/Item/Title'
 
 type Props = {
   post: PostType
@@ -30,7 +33,7 @@ export default observer(function Post({ post }: Props) {
   return (
     <>
       {openComments && <CommentsModal post={post} onClose={toggleComments} />}
-      <div className="bg-white shadow relative mb-5">
+      <div className="bg-white shadow relative mb-5 flex flex-col">
         <Menu
           post={post}
           button={({ onClick }) => (
@@ -69,8 +72,8 @@ export default observer(function Post({ post }: Props) {
               className="mr-3 rounded-full"
             />
             <div className="flex-grow">
-              <div className="text-xl text-gray-02">{post.user.name}</div>
               <div className="font-bold text-gray-b0 text-sm">
+                <PostTitle post={post} />
                 {formatDate(post.date)}
               </div>
             </div>
@@ -83,7 +86,7 @@ export default observer(function Post({ post }: Props) {
             showFullText={showFullText}
           />
 
-          <div className="flex items-end">
+          <div className="flex items-end justify-end">
             {post.notebookSentence && (
               <div className="flex-grow">
                 <div

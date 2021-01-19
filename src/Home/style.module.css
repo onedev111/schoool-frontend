@@ -8,9 +8,28 @@
   line-height: 30px;
 }
 
-.clampedText {
+.clampedTextSmall, .clampedTextMedium, .clampedTextLarge {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.clampedTextSmall {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+}
+
+.clampedTextMedium {
+  -webkit-line-clamp: 11;
+  line-clamp: 11;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+}
+
+.clampedTextLarge {
+  -webkit-line-clamp: 20;
+  line-clamp: 20;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
 }

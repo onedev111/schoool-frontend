@@ -31,7 +31,7 @@ export default observer(function ReadMore({
     listener()
     window.addEventListener('resize', listener)
     return () => window.removeEventListener('resize', listener)
-  }, [])
+  }, [post.text, post.images, post.video, post.youtubeId])
 
   if (!readMore) return null
 
@@ -61,7 +61,7 @@ export default observer(function ReadMore({
       <button
         className="font-bold ml-5 whitespace-no-wrap"
         onClick={
-          post.joinedToClass
+          post.classes.length === 0 || post.joinedToClass
             ? toggleShowFullText
             : toggleClassMembersRestrictionModal
         }

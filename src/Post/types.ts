@@ -5,11 +5,18 @@ export type NotebookSentence = {
   translation: string
 }
 
+export type SLecture = {
+  text: string
+  link: string
+  image: string
+  audio: string
+}
+
 export type Post = {
   id: number
   isUploading: boolean
   isPublic: boolean
-  classIds: number[]
+  classes: { id: number; name: string }[]
   text: string
   isMine: boolean
   user: {
@@ -35,6 +42,8 @@ export type Post = {
   tags: Tag[]
   zoomLink?: string
   sharedPost?: SharedPost
+  sLectureId?: number
+  sLectures: SLecture[]
 }
 
 export type TagType = 'user' | 'class' | 'studyflow'

@@ -36,7 +36,6 @@ const voicesRows: Record<string, Voice>[] = [
 ]
 
 export default observer(function LoopingAudio({ state }: Props) {
-  const [text, setText] = React.useState('')
   const [error, setError] = React.useState<string | undefined>(undefined)
   const [processing, setProcessing] = React.useState(false)
 
@@ -49,31 +48,40 @@ export default observer(function LoopingAudio({ state }: Props) {
     return audio
   })
   const [playing, setPlaying] = React.useState(false)
-  const [loopingAudio, setLoopingAudio] = React.useState<string | undefined>(
-    state.values.loopingAudio,
-  )
+  const {
+    url: draftUrl,
+    text: draftText,
+    voices: draftVoices,
+  } = state.loopingAudioDraft
+
+  const pause = () => {
+    setPlaying(false)
+    audio.pause()
+  }
 
   React.useEffect(() => {
-    if (loopingAudio) audio.src = loopingAudio
-  }, [loopingAudio])
+    return () => audio.pause()
+  }, [])
 
-  const isValid = text.length > 0 && state.values.loopingAudioVoices.length > 0
+  React.useEffect(() => {
+    if (draftUrl) audio.src = draftUrl
+  }, [draftUrl])
 
-  const onClose = () => state.backToForm()
+  const isValid = draftText.length > 0 && draftVoices.length > 0
 
   const convert = async () => {
     try {
       setError(undefined)
       setProcessing(true)
-      schema.validateSync({ text })
+      schema.validateSync({ text: draftText })
       const url = await api.upload.createLoopingAudio({
-        text,
-        voices: state.values.loopingAudioVoices,
+        text: draftText,
+        voices: draftVoices,
       })
-      setLoopingAudio(url)
+      state.updateLoopingAudioDraft({ url })
     } catch (err) {
       setError(err.message)
-      setLoopingAudio(undefined)
+      state.updateLoopingAudioDraft({ url: undefined })
     }
 
     setProcessing(false)
@@ -81,17 +89,18 @@ export default observer(function LoopingAudio({ state }: Props) {
 
   const togglePlay = () => {
     if (playing) {
-      setPlaying(false)
-      audio.pause()
+      pause()
     } else {
       setPlaying(true)
       audio.play()
     }
   }
 
+  const onClose = () => state.backToForm()
+
   const submit = () => {
-    state.backToForm()
-    state.setLoopingAudio(loopingAudio)
+    onClose()
+    state.saveLoopingAudio()
   }
 
   return (
@@ -110,10 +119,10 @@ export default observer(function LoopingAudio({ state }: Props) {
           automatically.
         </div>
         <ControlledTextarea
-          value={text}
+          value={draftText}
           onChange={(e) => {
             const { value } = e.target
-            setText(value)
+            state.updateLoopingAudioDraft({ text: value })
             if (value) setError(undefined)
           }}
           error={error}
@@ -138,9 +147,7 @@ export default observer(function LoopingAudio({ state }: Props) {
               <label key={value} className="w-full flex items-center">
                 <Radio
                   classes={{ root: 'mr-2' }}
-                  checked={state.values.loopingAudioVoices.includes(
-                    voices[value],
-                  )}
+                  checked={draftVoices.includes(voices[value])}
                   onChange={() => state.toggleLoopingAudioVoice(voices[value])}
                   name="voice"
                   value={value}
@@ -169,9 +176,9 @@ export default observer(function LoopingAudio({ state }: Props) {
             {processing && <Spin />}
           </div>
           <button
-            className={cn('w-24', !loopingAudio && 'opacity-25')}
+            className={cn('w-24', !draftUrl && 'opacity-25')}
             type="button"
-            disabled={!loopingAudio}
+            disabled={!draftUrl}
             onClick={togglePlay}
           >
             <div
@@ -189,10 +196,10 @@ export default observer(function LoopingAudio({ state }: Props) {
             type="button"
             className={cn(
               'h-8 bg-blue-primary text-white flex-center rounded-full',
-              !loopingAudio && 'invisible',
+              !draftUrl && 'invisible',
             )}
             style={{ width: '200px' }}
-            disabled={!loopingAudio}
+            disabled={!draftUrl}
             onClick={submit}
           >
             Add To Post

@@ -18,7 +18,7 @@ type UserResponse = {
   instructor_initial: string
   instructor_theme: string | string[]
   is_instructor: string | number
-  is_new: boolean
+  is_new?: boolean
   facebook_id?: string
   apple_id?: string
   instructor_profile?: string
@@ -53,7 +53,12 @@ type UserResponse = {
 }
 
 const mapUser = (user: UserResponse): User => ({
-  isNew: user.is_new,
+  isNew: user.is_new || false,
+  isInstructor: Boolean(
+    typeof user.is_instructor === 'string'
+      ? parseInt(user.is_instructor)
+      : user.is_instructor,
+  ),
   id: user.user_id,
   token: user.access_token,
   name: user.name,
