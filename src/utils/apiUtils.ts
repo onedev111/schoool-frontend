@@ -1,63 +1,97 @@
 import { request, Options, HTTPMethod } from 'utils/fetch'
 
-const paramsToSearch = (
-  params?: Record<string, string | number | undefined>,
-) => {
-  if (!params) return ''
-
-  const filtered: Record<string, string> = {}
-  for (const key in params)
-    if (params[key] !== undefined) filtered[key] = params[key] as string
-
-  const str = new URLSearchParams(filtered).toString()
-  return str ? `?${str}` : ''
-}
-
-export const get = <Response, Args extends any[]>(
+// eslint-disable-next-line
+export const get = <Args extends any[], Response = void>(
   fn: (
     ...args: Args
   ) => {
-    path: string
+    url?: string
+    path?: string
+    // eslint-disable-next-line
     response(data: any): Response
-    params?: Record<string, any>
+    params?: Record<string, string | number | undefined>
     options?: Options
+    auth?: boolean
   },
 ) => {
   return async (...args: Args) => {
-    const { path, response, params, options } = fn(...args)
+    const props = fn(...args)
+    const { response, url, path, params, options, auth } = props
     return response(
-      await request(
-        'GET',
-        `${path}${paramsToSearch(params)}`,
-        undefined,
+      await request({
+        method: 'GET',
+        url,
+        path,
+        params,
         options,
-      ),
+        auth,
+      }),
     )
   }
 }
 
-const mutate = (method: HTTPMethod) => <Response, Args extends any[]>(
+// eslint-disable-next-line
+const mutate = (method: HTTPMethod) => <Args extends any[], Response = void>(
   fn: (
     ...args: Args
   ) => {
-    path: string
-    response(data: any): Response
-    params?: Record<string, any>
+    url?: string
+    path?: string
+    // eslint-disable-next-line
+    response?(data: any): Response
+    // eslint-disable-next-line
+    params?: Record<string, string | number | undefined>
+    headers?: Record<string, string>
+    // eslint-disable-next-line
     data?: Record<string, any>
+    body?: string | FormData | Blob | File
     options?: Options
+    auth?: boolean
     onSuccess?(): void
   },
 ) => {
   return async (...args: Args) => {
-    const { path, response, params, data, options, onSuccess } = fn(...args)
-    const result = await response(
-      await request(method, `${path}${paramsToSearch(params)}`, data, options),
-    )
+    const props = fn(...args)
+    const {
+      url,
+      path,
+      response,
+      params,
+      headers,
+      data,
+      body,
+      onSuccess,
+      auth,
+    } = props
+
+    let { options } = props
+    if (headers) {
+      if (!options) options = {}
+      options.headers = headers
+    }
+
+    if (body) {
+      if (!options) options = {}
+      options.body = body
+    }
+
+    const requestResult = await request({
+      method,
+      url,
+      path,
+      params,
+      data,
+      options,
+      auth,
+    })
+
+    const result = response ? await response(requestResult) : undefined
     if (onSuccess) onSuccess()
-    return result
+    return result as Response
   }
 }
 
 export const getMutation = mutate('GET')
 export const post = mutate('POST')
+export const put = mutate('PUT')
 export const del = mutate('DELETE')

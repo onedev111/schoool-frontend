@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@hookform/error-message": "^0.0.5",
     "@joeattardi/emoji-button": "^4.6.0",
     "@styled-icons/bootstrap": "^10.23.0",
     "@styled-icons/boxicons-logos": "^10.23.0",

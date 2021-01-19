@@ -1,21 +1,33 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import routes from 'routes'
+import { Class } from 'Class/types'
 
 type Props = {
-  image: string
-  title: string
-  name: string
+  item: Class
 }
 
-export default function ClassItem({ image, title, name }: Props) {
+export default function ClassItem({ item }: Props) {
   return (
     <div className="flex items-center mb-4">
-      <div
+      <Link
+        to={routes.class(item.id)}
         className="w-15 h-15 rounded-full mr-4 bg-center bg-cover"
-        style={{ backgroundImage: `url("${image}")` }}
+        style={{ backgroundImage: `url("${item.image}")` }}
       />
       <div className="flex justify-center flex-col">
-        <div className="text-lg text-black font-bold mb-1">{title}</div>
-        <div className="text-sm text-gray-97 font-bold">{name}</div>
+        <Link
+          to={routes.class(item.id)}
+          className="text-lg text-black font-bold mb-1 hover:underline"
+        >
+          {item.name}
+        </Link>
+        <Link
+          to={routes.user(item.owner.id)}
+          className="text-sm text-gray-97 font-bold hover:underline"
+        >
+          {item.owner.name}
+        </Link>
       </div>
     </div>
   )

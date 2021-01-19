@@ -9,15 +9,39 @@ export type HTTPMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
 export type Options = {
   method?: HTTPMethod
   headers?: Record<string, string>
-  body?: string | FormData
+  body?: string | FormData | Blob | File
 }
 
-export const request = async <T>(
-  method: HTTPMethod,
-  path: string,
-  data?: unknown,
-  options: Options = {},
-): Promise<T> => {
+const paramsToSearch = (
+  params?: Record<string, string | number | undefined>,
+) => {
+  if (!params) return ''
+
+  const filtered: Record<string, string> = {}
+  for (const key in params)
+    if (params[key] !== undefined) filtered[key] = params[key] as string
+
+  const str = new URLSearchParams(filtered).toString()
+  return str ? `?${str}` : ''
+}
+
+export const request = async <T>({
+  method,
+  url,
+  path,
+  params,
+  data,
+  options = {},
+  auth = true,
+}: {
+  method: HTTPMethod
+  url?: string
+  path?: string
+  params?: Record<string, string | number | undefined>
+  data?: unknown
+  options?: Options
+  auth?: boolean
+}): Promise<T> => {
   options.method = method
   if (!options.headers) options.headers = {}
   const { headers } = options
@@ -36,11 +60,15 @@ export const request = async <T>(
     options.body = formData
   }
 
-  const token = getUserToken()
-  if (token) headers.authorization = token
+  if (auth) {
+    const token = getUserToken()
+    if (token) headers.authorization = token
+  }
 
   const response = await fetch(
-    `${process.env.REACT_APP_API_URL || ''}${path}`,
+    `${url || `${process.env.REACT_APP_API_URL}${path}`}${paramsToSearch(
+      params,
+    )}`,
     options,
   )
 

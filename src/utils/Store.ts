@@ -113,7 +113,6 @@ export const useRecords = <ItemType>({
 }) => {
   React.useEffect(() => {
     store.fetch()
-    return () => store.reset()
   }, [])
 
   React.useEffect(() => {

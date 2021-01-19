@@ -4,17 +4,20 @@ import 'cropperjs/dist/cropper.min.css'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 import { RotateRight } from '@styled-icons/boxicons-regular/RotateRight'
 import { Flip } from '@styled-icons/material/Flip'
-import { State } from 'User/Auth/SignUpForm/State'
 import Modal from 'Shared/Modal'
-import { observer } from 'mobx-react-lite'
 import useImageUploadState from 'utils/imageUploadState'
 
 type Props = {
-  state: State
+  title: string
+  setImage(image: { blob: Blob; url: string }): void
   onClose(): void
 }
 
-export default observer(function Cropper({ state, onClose }: Props) {
+export default function UploadPhoto({
+  title,
+  setImage: submitImage,
+  onClose,
+}: Props) {
   const ref = React.useRef<HTMLImageElement>(null)
   const [image, setImage] = React.useState<string | undefined>()
   const [cropper, setCropper] = React.useState<CropperJS | undefined>()
@@ -33,7 +36,7 @@ export default observer(function Cropper({ state, onClose }: Props) {
     cropper?.getCroppedCanvas().toBlob((blob) => {
       ;(window as any).blob = blob
       if (blob)
-        state.setAvatar({
+        submitImage({
           blob: blob,
           url: URL.createObjectURL(blob),
         })
@@ -65,7 +68,7 @@ export default observer(function Cropper({ state, onClose }: Props) {
             <ArrowLeft size={26} />
           </button>
         </div>
-        Upload profile photo
+        {title}
       </div>
       {!image && (
         <>
@@ -135,4 +138,4 @@ export default observer(function Cropper({ state, onClose }: Props) {
       )}
     </Modal>
   )
-})
+}

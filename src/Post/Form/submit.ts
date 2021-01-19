@@ -67,35 +67,23 @@ export default async function submitPost({ state }: { state: State }) {
         ...uploadingImages.map((image, index) => {
           const upload = urls.photos[index]
 
-          return fetch(upload.url, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-            body: image.file,
-          }).then(() => (post.images[image.index] = upload.cdnUrl))
+          return api.upload
+            .upload({ url: upload.url, data: image.file })
+            .then(() => (post.images[image.index] = upload.cdnUrl))
         }),
         ...uploadingVideos.map((video, index) => {
           const upload = urls.videos[index]
 
-          return fetch(upload.url, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-            body: video.file,
-          }).then(() => (post.video = upload.cdnUrl))
+          return api.upload
+            .upload({ url: upload.url, data: video.file })
+            .then(() => (post.video = upload.cdnUrl))
         }),
         ...uploadingAudios.map((audio, index) => {
           const upload = urls.sounds[index]
 
-          return fetch(upload.url, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-            body: audio.blob,
-          }).then(() => (post.audio = upload.cdnUrl))
+          return api.upload
+            .upload({ url: upload.url, data: audio.blob })
+            .then(() => (post.audio = upload.cdnUrl))
         }),
       ])
     } catch (err) {

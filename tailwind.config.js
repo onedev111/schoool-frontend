@@ -75,6 +75,7 @@ module.exports = {
         '5a': '#FF5A5A',
         57: '#FF5785',
         58: '#FF5858',
+        50: '#FF5050',
       },
       mustard: {
         primary: '#F2C200',

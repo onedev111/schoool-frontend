@@ -1,4 +1,4 @@
-import { get, post } from 'utils/apiUtils'
+import { get, post, put } from 'utils/apiUtils'
 import { getUserToken } from 'User/currentUser'
 
 type UploadUrls = {
@@ -71,5 +71,16 @@ export const createLoopingAudio = post(
       if (data.result_code !== '01.00') throw new Error('Something went wrong')
       return data.url
     },
+  }),
+)
+
+export const upload = put(
+  ({ url, data }: { url: string; data: Blob | File }) => ({
+    url,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    body: data,
+    auth: false,
   }),
 )

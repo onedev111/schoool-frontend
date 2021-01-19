@@ -15,7 +15,10 @@ export default function ClassesList({ className }: Props) {
 
   return (
     <div
-      className={cn('bg-white shadow p-6 flex-grow flex flex-col', className)}
+      className={cn(
+        'bg-white shadow p-6 flex-grow flex flex-col overflow-auto',
+        className,
+      )}
     >
       <div className="flex-grow pb-6">
         {data?.owning && data.owning.length && (
@@ -36,12 +39,7 @@ export default function ClassesList({ className }: Props) {
         {data?.owning && data.owning.length && (
           <>
             {data.owning.map((item) => (
-              <Item
-                key={item.id}
-                image={item.image}
-                title={item.name}
-                name={item.owner.name}
-              />
+              <Item key={item.id} item={item} />
             ))}
           </>
         )}
@@ -51,12 +49,7 @@ export default function ClassesList({ className }: Props) {
               My Joined Classes
             </div>
             {data.joined.map((item) => (
-              <Item
-                key={item.id}
-                image={item.image}
-                title={item.name}
-                name={item.owner.name}
-              />
+              <Item key={item.id} item={item} />
             ))}
           </>
         )}
@@ -66,12 +59,7 @@ export default function ClassesList({ className }: Props) {
               CLASSES IN PROGRESS
             </div>
             {data.processing.map((item) => (
-              <Item
-                key={item.id}
-                image={item.image}
-                title={item.name}
-                name={item.owner.name}
-              />
+              <Item key={item.id} item={item} />
             ))}
           </>
         )}

@@ -5,13 +5,20 @@ type Props = {
   title: string
   text?: string
   size?: keyof typeof sizes
+  titleClass?: string
   onClose(): void
 }
 
-export default function Alert({ title, text, size, onClose }: Props) {
+export default function Alert({
+  title,
+  titleClass,
+  text,
+  size,
+  onClose,
+}: Props) {
   return (
     <Modal onClose={onClose} size={size} className="text-center">
-      <div className="mt-8 mb-2 text-lg">{title}</div>
+      <div className={titleClass || 'mt-8 mb-2 text-lg'}>{title}</div>
       {text && <div className="font-bold text-gray-02 mb-2 px-10">{text}</div>}
       <hr className="text-gray-bb" />
       <div className="flex-center">

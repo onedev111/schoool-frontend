@@ -1,4 +1,4 @@
-import { post, getMutation } from 'utils/apiUtils'
+import { post, getMutation, get } from 'utils/apiUtils'
 import { EnglishLevel, User } from './types'
 import { getUploadingUrls } from 'Upload/api'
 import { getCurrentUser, getUserToken, setCurrentUser } from 'User/currentUser'
@@ -262,3 +262,22 @@ export const updateProfile = async ({
 
   await Promise.all(promises)
 }
+
+export const getUser = get(({ id }: { id: number }) => ({
+  path: '/v1.3/get_me_info',
+  params: {
+    access_token: getUserToken(),
+    user_id: id,
+  },
+  response({
+    data: user,
+  }: {
+    data: { user_id: number; name: string; profile_image_dir: string }
+  }): { id: number; name: string; avatar: string } {
+    return {
+      id: user.user_id,
+      name: user.name,
+      avatar: user.profile_image_dir,
+    }
+  },
+}))

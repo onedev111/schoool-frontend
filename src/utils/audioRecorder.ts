@@ -5,26 +5,18 @@ const AudioContext =
   ((window as unknown) as { webkitAudioContext: typeof window.AudioContext })
     .webkitAudioContext
 
-const createWorker = (fn: () => void) => {
-  const js = fn
-    .toString()
-    .replace(/^(\(\)\s*=>|function\s*\(\))\s*{/, '')
-    .replace(/}$/, '')
-  const blob = new Blob([js])
-  return new Worker(URL.createObjectURL(blob))
-}
-
 // Inspired by https://github.com/chris-rudmin/Recorderjs
-const wavEncoder = () => {
+// eslint-disable-next-line
+const wavEncoder = `
   const BYTES_PER_SAMPLE = 2
-  let recorded: Uint8Array[] = []
+  let recorded = []
   let prevWav = new Uint8Array(44)
 
-  function setRecordedBuffer(arrayBuffer: ArrayBuffer) {
+  function setRecordedBuffer(arrayBuffer) {
     prevWav = new Uint8Array(arrayBuffer)
   }
 
-  function encode(buffer: Float32Array) {
+  function encode(buffer) {
     const length = buffer.length
     const data = new Uint8Array(length * BYTES_PER_SAMPLE)
     for (let i = 0; i < length; i++) {
@@ -42,7 +34,7 @@ const wavEncoder = () => {
     recorded.push(data)
   }
 
-  function dump(sampleRate: number) {
+  function dump(sampleRate) {
     const bufferLength = recorded[0]?.length || 0
     const length = recorded.length * bufferLength
     const total = prevWav.length - 44 + length
@@ -88,24 +80,24 @@ const wavEncoder = () => {
     prevWav.set(wav)
     recorded = []
 
-    postMessage(wav.buffer, ([wav.buffer] as unknown) as any)
+    postMessage(wav.buffer, [wav.buffer])
   }
 
   onmessage = (e) => {
-    const [type, data] = e.data as [string, unknown]
+    const [type, data] = e.data
 
     if (type === 'encode') {
-      encode(data as Float32Array)
+      encode(data)
     } else if (type === 'dump') {
-      dump(data as number)
+      dump(data)
     } else if (type === 'clear') {
       recorded = []
       prevWav = new Uint8Array(44)
     } else if (type === 'setRecordedBuffer') {
-      setRecordedBuffer(data as ArrayBuffer)
+      setRecordedBuffer(data)
     }
   }
-}
+`
 
 export type RecorderState = 'inactive' | 'recording' | 'paused'
 
@@ -121,7 +113,7 @@ export function createAudioRecorder({
   arrayBuffer,
   currentTime = 0,
 }: { arrayBuffer?: ArrayBuffer; currentTime?: number } = {}) {
-  const encoder = createWorker(wavEncoder)
+  const encoder = new Worker(URL.createObjectURL(new Blob([wavEncoder])))
 
   const context = new AudioContext()
   const { sampleRate } = context

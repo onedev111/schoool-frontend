@@ -1,7 +1,7 @@
 import React from 'react'
 import { User } from '@styled-icons/boxicons-solid/User'
 import cn from 'classnames'
-import UploadPhoto from 'User/Auth/SignUpForm/UploadPhoto'
+import UploadPhoto from 'Shared/UploadPhoto'
 import createProfileFormState, { State } from 'User/Auth/SignUpForm/State'
 import useToggle from 'utils/useToggle'
 import { observer } from 'mobx-react-lite'
@@ -48,7 +48,11 @@ export default observer(function SignUpForm() {
   return (
     <>
       {uploadPhotoOpen && (
-        <UploadPhoto state={state} onClose={toggleUploadPhoto} />
+        <UploadPhoto
+          title="Upload profile photo"
+          setImage={(image) => state.setAvatar(image)}
+          onClose={toggleUploadPhoto}
+        />
       )}
       <form className="h-full flex-center" onSubmit={submit}>
         {error && <div className="text-red-500 text-center mb-2">{error}</div>}
