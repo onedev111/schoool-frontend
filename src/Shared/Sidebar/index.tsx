@@ -14,10 +14,10 @@ export default function Sidebar({ className, contentClass, children }: Props) {
       style={{ maxWidth: '420px' }}
     >
       <div
-        className={cn('flex flex-col sticky', contentClass)}
+        className={cn('flex flex-col', contentClass)}
         style={{
           top: '32px',
-          height: 'calc(100vh - 144px)',
+          height: '924px',
         }}
       >
         {children}

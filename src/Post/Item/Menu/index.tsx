@@ -105,12 +105,14 @@ export default observer(function Menu({ post, button, className }: Props) {
         {!isMine && (
           <button
             type="button"
-            className={`${itemClass} text-blue-deep`}
+            className={`${itemClass} text-blue-deep flex`}
             disabled={isFollowLoading}
             onClick={toggleFollow}
           >
             {isFollowLoading && (
-              <Spin className="w-5 h-5 mr-2 text-blue-primary animate-spin" />
+              <div className="w-0 h-full flex-center relative">
+                <Spin className="w-5 h-5 text-blue-primary animate-spin absolute right-0 mr-2" />
+              </div>
             )}
             {post.isFollowing ? 'Unfollow' : 'Follow'}
           </button>

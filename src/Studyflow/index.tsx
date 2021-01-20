@@ -54,11 +54,10 @@ export default function Notebook({ toggleMenu }: Props) {
           Repetition
         </button>
       </div>
-      {/*{items.length === 0 && <Placeholder />}*/}
-      <Placeholder />
-      {/*<div className="flex-grow flex flex-1 min-h-0">*/}
-      {/*  {items.length > 0 && <List items={items} />}*/}
-      {/*</div>*/}
+      {items.length === 0 && <Placeholder />}
+      <div className="flex-grow flex flex-1 min-h-0">
+        {items.length > 0 && <List items={items} />}
+      </div>
     </>
   )
 }
