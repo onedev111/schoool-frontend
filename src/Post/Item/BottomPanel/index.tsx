@@ -7,8 +7,6 @@ import Notebook from 'assets/images/icons/notebook'
 import useToggle from 'utils/useToggle'
 import Modal from 'Shared/Modal'
 import SentenceForm from 'Home/Sentence/Form'
-import { useMutation } from 'react-query'
-import api from 'api'
 
 type Props = {
   post: Post
@@ -17,7 +15,6 @@ type Props = {
 
 export default function PostBottomPanel({ post, toggleComments }: Props) {
   const [openAddToNotebook, toggleAddToNotebook] = useToggle()
-  const [createSentence] = useMutation(api.notebook.create)
 
   return (
     <>
@@ -25,14 +22,13 @@ export default function PostBottomPanel({ post, toggleComments }: Props) {
         <Modal onClose={toggleAddToNotebook} size="small">
           <SentenceForm
             onClose={toggleAddToNotebook}
-            onSubmit={createSentence}
             title="Send to my notebook"
             buttonText="Add"
             contentClass="pt-4 px-5 pb-6"
             buttonWrapClass="flex-center mt-5"
             sentence={{
-              text: post.text,
-              translation: '',
+              text: post.notebookSentence?.text || post.text,
+              translation: post.notebookSentence?.translation || '',
             }}
           />
         </Modal>

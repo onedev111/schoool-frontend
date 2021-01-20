@@ -1,5 +1,6 @@
 import React from 'react'
 import { makeAutoObservable } from 'mobx'
+import Item from 'Class/Sidebar/ClassesList/Item'
 
 type Params<ItemType> =
   | {
@@ -13,31 +14,51 @@ type Params<ItemType> =
       fetchList: () => Promise<ItemType[]>
     }
 
-export function makeStore<ItemType>(params: Params<ItemType>) {
-  const store = makeAutoObservable({
-    items: [] as ItemType[],
+type Store<ItemType> = {
+  items: ItemType[]
+  canFetchMore: boolean
+  isFetching: boolean
+  error?: Error
+  setCanFetchMore(value: boolean): void
+  setIsFetching(value: boolean): void
+  setError(error?: Error): void
+  setItems(items: ItemType[]): void
+  push(...items: ItemType[]): void
+  unshift(...items: ItemType[]): void
+  removeBy(params: Partial<ItemType>): void
+  update(item: ItemType, params: Partial<ItemType>): ItemType
+  remove(removing: ItemType): void
+  reset(): void
+  fetch(params?: { reset?: boolean }): Promise<void>
+}
+
+export function makeStore<ItemType, Props>(
+  params: Params<ItemType>,
+  props?: Props,
+) {
+  const base: Store<ItemType> = {
+    items: [],
     canFetchMore: true,
     isFetching: false,
-    error: undefined as Error | undefined,
-    setCanFetchMore(value: boolean) {
+    setCanFetchMore(value) {
       this.canFetchMore = value
     },
-    setIsFetching(value: boolean) {
+    setIsFetching(value) {
       this.isFetching = value
     },
-    setError(error?: Error) {
+    setError(error) {
       this.error = error
     },
-    setItems(items: ItemType[]) {
+    setItems(items) {
       this.items = items
     },
-    push(...items: ItemType[]) {
+    push(...items) {
       this.items.push(...items)
     },
-    unshift(...items: ItemType[]) {
+    unshift(...items) {
       this.items.unshift(...items)
     },
-    removeBy(params: Partial<ItemType>) {
+    removeBy(params) {
       this.items = this.items.filter((item) => {
         for (const key in params) {
           if (item[key] !== params[key]) return true
@@ -45,11 +66,11 @@ export function makeStore<ItemType>(params: Params<ItemType>) {
         return false
       })
     },
-    update(item: ItemType, params: Partial<ItemType>) {
+    update(item, params) {
       Object.assign(item, params)
       return item
     },
-    remove(removing: ItemType) {
+    remove(removing) {
       this.items = this.items.filter((item) => item !== removing)
     },
     reset() {
@@ -58,7 +79,7 @@ export function makeStore<ItemType>(params: Params<ItemType>) {
       this.canFetchMore = true
       this.isFetching = false
     },
-    async fetch({ reset }: { reset?: boolean } = {}) {
+    async fetch({ reset } = {}) {
       if ((!reset && !store.canFetchMore) || store.isFetching) return
       store.setIsFetching(true)
 
@@ -84,27 +105,40 @@ export function makeStore<ItemType>(params: Params<ItemType>) {
 
       store.setIsFetching(false)
     },
-  })
+  }
 
+  // if props provided, combine props and base into one object with all getters
+  let object: Store<ItemType> & Props
+  if (props) {
+    object = props as Store<ItemType> & Props
+    Object.getOwnPropertyNames(base).forEach((key) => {
+      const desc = Object.getOwnPropertyDescriptor(base, key)
+      if (desc) Object.defineProperty(object, key, desc)
+    })
+  } else {
+    object = base as Store<ItemType> & Props
+  }
+
+  const store = makeAutoObservable(object)
   return store
 }
 
 // hack to get return type of generic function
-class Helper<T> {
-  Return = makeStore<T>({
+class Helper<T, P> {
+  Return = makeStore<T, P>({
     async fetchList() {
       return []
     },
   })
 }
 
-type MakeStoreReturnType<T> = Helper<T>['Return']
+type MakeStoreReturnType<T, P> = Helper<T, P>['Return']
 
-export const useRecords = <ItemType>({
+export const useRecords = <ItemType, Props>({
   store,
   loadOnScroll,
 }: {
-  store: MakeStoreReturnType<ItemType>
+  store: MakeStoreReturnType<ItemType, Props>
   loadOnScroll?: {
     ref: { current: HTMLElement | null }
     threshold: number

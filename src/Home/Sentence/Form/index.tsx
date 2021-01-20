@@ -5,6 +5,8 @@ import Textarea from 'Shared/Form/Textarea'
 import { NotebookSentence } from 'Post/types'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 import Loader from 'Shared/Loader'
+import api from 'api'
+import { NotebookStore } from 'Notebook/Store'
 
 type Props = {
   backButton?: boolean
@@ -16,7 +18,7 @@ type Props = {
   contentClass: string
   buttonWrapClass: string
   onClose(): void
-  onSubmit(sentence: NotebookSentence): void
+  onSubmit?(sentence: NotebookSentence): void
 }
 
 const maxLength = 250
@@ -51,7 +53,10 @@ export default function SentenceForm({
     if (isLoading) return
     setLoading(true)
     try {
-      await onSubmit(values)
+      const sentence = await api.notebook.create(values)
+      NotebookStore.setItems([sentence, ...NotebookStore.items])
+      NotebookStore.setTotal(NotebookStore.total + 1)
+      if (onSubmit) await onSubmit(values)
       setError(undefined)
       onClose()
     } catch (err) {

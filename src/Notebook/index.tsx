@@ -7,14 +7,12 @@ import useToggle from 'utils/useToggle'
 import CircleCheckbox from 'Shared/CircleCheckbox'
 import cn from 'classnames'
 import Placeholder from 'Notebook/Placeholder'
-import { useSentences } from 'Notebook/Store'
+import { NotebookStore, useSentences } from 'Notebook/Store'
 import { observer } from 'mobx-react-lite'
 import SentencesDelete from 'Notebook/Delete'
 import SentenceItem from 'Notebook/Item'
 import AddSentence from 'Notebook/AddSentence'
 import Spin from 'assets/images/icons/Spin'
-import { useQuery } from 'react-query'
-import api from 'api'
 import NotebookMaxSentences from 'Shared/Modal/NotebookMaxSentences'
 
 const maxFreeSentences = 100
@@ -29,10 +27,6 @@ export default observer(function Notebook() {
   )
   const [deleteModal, toggleDeleteModal] = useToggle()
   const [addModal, toggleAddModal] = useToggle()
-  const {
-    data: { notebookCount } = { notebookCount: 0 },
-    isLoading: notebookCountLoading,
-  } = useQuery('notebook.getTotal', api.app.getCountsAndIsPremium)
 
   const toggleItem = (id: number) => {
     if (checkedIds[id]) {
@@ -55,27 +49,23 @@ export default observer(function Notebook() {
 
   const selectedIds = Object.keys(checkedIds)
 
+  const { total, loadedTotal } = NotebookStore
+
   return (
     <>
       {deleteModal && (
         <SentencesDelete checkedIds={checkedIds} onClose={toggleDeleteModal} />
       )}
-      {addModal &&
-        !notebookCountLoading &&
-        notebookCount > maxFreeSentences && (
-          <NotebookMaxSentences onClose={toggleAddModal} />
-        )}
-      {addModal &&
-        !notebookCountLoading &&
-        notebookCount <= maxFreeSentences && (
-          <AddSentence onClose={toggleAddModal} />
-        )}
+      {addModal && loadedTotal && total > maxFreeSentences && (
+        <NotebookMaxSentences onClose={toggleAddModal} />
+      )}
+      {addModal && loadedTotal && total <= maxFreeSentences && (
+        <AddSentence onClose={toggleAddModal} />
+      )}
       <div className="flex justify-between p-4">
         {!selecting && (
           <>
-            <div className="text-blue-primary uppercase">
-              Total {notebookCount}
-            </div>
+            <div className="text-blue-primary uppercase">Total {total}</div>
             <div className="text-gray-45">
               <button type="button" onClick={toggleAddModal}>
                 <Plus size={17} />

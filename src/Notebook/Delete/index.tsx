@@ -15,6 +15,7 @@ export default function SentencesDelete({ checkedIds, onClose }: Props) {
     NotebookStore.setItems(
       NotebookStore.items.filter(({ id }) => !ids.includes(id)),
     )
+    NotebookStore.setTotal(NotebookStore.total - ids.length)
   }
 
   return <DeleteModal onClose={onClose} onDelete={onDelete} />
