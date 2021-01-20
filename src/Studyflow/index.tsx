@@ -11,7 +11,7 @@ type Props = {
   toggleMenu(): void
 }
 
-export default function Notebook({ showMenu, toggleMenu }: Props) {
+export default function Notebook({ toggleMenu }: Props) {
   const { items } = useStudyFlow()
   const [addType, setAddType] = React.useState<StudyFlowType>()
 
@@ -55,7 +55,9 @@ export default function Notebook({ showMenu, toggleMenu }: Props) {
         </button>
       </div>
       {items.length === 0 && <Placeholder />}
-      {items.length > 0 && <List items={items} />}
+      <div className="flex-grow flex flex-1 min-h-0">
+        {items.length > 0 && <List items={items} />}
+      </div>
     </>
   )
 }

@@ -68,80 +68,87 @@ export default function Form({ type, onClose }: Props) {
       {showDeleteModal && (
         <DeleteModal onClose={toggleDeleteModal} onDelete={handleDelete} />
       )}
-      <form onSubmit={form.handleSubmit(submit)}>
-        {error && (
-          <div className="text-red-500 text-center mb-2">{error.message}</div>
-        )}
-        <div className="text-xl uppercase flex-center py-7 relative border-b border-gray-c5">
-          <button
-            type="button"
-            className="absolute left-0 ml-4 text-gray-5f"
-            style={{ top: '26px' }}
-            onClick={onClose}
-          >
-            <ArrowBack size={26} />
-          </button>
-          Create studyflow
-        </div>
-        <Input
-          form={form}
-          name="title"
-          label="Title"
-          placeholder="Enter title"
-          classes={{
-            root: classes.blueFormGroup,
-            label: classes.blueFormGroupLabel,
-            input: 'placeholder-gray-a4',
-            error: 'text-red-600 mt-2',
-          }}
-        />
-        <div className={classes.blueFormGroup}>
-          <div className={classes.blueFormGroupLabel}>Level of difficulty</div>
-          <RadioGroup
-            form={form}
-            name="level"
-            values={levelOptions}
-            classes={classes.radioGroup}
-          />
-        </div>
-        <SelectTarget
-          form={form}
-          isPublic={isPublic}
-          setIsPublic={setIsPublic}
-          userIds={userIds}
-          setUserIds={setUserIds}
-          classes={{
-            root: classes.blueFormGroup,
-            label: classes.blueFormGroupLabel,
-            radioGroup: classes.radioGroup,
-          }}
-        />
-        <Expressions type={type} form={form} />
-        <div className="px-5 mt-7">
-          {createdStudyFlow && (
-            <div className="flex">
-              <button
-                type="button"
-                className="bg-blue-primary w-full h-10 flex-center text-white rounded-full font-bold"
-                onClick={onClose}
-              >
-                Done
-              </button>
-              <button
-                type="button"
-                className="bg-red-58 w-full h-10 flex-center text-white rounded-full font-bold ml-3"
-                onClick={toggleDeleteModal}
-              >
-                Delete
-              </button>
-            </div>
+      <form
+        onSubmit={form.handleSubmit(submit)}
+        className="flex flex-grow flex-1 min-h-0"
+      >
+        <div className="flex-1 overflow-auto">
+          {error && (
+            <div className="text-red-500 text-center mb-2">{error.message}</div>
           )}
-          {!createdStudyFlow && (
-            <button className="bg-blue-primary w-full h-10 flex-center text-white rounded-full font-bold">
-              {isCreating && <Loader className="w-5 h-5" />}
-              {!isCreating && 'Create'}
+          <div className="text-xl uppercase flex-center py-7 relative border-b border-gray-c5">
+            <button
+              type="button"
+              className="absolute left-0 ml-4 text-gray-5f"
+              style={{ top: '26px' }}
+              onClick={onClose}
+            >
+              <ArrowBack size={26} />
             </button>
-          )}
+            Create studyflow
+          </div>
+          <Input
+            form={form}
+            name="title"
+            label="Title"
+            placeholder="Enter title"
+            classes={{
+              root: classes.blueFormGroup,
+              label: classes.blueFormGroupLabel,
+              input: 'placeholder-gray-a4',
+              error: 'text-red-600 mt-2',
+            }}
+          />
+          <div className={classes.blueFormGroup}>
+            <div className={classes.blueFormGroupLabel}>
+              Level of difficulty
+            </div>
+            <RadioGroup
+              form={form}
+              name="level"
+              values={levelOptions}
+              classes={classes.radioGroup}
+            />
+          </div>
+          <SelectTarget
+            form={form}
+            isPublic={isPublic}
+            setIsPublic={setIsPublic}
+            userIds={userIds}
+            setUserIds={setUserIds}
+            classes={{
+              root: classes.blueFormGroup,
+              label: classes.blueFormGroupLabel,
+              radioGroup: classes.radioGroup,
+            }}
+          />
+          <Expressions type={type} form={form} />
+          <div className="px-5 mt-7">
+            {createdStudyFlow && (
+              <div className="flex">
+                <button
+                  type="button"
+                  className="bg-blue-primary w-full h-10 flex-center text-white rounded-full font-bold"
+                  onClick={onClose}
+                >
+                  Done
+                </button>
+                <button
+                  type="button"
+                  className="bg-red-58 w-full h-10 flex-center text-white rounded-full font-bold ml-3"
+                  onClick={toggleDeleteModal}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+            {!createdStudyFlow && (
+              <button className="bg-blue-primary w-full h-10 flex-center text-white rounded-full font-bold mb-5">
+                {isCreating && <Loader className="w-5 h-5" />}
+                {!isCreating && 'Create'}
+              </button>
+            )}
+          </div>
         </div>
       </form>
     </>

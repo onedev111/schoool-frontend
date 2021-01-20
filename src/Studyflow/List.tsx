@@ -7,7 +7,7 @@ type Props = {
 
 export default function List({ items }: Props) {
   return (
-    <>
+    <div className="flex-1 overflow-auto">
       {items.map((item, i) => (
         <div key={i} className="p-3 border-b border-gray-c5">
           <span className="mr-2 relative text-17" style={{ top: '-1px' }}>
@@ -16,6 +16,6 @@ export default function List({ items }: Props) {
           {item.title}
         </div>
       ))}
-    </>
+    </div>
   )
 }
