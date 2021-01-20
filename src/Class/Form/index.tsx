@@ -48,8 +48,10 @@ export default function ClassForm({ onClose }: Props) {
       description: values.description,
       isPublic: values.isPublic,
       autoApprove: values.autoApprove,
+      completed: false,
       image: values.image as { blob: Blob },
       isLocked: false,
+      isJoined: false,
     })
   }
 

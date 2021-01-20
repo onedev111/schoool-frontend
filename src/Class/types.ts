@@ -4,7 +4,9 @@ export type Class = {
   description: string
   isPublic: boolean
   isLocked: boolean
-  isOwner: boolean
+  isOwn: boolean
+  isJoined: boolean
+  completed: boolean
   image: string
   autoApprove: boolean
   owner: {

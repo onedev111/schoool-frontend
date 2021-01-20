@@ -1,12 +1,10 @@
 import React from 'react'
-import { useCurrentUser } from 'User/currentUser'
+import { setCurrentUser } from 'User/currentUser'
 
 export default function Settings() {
-  const [_, setUser] = useCurrentUser()
-
   return (
     <div className="mt-4">
-      <button className="inline" onClick={() => setUser(null)}>
+      <button className="inline" onClick={() => setCurrentUser(null)}>
         Log Out
       </button>
     </div>

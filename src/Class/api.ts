@@ -50,7 +50,9 @@ const mapClass = (item: ClassResponse): Class => {
     isLocked: Boolean(item.locked),
     autoApprove: Boolean(item.auto_approve),
     image: item.profile_image_dir,
-    isOwner: item.status === 'owner',
+    isOwn: item.status === 'owner',
+    isJoined: item.status === 'member',
+    completed: Boolean(item.completed),
     owner: {
       id: item.owner_id,
       name: item.owner_name,
@@ -175,7 +177,7 @@ export const create = post(
     isLocked,
     autoApprove,
     image: uploadingImage,
-  }: Omit<Class, 'id' | 'isOwner' | 'image' | 'owner'> & {
+  }: Omit<Class, 'id' | 'isOwn' | 'image' | 'owner'> & {
     image: { blob: Blob }
   }) => ({
     path: '/class',
@@ -215,7 +217,9 @@ export const create = post(
         isPublic,
         isLocked,
         autoApprove,
-        isOwner: true,
+        isOwn: true,
+        isJoined: false,
+        completed: false,
         image,
         owner: getCurrentUser(),
       }
@@ -238,3 +242,27 @@ export const cancelJoin = del(({ classId }: { classId: number }) => ({
     access_token: getUserToken(),
   },
 }))
+
+export const search = get(
+  ({
+    query,
+    limit,
+    offset,
+  }: {
+    query: string
+    limit: number
+    offset: number
+  }) => ({
+    path: '/class/search',
+    params: {
+      access_token: getUserToken(),
+      search_key: query,
+      limit_posts: limit,
+      num_of_posts: offset,
+    },
+    response({ data }: { data: ClassResponse[] }): Class[] {
+      if (!data) throw new Error('Something went wrong')
+      return data.map(mapClass)
+    },
+  }),
+)

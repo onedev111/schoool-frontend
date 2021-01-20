@@ -69,6 +69,9 @@ module.exports = {
         light: '#D8F2FF',
         '9e': '#009EDC',
         '0c': '#0CBAFF',
+        19: '#19BEFF',
+        '008bc2': '#008BC2',
+        '0089c0': '#0089C0',
       },
       red: {
         ...defaultTheme.colors.red,

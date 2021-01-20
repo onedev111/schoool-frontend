@@ -31,6 +31,7 @@ export const useCurrentUser = () => {
   return [
     currentUser,
     (user: User | null) => {
+      currentUser = user as User
       setJson(user ? JSON.stringify(user) : null)
     },
   ] as const
