@@ -40,6 +40,7 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     isMine: true,
     isClassOwner: true,
     isClassAdmin: true,
+    isFollowing: false,
     user: getCurrentUser(),
     date: dayjs(),
     liked: post?.liked || false,

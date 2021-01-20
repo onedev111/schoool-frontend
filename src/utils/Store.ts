@@ -1,6 +1,5 @@
 import React from 'react'
 import { makeAutoObservable } from 'mobx'
-import Item from 'Class/Sidebar/ClassesList/Item'
 
 type Params<ItemType> =
   | {
@@ -146,7 +145,7 @@ export const useRecords = <ItemType, Props>({
   }
 }) => {
   React.useEffect(() => {
-    store.fetch()
+    if (store.canFetchMore && store.items.length === 0) store.fetch()
   }, [])
 
   React.useEffect(() => {

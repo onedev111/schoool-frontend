@@ -1,9 +1,6 @@
 import React from 'react'
 import { EmojiButton } from '@joeattardi/emoji-button'
-import {
-  focusAtTheEnd,
-  insertElementToContentEditable,
-} from 'utils/contentEditable'
+import { insertElementToContentEditable } from 'utils/contentEditable'
 
 type Props = {
   state: {

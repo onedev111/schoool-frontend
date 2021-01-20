@@ -9,6 +9,8 @@ import api from 'api'
 import { PostStore } from 'Post/Store'
 import SavePostModal from 'Post/Item/Menu/SavePostModal'
 import { observer } from 'mobx-react-lite'
+import Spin from 'assets/images/icons/Spin'
+import { useMutation } from 'react-query'
 
 const itemClass = `w-full flex-center transition duration-200 hover:bg-gray-f2 cursor-pointer ${style.menuItem}`
 
@@ -25,8 +27,43 @@ export default observer(function Menu({ post, button, className }: Props) {
   const [showShare, toggleShare] = useToggle()
   const [savePostOpen, toggleSavePost] = useToggle()
   const { isMine, isClassOwner, isClassAdmin } = post
+  const [error, setError] = React.useState<string>()
+
+  const [follow, { isLoading: followLoading }] = useMutation(api.user.follow, {
+    onSettled(_, error) {
+      if (error) {
+        setError((error as Error).message)
+      } else {
+        setError(undefined)
+        PostStore.update(post, { isFollowing: true })
+      }
+    },
+  })
+
+  const [unfollow, { isLoading: unfollowLoading }] = useMutation(
+    api.user.unfollow,
+    {
+      onSettled(_, error) {
+        if (error) {
+          setError((error as Error).message)
+        } else {
+          setError(undefined)
+          PostStore.update(post, { isFollowing: false })
+        }
+      },
+    },
+  )
+
+  const isFollowLoading = followLoading || unfollowLoading
 
   const close = () => setOpen(false)
+
+  const toggleFollow = () => {
+    if (isFollowLoading) return
+
+    const fn = post.isFollowing ? unfollow : follow
+    fn({ userId: post.user.id })
+  }
 
   return (
     <>
@@ -59,16 +96,41 @@ export default observer(function Menu({ post, button, className }: Props) {
         className={className}
         contentClass="absolute mt-2 rounded-lg shadow-around bg-white right-0 z-20 text-17 font-bold"
       >
-        {!isMine && <div className={`${itemClass}`}>Send Message</div>}
-        {!isMine && <div className={`${itemClass} text-blue-deep`}>Follow</div>}
-        <div onClick={toggleSavePost} className={`${itemClass} text-blue-deep`}>
+        {error && <div className="text-red-500 py-2">{error}</div>}
+        {!isMine && (
+          <button type="button" className={`${itemClass}`}>
+            Send Message
+          </button>
+        )}
+        {!isMine && (
+          <button
+            type="button"
+            className={`${itemClass} text-blue-deep`}
+            disabled={isFollowLoading}
+            onClick={toggleFollow}
+          >
+            {isFollowLoading && (
+              <Spin className="w-5 h-5 mr-2 text-blue-primary animate-spin" />
+            )}
+            {post.isFollowing ? 'Unfollow' : 'Follow'}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={toggleSavePost}
+          className={`${itemClass} text-blue-deep`}
+        >
           {post.addedToSaved ? 'Remove from Saved' : 'Save Post'}
-        </div>
+        </button>
 
         {!isMine && (
-          <div className={`${itemClass}`} onClick={toggleShare}>
+          <button
+            type="button"
+            className={`${itemClass}`}
+            onClick={toggleShare}
+          >
             Share This Post
-          </div>
+          </button>
         )}
         {!isMine && <div className={`${itemClass} text-blue-deep`}>Report</div>}
         {isMine && (
@@ -81,17 +143,22 @@ export default observer(function Menu({ post, button, className }: Props) {
           </button>
         )}
         {(isMine || isClassOwner || isClassAdmin) && (
-          <div
+          <button
+            type="button"
             className={`${itemClass} text-red-500`}
             onClick={toggleDeleteModal}
           >
             Delete
-          </div>
+          </button>
         )}
         {isMine && (
-          <div className={`${itemClass}`} onClick={toggleShare}>
+          <button
+            type="button"
+            className={`${itemClass}`}
+            onClick={toggleShare}
+          >
             Share This Post
-          </div>
+          </button>
         )}
       </Dropdown>
     </>

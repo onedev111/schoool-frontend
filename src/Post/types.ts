@@ -22,6 +22,7 @@ export type Post = {
   isMine: boolean
   isClassOwner: boolean
   isClassAdmin: boolean
+  isFollowing: boolean
   user: {
     id: number
     name: string

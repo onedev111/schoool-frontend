@@ -62,6 +62,7 @@ const createVideoUploadState = ({ video, onChange }: Props = {}) =>
 
       this.setFile(file)
     },
+    // eslint-disable-next-line
     onChangeVideo(e: any) {
       this.setFile(e.target.files[0])
       e.target.value = []

@@ -195,6 +195,7 @@ const mapPost = ({
     isMine: post.user_id === userId,
     isClassOwner: post.class_owner === userId,
     isClassAdmin: post.class_admin === userId,
+    isFollowing: Boolean(post.is_following),
     user: {
       id: post.user_id,
       name: post.name,

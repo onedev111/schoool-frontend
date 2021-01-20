@@ -3,7 +3,7 @@ import api from 'api'
 
 export const PostStore = makeStore({
   fetchList: api.post.list,
-  limit: 5,
+  limit: 20,
 })
 
 export const useData = ({

@@ -277,3 +277,19 @@ export const getUser = get(({ id }: { id: number }) => ({
     }
   },
 }))
+
+export const follow = get(({ userId }: { userId: number }) => ({
+  path: '/follow_user',
+  params: {
+    access_token: getUserToken(),
+    follower_id: userId,
+  },
+}))
+
+export const unfollow = get(({ userId }: { userId: number }) => ({
+  path: '/unfollow_user',
+  params: {
+    access_token: getUserToken(),
+    follower_id: userId,
+  },
+}))
