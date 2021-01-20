@@ -1,6 +1,9 @@
 import React from 'react'
 import { EmojiButton } from '@joeattardi/emoji-button'
-import { insertElementToContentEditable } from 'utils/contentEditable'
+import {
+  focusAtTheEnd,
+  insertElementToContentEditable,
+} from 'utils/contentEditable'
 
 type Props = {
   state: {
@@ -31,6 +34,7 @@ export default function useEmojiPicker({ state, onChange }: Props) {
       } else {
         const textNode = document.createTextNode(emoji)
         insertElementToContentEditable(textNode, editor, state.selectionRange)
+        editor.click()
       }
 
       if (onChange) onChange()

@@ -33,6 +33,7 @@ const ContentEditableDiv = React.memo(
         className="focus:outline-none w-full js-editor whitespace-pre-wrap"
         style={{ minHeight: `${minHeight}px` }}
         onFocus={onFocus}
+        onClick={onFocus}
         onBlur={onBlur}
         dangerouslySetInnerHTML={{ __html: getValue() }}
         onInput={(e) => {

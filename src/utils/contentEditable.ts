@@ -47,7 +47,7 @@ export const insertElementToContentEditable = (
   }
 }
 
-export const focusAtTheEnd = (el: HTMLDivElement) => {
+export const focusAtTheEnd = (el: HTMLElement) => {
   el.focus()
   if (window.getSelection && document.createRange) {
     const range = document.createRange()
