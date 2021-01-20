@@ -15,8 +15,6 @@ import { observer } from 'mobx-react-lite'
 import PostBottomPanel from 'Post/Item/BottomPanel'
 import CommentsModal from 'Post/Comment/Modal'
 import CommentStore from 'Post/Comment/Store'
-import routes from 'routes'
-import { Link } from 'react-router-dom'
 import PostTitle from 'Post/Item/Title'
 
 type Props = {

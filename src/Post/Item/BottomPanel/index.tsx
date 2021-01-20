@@ -7,17 +7,25 @@ import Notebook from 'assets/images/icons/notebook'
 import useToggle from 'utils/useToggle'
 import Modal from 'Shared/Modal'
 import SentenceForm from 'Home/Sentence/Form'
+import { Check } from '@styled-icons/boxicons-regular/Check'
+import SavePostModal from 'Post/Item/Menu/SavePostModal'
+import { observer } from 'mobx-react-lite'
 
 type Props = {
   post: Post
   toggleComments(): void
 }
 
-export default function PostBottomPanel({ post, toggleComments }: Props) {
+export default observer(function PostBottomPanel({
+  post,
+  toggleComments,
+}: Props) {
   const [openAddToNotebook, toggleAddToNotebook] = useToggle()
+  const [savePostOpen, toggleSavePost] = useToggle()
 
   return (
     <>
+      {savePostOpen && <SavePostModal post={post} onClose={toggleSavePost} />}
       {openAddToNotebook && (
         <Modal onClose={toggleAddToNotebook} size="small">
           <SentenceForm
@@ -44,14 +52,15 @@ export default function PostBottomPanel({ post, toggleComments }: Props) {
             <div className="text-lg ml-3">{post.commentsCount}</div>
           )}
         </button>
-        {/*<button*/}
-        {/*  className={cn(*/}
-        {/*    'w-1/4 text-center transition duration-200',*/}
-        {/*    post.saved ? 'text-blue-primary' : 'text-gray-5f',*/}
-        {/*  )}*/}
-        {/*>*/}
-        {/*  <Check size={40} />*/}
-        {/*</button>*/}
+        <button
+          className={cn(
+            'w-1/4 text-center transition duration-200',
+            post.addedToSaved ? 'text-blue-primary' : 'text-gray-5f',
+          )}
+          onClick={toggleSavePost}
+        >
+          <Check size={40} />
+        </button>
         <button
           type="button"
           className="w-1/3 flex-center"
@@ -67,4 +76,4 @@ export default function PostBottomPanel({ post, toggleComments }: Props) {
       </div>
     </>
   )
-}
+})

@@ -16,6 +16,7 @@ export type Post = {
   id: number
   isUploading: boolean
   isPublic: boolean
+  addedToSaved: boolean
   classes: { id: number; name: string }[]
   text: string
   isMine: boolean
@@ -27,7 +28,6 @@ export type Post = {
   liked: boolean
   likesCount: number
   commentsCount: number
-  saved: boolean
   images: string[]
   joinedToClass?: boolean
   audio?: string

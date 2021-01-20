@@ -1,4 +1,4 @@
-import { get, getMutation, post } from 'utils/apiUtils'
+import { get, post } from 'utils/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
 import { Comment } from 'Post/Comment/types'
 import dayjs from 'dayjs'
@@ -111,7 +111,7 @@ export const create = post(
   }),
 )
 
-export const like = getMutation(
+export const like = get(
   ({ postOwnerId, commentId }: { postOwnerId: number; commentId: number }) => ({
     path: '/set_share_reply_like',
     params: {
@@ -125,7 +125,7 @@ export const like = getMutation(
   }),
 )
 
-export const unlike = getMutation(
+export const unlike = get(
   ({ postOwnerId, commentId }: { postOwnerId: number; commentId: number }) => ({
     path: '/unset_share_reply_like',
     params: {

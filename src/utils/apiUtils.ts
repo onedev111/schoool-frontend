@@ -1,36 +1,6 @@
 import { request, Options, HTTPMethod } from 'utils/fetch'
 
 // eslint-disable-next-line
-export const get = <Args extends any[], Response = void>(
-  fn: (
-    ...args: Args
-  ) => {
-    url?: string
-    path?: string
-    // eslint-disable-next-line
-    response(data: any): Response
-    params?: Record<string, string | number | undefined>
-    options?: Options
-    auth?: boolean
-  },
-) => {
-  return async (...args: Args) => {
-    const props = fn(...args)
-    const { response, url, path, params, options, auth } = props
-    return response(
-      await request({
-        method: 'GET',
-        url,
-        path,
-        params,
-        options,
-        auth,
-      }),
-    )
-  }
-}
-
-// eslint-disable-next-line
 const mutate = (method: HTTPMethod) => <Args extends any[], Response = void>(
   fn: (
     ...args: Args
@@ -91,7 +61,7 @@ const mutate = (method: HTTPMethod) => <Args extends any[], Response = void>(
   }
 }
 
-export const getMutation = mutate('GET')
+export const get = mutate('GET')
 export const post = mutate('POST')
 export const put = mutate('PUT')
 export const del = mutate('DELETE')

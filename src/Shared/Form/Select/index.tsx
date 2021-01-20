@@ -5,6 +5,7 @@ import Dropdown from 'Shared/Dropdown'
 import { CaretDown } from '@styled-icons/boxicons-regular/CaretDown'
 
 type Props = {
+  // eslint-disable-next-line
   form: UseFormMethods<any>
   name: string
   options: Record<string, string>
@@ -12,6 +13,8 @@ type Props = {
 }
 
 export default function Select({ form, name, options, className }: Props) {
+  const [isOpen, setOpen] = React.useState(false)
+
   return (
     <Controller
       name={name}
@@ -19,6 +22,8 @@ export default function Select({ form, name, options, className }: Props) {
       render={({ value, onChange }) => {
         return (
           <Dropdown
+            isOpen={isOpen}
+            setOpen={setOpen}
             className={cn('relative', className)}
             contentClass="absolute left-0 top-0 mt-10 w-full px-4"
             button={({ onClick }) => (

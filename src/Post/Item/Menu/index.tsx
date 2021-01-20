@@ -7,6 +7,8 @@ import PostForm from 'Post/Form'
 import DeleteModal from 'Shared/Modal/Delete'
 import api from 'api'
 import { PostStore } from 'Post/Store'
+import SavePostModal from 'Post/Item/Menu/SavePostModal'
+import { observer } from 'mobx-react-lite'
 
 const itemClass = `w-full flex-center transition duration-200 hover:bg-gray-f2 cursor-pointer ${style.menuItem}`
 
@@ -16,11 +18,15 @@ type Props = {
   className?: string
 }
 
-export default function Menu({ post, button, className }: Props) {
-  const { isMine } = post
+export default observer(function Menu({ post, button, className }: Props) {
+  const [isOpen, setOpen] = React.useState(false)
   const [showPostForm, togglePostForm] = useToggle()
   const [showDeleteModal, toggleDeleteModal] = useToggle()
   const [showShare, toggleShare] = useToggle()
+  const [savePostOpen, toggleSavePost] = useToggle()
+  const { isMine } = post
+
+  const close = () => setOpen(false)
 
   return (
     <>
@@ -38,18 +44,27 @@ export default function Menu({ post, button, className }: Props) {
           }}
         />
       )}
+      {savePostOpen && (
+        <SavePostModal
+          post={post}
+          onClose={() => {
+            toggleSavePost()
+            close()
+          }}
+        />
+      )}
       <Dropdown
+        isOpen={isOpen}
+        setOpen={setOpen}
         button={button}
         className={className}
         contentClass="absolute mt-2 rounded-lg shadow-around bg-white right-0 z-20 text-17 font-bold"
       >
         {!isMine && <div className={`${itemClass}`}>Send Message</div>}
         {!isMine && <div className={`${itemClass} text-blue-deep`}>Follow</div>}
-
-        {/*{savePostOpen && <SavePostModal onClose={toggleSavePost} />}*/}
-        {/*<div onClick={toggleSavePost} className={`${itemClass} text-blue-deep`}>*/}
-        {/*  Save Post*/}
-        {/*</div>*/}
+        <div onClick={toggleSavePost} className={`${itemClass} text-blue-deep`}>
+          {post.addedToSaved ? 'Remove from Saved' : 'Save Post'}
+        </div>
 
         {!isMine && (
           <div className={`${itemClass}`} onClick={toggleShare}>
@@ -80,4 +95,4 @@ export default function Menu({ post, button, className }: Props) {
       </Dropdown>
     </>
   )
-}
+})

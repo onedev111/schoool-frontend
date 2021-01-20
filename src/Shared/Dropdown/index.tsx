@@ -7,15 +7,18 @@ type DropdownProps = {
   button: (params: { onClick(): void }) => React.ReactNode
   className?: string
   contentClass?: string
+  isOpen: boolean
+  setOpen(open: boolean): void
 }
 
 export default function Dropdown({
+  isOpen,
+  setOpen,
   button,
   children,
   className,
   contentClass,
 }: DropdownProps) {
-  const [isOpen, setOpen] = React.useState(false)
   const [openClass, setOpenClass] = React.useState(false)
   const [timeout, setTimeoutValue] = React.useState<number | undefined>(
     undefined,

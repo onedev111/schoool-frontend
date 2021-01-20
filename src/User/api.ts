@@ -1,4 +1,4 @@
-import { post, getMutation, get } from 'utils/apiUtils'
+import { post, get } from 'utils/apiUtils'
 import { EnglishLevel, User } from './types'
 import { getUploadingUrls } from 'Upload/api'
 import { getCurrentUser, getUserToken, setCurrentUser } from 'User/currentUser'
@@ -118,7 +118,7 @@ export const register = post(
   }),
 )
 
-export const forgotPassword = getMutation((params: { email: string }) => ({
+export const forgotPassword = get((params: { email: string }) => ({
   path: '/forgot_password',
   params,
   response(data: { result_code: string }) {
@@ -156,18 +156,16 @@ export const updateEnglishLevel = post(
   }),
 )
 
-export const updateBaseLanguage = getMutation(
-  ({ language }: { language: string }) => ({
-    path: '/update_base_language',
-    params: {
-      access_token: getUserToken(),
-      newLanguage: language,
-    },
-    response() {
-      return
-    },
-  }),
-)
+export const updateBaseLanguage = get(({ language }: { language: string }) => ({
+  path: '/update_base_language',
+  params: {
+    access_token: getUserToken(),
+    newLanguage: language,
+  },
+  response() {
+    return
+  },
+}))
 
 export const updateProfileImage = post(({ avatar }: { avatar: string }) => ({
   path: '/update_profile_image',
@@ -181,19 +179,17 @@ export const updateProfileImage = post(({ avatar }: { avatar: string }) => ({
   },
 }))
 
-export const updateLocation = getMutation(
-  ({ location }: { location: string }) => ({
-    path: '/v1.2/update_instructor_profile',
-    params: {
-      access_token: getUserToken(),
-      location,
-    },
-    response({ result_code }: { result_code: string }) {
-      if (result_code !== '22.00') throw new Error('Something went wrong')
-      return
-    },
-  }),
-)
+export const updateLocation = get(({ location }: { location: string }) => ({
+  path: '/v1.2/update_instructor_profile',
+  params: {
+    access_token: getUserToken(),
+    location,
+  },
+  response({ result_code }: { result_code: string }) {
+    if (result_code !== '22.00') throw new Error('Something went wrong')
+    return
+  },
+}))
 
 export const updateProfile = async ({
   avatar,

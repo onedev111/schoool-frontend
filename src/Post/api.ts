@@ -1,4 +1,4 @@
-import { del, get, getMutation, post } from 'utils/apiUtils'
+import { del, get, post } from 'utils/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
 import { Post, SLecture, Tag, TagToInsert, TagType } from 'Post/types'
 import dayjs from 'dayjs'
@@ -188,6 +188,7 @@ const mapPost = ({
     id: post.share_post_id,
     isUploading: false,
     isPublic: Boolean(post.is_public),
+    addedToSaved: Boolean(post.check_notebook),
     classes,
     joinedToClass: Boolean(post.class_joined),
     text: post.comment,
@@ -200,7 +201,6 @@ const mapPost = ({
     liked: Boolean(post.liked),
     likesCount: post.like_count,
     commentsCount: post.reply_count,
-    saved: Boolean(post.check_notebook),
     images: [
       post.photo_dir,
       post.photo_dir_second,
@@ -377,7 +377,7 @@ export const save = post(
   }),
 )
 
-export const remove = getMutation(({ id }: { id: number }) => ({
+export const remove = get(({ id }: { id: number }) => ({
   path: '/delete_share_post',
   params: {
     access_token: getUserToken(),
@@ -442,5 +442,21 @@ export const unlike = del(({ postId }: { postId: number }) => ({
   path: `/rest_share/${postId}/like`,
   response() {
     // noop
+  },
+}))
+
+export const addToSaved = get(({ postId }: { postId: number }) => ({
+  path: '/set_share_notebook',
+  params: {
+    access_token: getUserToken(),
+    share_post_id: postId,
+  },
+}))
+
+export const removeFromSaved = get(({ postId }: { postId: number }) => ({
+  path: '/unset_share_notebook',
+  params: {
+    access_token: getUserToken(),
+    share_post_id: postId,
   },
 }))
