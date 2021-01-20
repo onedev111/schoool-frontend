@@ -24,7 +24,7 @@ export default observer(function Menu({ post, button, className }: Props) {
   const [showDeleteModal, toggleDeleteModal] = useToggle()
   const [showShare, toggleShare] = useToggle()
   const [savePostOpen, toggleSavePost] = useToggle()
-  const { isMine } = post
+  const { isMine, isClassOwner, isClassAdmin } = post
 
   const close = () => setOpen(false)
 
@@ -40,7 +40,6 @@ export default observer(function Menu({ post, button, className }: Props) {
           onDelete={() => {
             api.post.remove({ id: post.id })
             PostStore.remove(post)
-            PostStore.fetch({ reset: true })
           }}
         />
       )}
@@ -81,12 +80,14 @@ export default observer(function Menu({ post, button, className }: Props) {
             Edit
           </button>
         )}
-        <div
-          className={`${itemClass} text-red-500`}
-          onClick={toggleDeleteModal}
-        >
-          Delete
-        </div>
+        {(isMine || isClassOwner || isClassAdmin) && (
+          <div
+            className={`${itemClass} text-red-500`}
+            onClick={toggleDeleteModal}
+          >
+            Delete
+          </div>
+        )}
         {isMine && (
           <div className={`${itemClass}`} onClick={toggleShare}>
             Share This Post

@@ -20,6 +20,8 @@ export type Post = {
   classes: { id: number; name: string }[]
   text: string
   isMine: boolean
+  isClassOwner: boolean
+  isClassAdmin: boolean
   user: {
     id: number
     name: string

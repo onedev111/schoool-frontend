@@ -193,6 +193,8 @@ const mapPost = ({
     joinedToClass: Boolean(post.class_joined),
     text: post.comment,
     isMine: post.user_id === userId,
+    isClassOwner: post.class_owner === userId,
+    isClassAdmin: post.class_admin === userId,
     user: {
       id: post.user_id,
       name: post.name,

@@ -38,6 +38,8 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     addedToSaved: post?.addedToSaved || false,
     classes: post?.classes || [],
     isMine: true,
+    isClassOwner: true,
+    isClassAdmin: true,
     user: getCurrentUser(),
     date: dayjs(),
     liked: post?.liked || false,
