@@ -23,7 +23,7 @@ export default observer(function PostTitle({
 
   return (
     <div className="text-xl text-gray-02">
-      {name}
+      <span className="font-bold">{name}</span>
       {!isPublic && classes.length === 0 && onlyForMe}
       {(isPublic || classes.length > 0) && postedTo}
       {isPublic && <span className="font-bold">Public</span>}

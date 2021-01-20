@@ -72,7 +72,7 @@ export default observer(function Post({ post }: Props) {
               className="mr-3 rounded-full"
             />
             <div className="flex-grow">
-              <div className="font-bold text-gray-b0 text-sm">
+              <div className="text-gray-b0 text-sm">
                 <PostTitle post={post} />
                 {formatDate(post.date)}
               </div>
