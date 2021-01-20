@@ -131,14 +131,15 @@ export default observer(function Audio({
       className={cn(
         'w-full rounded-full text-white flex-center text-sm',
         compact ? 'px-4' : 'px-6',
-        loop ? 'bg-mustard-darkest' : 'bg-blue-primary',
+        loop ? 'bg-mustard-darkest cursor-pointer' : 'bg-blue-primary',
         className,
       )}
       tabIndex={-1}
       onFocus={toggleFocused}
       onBlur={toggleFocused}
+      onClick={loop ? togglePlay : undefined}
     >
-      <button onClick={togglePlay}>
+      <button onClick={loop ? undefined : togglePlay}>
         {state.playing ? <PauseFill size={36} /> : <PlayFill size={36} />}
       </button>
       {loop && (
@@ -151,7 +152,7 @@ export default observer(function Audio({
           >
             Looping Audio
           </div>
-          <div className="flex-grow flex-center">
+          <div className="flex-grow flex-center select-none">
             <img src={audioRipples} alt="audio ripples" />
           </div>
         </>
@@ -171,7 +172,15 @@ export default observer(function Audio({
         </>
       )}
       {onDelete && (
-        <button type="button" onClick={onDelete} className="ml-4">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+            onDelete()
+          }}
+          className="ml-4"
+        >
           <X size={36} />
         </button>
       )}
