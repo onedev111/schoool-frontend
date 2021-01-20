@@ -95,7 +95,7 @@ export const create = post(
       comment: comment.text,
       photo: comment.image,
       replying_to: comment.inReplyTo?.user?.id,
-      top_reply_id: comment.parentCommentId,
+      top_reply_id: comment.parentCommentId || -1,
       actual_reply_id: comment.inReplyTo?.id,
     },
     response({

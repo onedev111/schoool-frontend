@@ -98,7 +98,7 @@ export default function CommentItem({
         >
           <CommentForm
             comment={{
-              parentCommentId: comment.parentCommentId,
+              parentCommentId: comment.parentCommentId || comment.id,
               inReplyTo: comment,
             }}
             post={post}
