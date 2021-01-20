@@ -34,7 +34,7 @@ export default function Notebook({ toggleMenu }: Props) {
 
   return (
     <>
-      <div className="flex-center p-3 border-b border-gray-c5">
+      <div className="flex-center flex-shrink-0 p-3 border-b border-gray-c5">
         <button
           style={{ width: '160px', height: '30px' }}
           type="button"
@@ -54,10 +54,11 @@ export default function Notebook({ toggleMenu }: Props) {
           Repetition
         </button>
       </div>
-      {items.length === 0 && <Placeholder />}
-      <div className="flex-grow flex flex-1 min-h-0">
-        {items.length > 0 && <List items={items} />}
-      </div>
+      {/*{items.length === 0 && <Placeholder />}*/}
+      <Placeholder />
+      {/*<div className="flex-grow flex flex-1 min-h-0">*/}
+      {/*  {items.length > 0 && <List items={items} />}*/}
+      {/*</div>*/}
     </>
   )
 }

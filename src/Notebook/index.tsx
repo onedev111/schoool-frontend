@@ -62,7 +62,7 @@ export default observer(function Notebook() {
       {addModal && loadedTotal && total <= maxFreeSentences && (
         <AddSentence onClose={toggleAddModal} />
       )}
-      <div className="flex justify-between p-4">
+      <div className="flex flex-shrink-0 justify-between p-4">
         {!selecting && (
           <>
             <div className="text-blue-primary uppercase">Total {total}</div>

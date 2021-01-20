@@ -14,7 +14,7 @@ export default function NotebookWidget() {
   return (
     <Sidebar className="ml-10" contentClass="bg-white shadow">
       {showMenu && (
-        <div className="flex text-lg uppercase text-center">
+        <div className="flex flex-shrink-0 text-lg uppercase text-center">
           <div
             className={cn(
               `w-1/2 pt-4 pb-3 bg-gray-dc cursor-pointer`,
