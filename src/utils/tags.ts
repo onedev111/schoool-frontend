@@ -58,7 +58,10 @@ export const getTextAndTagsFromEditor = ({
 }: {
   editor: HTMLDivElement
 }) => {
-  let text = editor.innerText || ''
+  let text = editor.innerHTML
+    .replace(/\n?<div>/g, '\n')
+    .replace(/(<br>)?<\/div>/g, '')
+    .replace(/<br>/g, '\n')
 
   const mark = String(Math.random()).slice(2)
 

@@ -45,7 +45,7 @@ const ContentEditableDiv = React.memo(
             'text/plain',
           )
           document.execCommand('insertHTML', false, text)
-          setValue((e.target as HTMLElement).innerHTML)
+          setValue((editorRef.current as HTMLElement).innerHTML)
         }}
       />
     )
