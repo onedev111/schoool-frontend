@@ -40,10 +40,7 @@ export default function SelectTarget({
   setUserIds,
 }: Props) {
   const currentUser = getCurrentUser()
-
-  const values = currentUser.isInstructor
-    ? [options.onlyForMe, options.public, options.shared]
-    : [options.onlyForMe, options.shared]
+  const values = [options.onlyForMe, options.public, options.shared]
 
   const [onChange, setOnChange] = React.useState<(value: Value) => void>()
 

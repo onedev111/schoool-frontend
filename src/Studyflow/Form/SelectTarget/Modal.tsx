@@ -44,18 +44,16 @@ export default observer(function SelectTargetModal({
           </div>
           Select Target
         </div>
-        {currentUser.isInstructor && (
-          <SelectTargetOption
-            image={publicIcon}
-            title="Public"
-            text="Anyone can see this study flow."
-            checked={isPublic && userIds.length === 0}
-            onChange={() => {
-              setIsPublic(true)
-              setUserIds([])
-            }}
-          />
-        )}
+        <SelectTargetOption
+          image={publicIcon}
+          title="Public"
+          text="Anyone can see this study flow."
+          checked={isPublic && userIds.length === 0}
+          onChange={() => {
+            setIsPublic(true)
+            setUserIds([])
+          }}
+        />
         <SelectTargetOption
           image={currentUser.avatar}
           title="Only for me"
