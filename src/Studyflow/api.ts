@@ -89,6 +89,8 @@ export const create = post(
       is_public: flow.isPublic ? 1 : 0,
       type: typeToNumber[flow.type],
       shared_users: JSON.stringify(flow.userIds),
+      profile_image_dir:
+        'http://dzh6ulgfepbq.cloudfront.net/study_flow/photo/cover/2-1.png',
       expressions: JSON.stringify(
         flow.type === 'conversation'
           ? (flow.expressions as ConversationExpression[]).map((expr) => ({
