@@ -3,11 +3,11 @@ import Modal from 'Shared/Modal'
 import { Post } from 'Post/types'
 import { useMutation } from 'react-query'
 import api from 'api'
-import { PostStore } from 'Post/Store'
 import useToggle from 'utils/useToggle'
 import Spin from 'assets/images/icons/Spin'
 import cn from 'classnames'
 import { observer } from 'mobx-react-lite'
+import { removeFromCache, updateCache } from 'Post/actions'
 
 type Props = {
   post: Post
@@ -18,26 +18,27 @@ export default observer(function SavePost({ post, onClose }: Props) {
   const [error, setError] = React.useState<string>()
   const [done, toggleDone] = useToggle()
 
-  const [addToSaved] = useMutation(api.post.addToSaved, {
+  const { mutate: addToSaved } = useMutation(api.post.addToSaved, {
     onSettled(_, error) {
       if (error) {
         setError((error as Error).message)
         return
       }
 
-      PostStore.update(post, { addedToSaved: true })
+      updateCache(post.id, { addedToSaved: true })
       toggleDone()
     },
   })
 
-  const [removeFromSaved] = useMutation(api.post.removeFromSaved, {
+  const { mutate: removeFromSaved } = useMutation(api.post.removeFromSaved, {
     onSettled(_, error) {
       if (error) {
         setError((error as Error).message)
         return
       }
 
-      PostStore.update(post, { addedToSaved: false })
+      updateCache(post.id, { addedToSaved: false })
+      removeFromCache(post, { key: ['posts', 'saved'] })
       toggleDone()
     },
   })

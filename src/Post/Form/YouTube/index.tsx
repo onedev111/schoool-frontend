@@ -25,8 +25,10 @@ export default observer(function YouTube({
 
   const onChange = async (url: string) => {
     setUrl(url)
-    const id = new URLSearchParams(url.slice(url.indexOf('?'))).get('v')
-    state.setYouTubeId(id || undefined)
+    const fullUrlId = new URLSearchParams(url.slice(url.indexOf('?'))).get('v')
+    const match = url.match(/youtu.be\/(\w+)/)
+    const shortUrlId = (match && match[1]) || undefined
+    state.setYouTubeId(fullUrlId || shortUrlId || undefined)
   }
 
   return (

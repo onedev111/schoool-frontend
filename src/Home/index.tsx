@@ -7,15 +7,19 @@ import Spin from 'assets/images/icons/Spin'
 import useToggle from 'utils/useToggle'
 import PostForm from 'Post/Form'
 import logo from 'assets/images/logo.svg'
-import { PostStore } from 'Post/Store'
 import Sidebar from 'Home/Sidebar'
-import { useData } from 'Post/Store'
+import useRecords from 'utils/useRecords'
+import api from 'api'
 
 export default observer(function Home() {
   const [showPostForm, togglePostForm] = useToggle(false)
   const postsWrapRef = React.useRef<HTMLDivElement>(null)
 
-  const { isFetching, items } = useData({ ref: postsWrapRef, threshold: 500 })
+  const { isFetching, data } = useRecords({
+    key: ['posts'],
+    load: api.post.list,
+    loadOnScroll: { ref: postsWrapRef, threshold: 500 },
+  })
 
   return (
     <>
@@ -39,10 +43,14 @@ export default observer(function Home() {
               placeholder="What do you want to post?"
             />
           </div>
-          {items.length > 0 && (
+          {data && data.pages.length > 0 && (
             <div ref={postsWrapRef}>
-              {PostStore.items.map((post) => (
-                <Post key={post.id} post={post} />
+              {data.pages.map((page, i) => (
+                <React.Fragment key={i}>
+                  {page.map((post) => (
+                    <Post key={post.id} post={post} />
+                  ))}
+                </React.Fragment>
               ))}
             </div>
           )}

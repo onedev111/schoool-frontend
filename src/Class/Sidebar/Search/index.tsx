@@ -1,73 +1,59 @@
 import React from 'react'
 import { Search as SearchIcon } from '@styled-icons/fa-solid/Search'
-import { useInfiniteQuery } from 'react-query'
 import api from 'api'
 import { Link } from 'react-router-dom'
 import routes from 'routes'
 import { useKey } from 'react-use'
 import cn from 'classnames'
 import history from 'utils/history'
+import Spin from 'assets/images/icons/Spin'
+import useRecords from 'utils/useRecords'
 
-const scrollLoadThreshold = 350
+type Props = {
+  isSearchOpen: boolean
+  setSearchOpen(value: boolean): void
+}
+
 const limit = 20
 
-export default function Search() {
-  const [enabled, setEnabled] = React.useState(false)
+export default function Search({ isSearchOpen, setSearchOpen }: Props) {
   const [query, setQuery] = React.useState('')
   const [active, setActive] = React.useState(-1)
+  const scrollRef = React.useRef<HTMLDivElement>(null)
 
-  const {
-    data: pages,
-    isLoading,
-    isFetching,
-    fetchMore,
-    canFetchMore,
-  } = useInfiniteQuery(
-    ['searchTags', { query }],
-    (key, { search }, page = 0) => {
-      return api.classes.search({
-        query,
-        limit,
-        offset: (page as number) * 20,
-      })
+  const { data, isFetching } = useRecords({
+    key: ['searchTags', { query }],
+    load: ({ limit, offset }) => api.classes.search({ query, limit, offset }),
+    loadOnScroll: {
+      ref: scrollRef,
+      threshold: 350,
     },
-    {
-      getFetchMore: (lastPage, pages) =>
-        lastPage.length > 0 ? pages.length : undefined,
-      enabled,
+    limit,
+    options: {
+      enabled: isSearchOpen,
     },
-  )
+  })
 
   React.useEffect(() => {
     const listener = (e: Event) => {
       const el = e.target as HTMLElement
-      if (!el.closest('.js-classes-search')) setEnabled(false)
+      if (!el.closest('.js-classes-search')) setSearchOpen(false)
     }
     window.addEventListener('click', listener)
     return () => window.removeEventListener('click', listener)
   }, [])
 
-  const onScroll = (e: any) => {
-    const el = (e as { target: HTMLElement }).target
-    if (
-      canFetchMore &&
-      !isLoading &&
-      !isFetching &&
-      el.scrollHeight - el.offsetHeight - el.scrollTop <= scrollLoadThreshold
-    ) {
-      fetchMore()
-    }
-  }
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
-    setEnabled(true)
+    setSearchOpen(true)
     setQuery(value)
     setActive(-1)
   }
 
-  const total = pages ? pages.reduce((sum, page) => sum + page.length, 0) : 0
-  useKey('Escape', () => setEnabled(false))
+  const total = data
+    ? data.pages.reduce((sum, page) => sum + page.length, 0)
+    : 0
+  useKey('Escape', () => setSearchOpen(false))
   useKey(
     'ArrowDown',
     () => {
@@ -87,13 +73,13 @@ export default function Search() {
   useKey(
     'Enter',
     () => {
-      if (!pages || active === -1) return
+      if (!data || active === -1) return
 
-      const item = pages[Math.floor(active / limit)][active % limit]
+      const item = data.pages[Math.floor(active / limit)][active % limit]
       if (item) history.push(routes.class(item.id))
     },
     {},
-    [pages, active],
+    [data?.pages, active],
   )
 
   let index = 0
@@ -110,11 +96,11 @@ export default function Search() {
           placeholder="Search classes"
           value={query}
           onChange={onChange}
-          onFocus={() => setEnabled(true)}
-          onClick={() => setEnabled(true)}
+          onFocus={() => setSearchOpen(true)}
+          onClick={() => setSearchOpen(true)}
         />
       </div>
-      {enabled && pages && pages.length > 0 && (
+      {isSearchOpen && (
         <div className="absolute left-0 right-0 z-30 mt-2 px-5">
           <div
             className="bg-white rounded overflow-auto"
@@ -122,48 +108,55 @@ export default function Search() {
               maxHeight: '400px',
               boxShadow: '0 2px 8px rgba(0, 0, 0, .3)',
             }}
-            onScroll={onScroll}
+            ref={scrollRef}
           >
-            {pages.map((page, i) => {
-              const pageLength = page.length
-              index += pageLength
+            {data &&
+              data.pages.map((page, i) => {
+                const pageLength = page.length
+                index += pageLength
 
-              return (
-                <React.Fragment key={i}>
-                  {page.map((item, i) => (
-                    <div
-                      className={cn(
-                        'flex items-center px-5 py-2 transition duration-200 hover:bg-blue-light',
-                        active === index + i - pageLength
-                          ? 'bg-blue-light'
-                          : 'bg-white',
-                      )}
-                      key={item.id}
-                    >
+                return (
+                  <React.Fragment key={i}>
+                    {page.map((item, i) => (
                       <Link
                         to={routes.class(item.id)}
-                        className="w-8 h-8 rounded-full mr-2 bg-center bg-cover"
-                        style={{ backgroundImage: `url("${item.image}")` }}
-                      />
-                      <div className="flex justify-center flex-col">
-                        <Link
-                          to={routes.class(item.id)}
-                          className="text-lg text-black font-bold hover:underline"
-                        >
-                          {item.name}
-                        </Link>
-                        <Link
-                          to={routes.user(item.owner.id)}
-                          className="text-sm text-gray-97 font-bold hover:underline"
-                        >
-                          {item.owner.name}
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
-                </React.Fragment>
-              )
-            })}
+                        className={cn(
+                          'flex items-center px-5 py-2 transition duration-200 hover:bg-blue-light',
+                          active === index + i - pageLength
+                            ? 'bg-blue-light'
+                            : 'bg-white',
+                        )}
+                        key={item.id}
+                      >
+                        <div
+                          className="w-8 h-8 rounded-full mr-2 bg-center bg-cover"
+                          style={{ backgroundImage: `url("${item.image}")` }}
+                        />
+                        <div className="flex justify-center flex-col">
+                          <div className="text-lg text-black font-bold hover:underline">
+                            {item.name}
+                          </div>
+                          <div
+                            className="text-sm text-gray-97 font-bold hover:underline"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              history.push(routes.user(item.owner.id))
+                            }}
+                          >
+                            {item.owner.name}
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </React.Fragment>
+                )
+              })}
+            {isFetching && (
+              <div className="flex-center my-5">
+                <Spin className="w-10 h-10 text-blue-primary animate-spin" />
+              </div>
+            )}
           </div>
         </div>
       )}

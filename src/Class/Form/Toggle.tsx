@@ -20,8 +20,9 @@ export default function Toggle({ form, name, options, children }: Props) {
             <div className="flex h-11 rounded text-lg bg-gray-ef">
               {Object.keys(options).map((label) => (
                 <button
+                  key={label}
                   type="button"
-                  onClick={() => onChange(true)}
+                  onClick={() => onChange(options[label])}
                   className={cn(
                     'w-1/2 rounded flex-center cursor-pointer',
                     value === options[label] &&

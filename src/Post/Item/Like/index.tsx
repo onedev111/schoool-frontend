@@ -12,8 +12,8 @@ type Props = {
 }
 
 export default observer(function Index({ post, className }: Props) {
-  const [like, { isLoading: liking }] = useMutation(api.post.like)
-  const [unlike, { isLoading: unliking }] = useMutation(api.post.unlike)
+  const { mutate: like, isLoading: liking } = useMutation(api.post.like)
+  const { mutate: unlike, isLoading: unliking } = useMutation(api.post.unlike)
 
   const isLoading = liking || unliking
 

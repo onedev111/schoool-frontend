@@ -20,26 +20,20 @@ const validateUser = (user: User) => {
 
 let currentUser: User | undefined
 
+export const setCurrentUser = (user: User | null) => {
+  currentUser = user as User
+  setItem(storageKey, user ? JSON.stringify(user) : null)
+}
+
 export const useCurrentUser = () => {
-  const [json, setJson] = useLocalStorage(storageKey)
+  const [json] = useLocalStorage(storageKey)
 
   if (!currentUser)
     currentUser = ((json
       ? validateUser(JSON.parse(json) as User)
       : null) as unknown) as User
 
-  return [
-    currentUser,
-    (user: User | null) => {
-      currentUser = user as User
-      setJson(user ? JSON.stringify(user) : null)
-    },
-  ] as const
-}
-
-export const setCurrentUser = (user: User | null) => {
-  currentUser = user as User
-  setItem(storageKey, user ? JSON.stringify(user) : null)
+  return [currentUser, setCurrentUser] as const
 }
 
 export const getCurrentUser = () => {

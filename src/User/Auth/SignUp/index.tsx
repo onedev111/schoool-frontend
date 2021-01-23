@@ -5,8 +5,6 @@ import { EyeOff } from '@styled-icons/ionicons-outline/EyeOff'
 import useToggle from 'utils/useToggle'
 import { Link } from 'react-router-dom'
 import routes from 'routes'
-import { FacebookSquare } from '@styled-icons/boxicons-logos/FacebookSquare'
-import { Apple } from '@styled-icons/boxicons-logos/Apple'
 import Input from 'User/Auth/Shared/Input'
 import * as yup from 'yup'
 import { useForm } from 'Shared/Form'
@@ -33,7 +31,7 @@ export default function SignIn() {
     'facebook',
   )
 
-  const [register, { isLoading }] = useMutation(api.user.register, {
+  const { mutate: register, isLoading } = useMutation(api.user.register, {
     onSettled(user, error) {
       if (user) {
         setToken(user)
@@ -43,15 +41,18 @@ export default function SignIn() {
     },
   })
 
-  const [signIn, { isLoading: isLoadingSocial }] = useMutation(api.user.login, {
-    onSettled(user, error) {
-      if (user) {
-        setCurrentUser(user)
-        if (user.isNew) history.push(routes.signUpForm())
-      }
-      if (error) setError((error as Error).message)
+  const { mutate: signIn, isLoading: isLoadingSocial } = useMutation(
+    api.user.login,
+    {
+      onSettled(user, error) {
+        if (user) {
+          setCurrentUser(user)
+          if (user.isNew) history.push(routes.signUpForm())
+        }
+        if (error) setError((error as Error).message)
+      },
     },
-  })
+  )
 
   const submit = (values: {
     name: string

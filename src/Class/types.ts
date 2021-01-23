@@ -9,6 +9,7 @@ export type Class = {
   completed: boolean
   image: string
   autoApprove: boolean
+  isApplied?: boolean
   owner: {
     id: number
     name: string

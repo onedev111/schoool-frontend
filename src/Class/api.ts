@@ -1,9 +1,12 @@
 import { del, get, post, put } from 'utils/apiUtils'
-import { getCurrentUser, getUserToken } from 'User/currentUser'
+import {
+  getCurrentUser,
+  getCurrentUserId,
+  getUserToken,
+} from 'User/currentUser'
 import { Class } from 'Class/types'
 import * as uploadApi from 'Upload/api'
 import { request } from 'utils/fetch'
-import { getUser } from 'User/api'
 
 type ClassResponse = {
   auto_approve: 0 | 1
@@ -39,6 +42,7 @@ type ClassResponse = {
   qr_only: string
   show_order: number
   status: 'member' | 'owner'
+  is_applied?: 0 | 1
 }
 
 const mapClass = (item: ClassResponse): Class => {
@@ -53,6 +57,8 @@ const mapClass = (item: ClassResponse): Class => {
     isOwn: item.status === 'owner',
     isJoined: item.status === 'member',
     completed: Boolean(item.completed),
+    isApplied:
+      item.is_applied !== undefined ? Boolean(item.is_applied) : undefined,
     owner: {
       id: item.owner_id,
       name: item.owner_name,
@@ -138,6 +144,16 @@ export const updatePhoto = async ({
   return upload.cdnUrl
 }
 
+export const updateName = put(
+  ({ classId, name }: { classId: number; name: string }) => ({
+    path: `/class/${classId}/name`,
+    data: {
+      access_token: getUserToken(),
+      name,
+    },
+  }),
+)
+
 export const updateDescription = put(
   ({ classId, description }: { classId: number; description: string }) => ({
     path: `/class/${classId}/bio`,
@@ -170,20 +186,15 @@ export const updateAutoApprove = put(
 )
 
 export const create = post(
-  ({
-    name,
-    description,
-    isPublic,
-    isLocked,
-    autoApprove,
-    image: uploadingImage,
-  }: Omit<Class, 'id' | 'isOwn' | 'image' | 'owner'> & {
-    image: { blob: Blob }
-  }) => ({
+  (
+    item: Omit<Class, 'id' | 'image'> & {
+      image: { blob: Blob }
+    },
+  ) => ({
     path: '/class',
     data: {
       access_token: getUserToken(),
-      name,
+      name: item.name,
     },
     async response({
       result_code,
@@ -195,49 +206,68 @@ export const create = post(
       if (result_code !== '01.00') throw new Error('Something went wrong')
 
       const { id } = data
+      const { image } = await update({ id, ...item, name: undefined })
 
-      const promises: [
-        Promise<string>,
-        Promise<void>,
-        Promise<void>,
-        Promise<void>,
-      ] = [
-        updatePhoto({ classId: id, image: uploadingImage }),
-        updateDescription({ classId: id, description }),
-        updateIsPublic({ classId: id, isPublic }),
-        updateAutoApprove({ classId: id, autoApprove }),
-      ]
-
-      const [image] = await Promise.all(promises)
-
-      const item: Class = {
+      const result: Class = {
         id,
-        name,
-        description,
-        isPublic,
-        isLocked,
-        autoApprove,
-        isOwn: true,
-        isJoined: false,
-        completed: false,
-        image,
-        owner: getCurrentUser(),
+        ...item,
+        image: image as string,
       }
 
-      return item
+      return result
     },
   }),
 )
+
+export const update = async ({
+  id,
+  name,
+  description,
+  isPublic,
+  autoApprove,
+  image,
+}: Omit<Partial<Class>, 'id' | 'image'> & {
+  id: number
+  image?: { blob: Blob }
+}): Promise<{ image?: string }> => {
+  const promises: Promise<unknown>[] = []
+
+  if (image) promises.push(updatePhoto({ classId: id, image }))
+  if (name !== undefined) promises.push(updateName({ classId: id, name }))
+  if (description !== undefined)
+    promises.push(updateDescription({ classId: id, description }))
+  if (isPublic !== undefined)
+    promises.push(updateIsPublic({ classId: id, isPublic }))
+  if (autoApprove !== undefined)
+    promises.push(updateAutoApprove({ classId: id, autoApprove }))
+
+  const result = await Promise.all(promises)
+
+  if (image) return { image: result[0] as string }
+
+  return {}
+}
+
+export const remove = del(({ classId }: { classId: number }) => ({
+  path: `/class/${classId}`,
+  params: {
+    access_token: getUserToken(),
+  },
+}))
 
 export const join = post(({ classId }: { classId: number }) => ({
   path: `/class/${classId}/application`,
   data: {
     access_token: getUserToken(),
   },
+  response(res: { result_code: string }) {
+    if (res.result_code === '04.04')
+      throw new Error('You are not allowed to join this class')
+  },
 }))
 
 export const cancelJoin = del(({ classId }: { classId: number }) => ({
-  path: `/class/${classId}/application`,
+  path: `/class/${classId}/application/${getCurrentUserId()}`,
   data: {
     access_token: getUserToken(),
   },
@@ -263,6 +293,121 @@ export const search = get(
     response({ data }: { data: ClassResponse[] }): Class[] {
       if (!data) throw new Error('Something went wrong')
       return data.map(mapClass)
+    },
+  }),
+)
+
+type Member = {
+  name: string
+  profile_image_dir: string
+  user_id: number
+}
+
+export const members = get(({ classId }: { classId: number }) => ({
+  path: `/class/${classId}/members`,
+  params: {
+    access_token: getUserToken(),
+  },
+  response({ data }: { data?: Member[] }) {
+    if (!data) throw new Error('Something went wrong')
+
+    return data.map((user) => ({
+      id: user.user_id,
+      name: user.name,
+      avatar: user.profile_image_dir,
+    }))
+  },
+}))
+
+export const applicants = get(({ classId }: { classId: number }) => ({
+  path: `/rest_class/${classId}/applicants`,
+  params: {
+    access_token: getUserToken(),
+  },
+  response(data: Member[]) {
+    if (!data) throw new Error('Something went wrong')
+
+    return data.map((user) => ({
+      id: user.user_id,
+      name: user.name,
+      avatar: user.profile_image_dir,
+    }))
+  },
+}))
+
+export const approveJoinRequest = put(
+  ({ classId, userId }: { classId: number; userId: number }) => ({
+    path: `/class/${classId}/application/${userId}`,
+    data: {
+      access_token: getUserToken(),
+    },
+  }),
+)
+
+export const rejectJoinRequest = del(
+  ({ classId, userId }: { classId: number; userId: number }) => ({
+    path: `/class/${classId}/application/${userId}`,
+    params: {
+      access_token: getUserToken(),
+    },
+  }),
+)
+
+export const removeMember = del(
+  ({ classId, userId }: { classId: number; userId: number }) => ({
+    path: `/class/${classId}/member/${userId}`,
+    params: {
+      access_token: getUserToken(),
+    },
+  }),
+)
+
+export const nonMembers = get(
+  ({
+    classId,
+    limit,
+    offset,
+    search,
+  }: {
+    classId: number
+    limit: number
+    offset: number
+    search: string
+  }) => ({
+    path: `/class/${classId}/non_members`,
+    params: {
+      access_token: getUserToken(),
+      limit_posts: limit,
+      num_of_posts: offset,
+      search_key: search,
+    },
+    response(res: {
+      response_code: string
+      data?: {
+        user_id: number
+        name: string
+        profile_image_dir: string
+        base_language: string
+      }[]
+    }) {
+      if (!res.data) throw new Error('Something went wrong')
+
+      return res.data.map((user) => ({
+        id: user.user_id,
+        name: user.name,
+        avatar: user.profile_image_dir,
+        language: user.base_language,
+      }))
+    },
+  }),
+)
+
+export const sendInvite = post(
+  ({ classId, userIds }: { classId: number; userIds: number[] }) => ({
+    path: `/class/${classId}/invitees`,
+    data: {
+      access_token: getUserToken(),
+      invitees: userIds,
     },
   }),
 )

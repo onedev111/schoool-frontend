@@ -11,26 +11,33 @@ import Attachments from 'Post/Attachments'
 import Spin from 'assets/images/icons/Spin'
 import { formatDate } from 'utils/date'
 import Text from 'Post/Text'
-import { observer } from 'mobx-react-lite'
 import PostBottomPanel from 'Post/Item/BottomPanel'
 import CommentsModal from 'Post/Comment/Modal'
-import CommentStore from 'Post/Comment/Store'
 import PostTitle from 'Post/Item/Title'
+import { Comment } from 'Post/Comment/types'
 
 type Props = {
   post: PostType
 }
 
-export default observer(function Post({ post }: Props) {
+export default function Post({ post }: Props) {
   const textRef = React.useRef(null)
   const [showFullText, toggleShowFullText] = useToggle()
   const [openComments, setOpenComments] = React.useState(false)
 
   const toggleComments = () => setOpenComments(!openComments)
+  const [highlightedComment, setHighlightedComment] = React.useState<Comment>()
 
   return (
     <>
-      {openComments && <CommentsModal post={post} onClose={toggleComments} />}
+      {openComments && (
+        <CommentsModal
+          post={post}
+          onClose={toggleComments}
+          highlightedComment={highlightedComment}
+          setHighlightedComment={setHighlightedComment}
+        />
+      )}
       <div className="bg-white shadow relative mb-5 flex flex-col">
         <Menu
           post={post}
@@ -129,10 +136,10 @@ export default observer(function Post({ post }: Props) {
           minHeight={28}
           onSuccess={(comment) => {
             setOpenComments(true)
-            CommentStore.setHighlightedComment(comment)
+            setHighlightedComment(comment)
           }}
         />
       </div>
     </>
   )
-})
+}

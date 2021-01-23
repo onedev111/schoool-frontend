@@ -20,7 +20,7 @@ export default function Description({ form, maxLength }: Props) {
             <textarea
               name="description"
               rows={3}
-              className="rounded border border-gray-8b text-gray-6b px-4 py-2 w-full"
+              className="rounded border border-gray-8b placeholder-gray-6b px-4 py-2 w-full"
               placeholder="Enter your class name"
               value={value}
               onChange={onChange}

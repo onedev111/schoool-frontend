@@ -1,4 +1,4 @@
-import { post, get } from 'utils/apiUtils'
+import { post, get, put, del } from 'utils/apiUtils'
 import { EnglishLevel, User } from './types'
 import { getUploadingUrls } from 'Upload/api'
 import { getCurrentUser, getUserToken, setCurrentUser } from 'User/currentUser'
@@ -91,9 +91,8 @@ export const login = post(
       os: 2,
     },
     response: (data: { result_code: string; data: UserResponse }): User => {
-      if (data.result_code === '01.03')
+      if (!data.data?.access_token)
         throw new Error('Email or password is invalid')
-      if (!data.data?.access_token) throw new Error('Something went wrong')
       return mapUser(data.data)
     },
   }),
@@ -293,3 +292,21 @@ export const unfollow = get(({ userId }: { userId: number }) => ({
     follower_id: userId,
   },
 }))
+
+export const approveJoinRequest = put(
+  ({ classId, userId }: { classId: number; userId: number }) => ({
+    path: `/class/${classId}/application/${userId}`,
+    data: {
+      access_token: getUserToken(),
+    },
+  }),
+)
+
+export const removeMember = del(
+  ({ classId, userId }: { classId: number; userId: number }) => ({
+    path: `/class/${classId}/member/${userId}`,
+    params: {
+      access_token: getUserToken(),
+    },
+  }),
+)

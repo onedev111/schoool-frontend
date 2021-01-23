@@ -8,7 +8,7 @@ const mutate = (method: HTTPMethod) => <Args extends any[], Response = void>(
     url?: string
     path?: string
     // eslint-disable-next-line
-    response?(data: any): Response
+    response?(data: any): Promise<Response> | Response
     // eslint-disable-next-line
     params?: Record<string, string | number | undefined>
     headers?: Record<string, string>
@@ -20,7 +20,7 @@ const mutate = (method: HTTPMethod) => <Args extends any[], Response = void>(
     onSuccess?(): void
   },
 ) => {
-  return async (...args: Args) => {
+  return async (...args: Args): Promise<Response> => {
     const props = fn(...args)
     const {
       url,

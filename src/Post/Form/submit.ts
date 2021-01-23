@@ -3,9 +3,11 @@ import api from 'api'
 import dayjs from 'dayjs'
 import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 import { UploadingVideo } from 'utils/videoUploadState'
-import { PostStore } from 'Post/Store'
 import { Post } from 'Post/types'
 import { getTextAndTagsFromEditor } from 'utils/tags'
+import { addToCache, updateCache } from 'Post/actions'
+
+let postId = -1
 
 export default async function submitPost({ state }: { state: State }) {
   const { images, video, audio } = state.values
@@ -14,7 +16,7 @@ export default async function submitPost({ state }: { state: State }) {
     editor: state.editorRef.current as HTMLDivElement,
   })
 
-  const postData: Post = {
+  const post: Post = {
     ...state.values,
     text,
     tags,
@@ -24,15 +26,9 @@ export default async function submitPost({ state }: { state: State }) {
     date: dayjs(),
   }
 
-  const { id } = state.values
-  const updatingPost =
-    id !== 0 && PostStore.items.find((post) => post.id === id)
-  let post: Post
-  if (updatingPost) post = PostStore.update(updatingPost, postData)
-  else {
-    PostStore.unshift(postData)
-    post = PostStore.items[0]
-  }
+  const tempId = post.id === 0 ? postId-- : undefined
+  if (tempId) addToCache({ ...post, id: tempId })
+  else updateCache(post.id, post)
 
   const uploadingImages: { file: File; index: number }[] = []
   images.forEach((image, index) => {
@@ -93,9 +89,11 @@ export default async function submitPost({ state }: { state: State }) {
   }
 
   try {
-    await api.post.save(post)
-    PostStore.update(post, { isUploading: false })
-    PostStore.fetch({ reset: true })
+    const id = await api.post.save(post)
+    updateCache(tempId || post.id, {
+      id: tempId ? id : post.id,
+      isUploading: false,
+    })
   } catch (err) {
     post.error = err.message
   }

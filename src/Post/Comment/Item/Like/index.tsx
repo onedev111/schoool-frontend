@@ -13,8 +13,10 @@ type Props = {
 }
 
 export default observer(function CommentLike({ post, comment }: Props) {
-  const [like, { isLoading: liking }] = useMutation(api.comment.like)
-  const [unlike, { isLoading: unliking }] = useMutation(api.comment.unlike)
+  const { mutate: like, isLoading: liking } = useMutation(api.comment.like)
+  const { mutate: unlike, isLoading: unliking } = useMutation(
+    api.comment.unlike,
+  )
 
   const isLoading = liking || unliking
 

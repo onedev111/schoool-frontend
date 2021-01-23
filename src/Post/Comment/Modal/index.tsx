@@ -6,18 +6,32 @@ import CommentForm from 'Post/Comment/Form'
 import CommentsList from 'Post/Comment/List'
 import Spin from 'assets/images/icons/Spin'
 import { getCurrentUser } from 'User/currentUser'
-import useComments from 'Post/Comment/useComments'
 import { observer } from 'mobx-react-lite'
+import useRecords from 'utils/useRecords'
+import api from 'api'
+import { Comment } from 'Post/Comment/types'
 
 type Props = {
   post: Post
   onClose(): void
+  highlightedComment?: Comment
+  setHighlightedComment(comment?: Comment): void
 }
 
-export default observer(function CommentsModal({ post, onClose }: Props) {
-  const { comments, isFetching } = useComments({ postId: post.id })
-  const { avatar, name } = getCurrentUser()
+export default observer(function CommentsModal({
+  post,
+  onClose,
+  highlightedComment,
+  setHighlightedComment,
+}: Props) {
   const scrollingElementRef = React.useRef<HTMLDivElement>(null)
+
+  const { isFetching, data } = useRecords({
+    key: ['posts'],
+    load: () => api.comment.list({ postId: post.id }),
+  })
+
+  const { avatar, name } = getCurrentUser()
 
   return (
     <Modal
@@ -45,14 +59,18 @@ export default observer(function CommentsModal({ post, onClose }: Props) {
           minHeight={90}
         />
       </div>
-      {comments && (
-        <CommentsList
-          post={post}
-          allComments={comments}
-          levelComments={comments.filter((comment) => !comment.parentCommentId)}
-          scrollingElementRef={scrollingElementRef}
-        />
-      )}
+      {data &&
+        data.pages.map((page, i) => (
+          <CommentsList
+            key={i}
+            post={post}
+            allComments={page}
+            levelComments={page.filter((comment) => !comment.parentCommentId)}
+            scrollingElementRef={scrollingElementRef}
+            highlightedComment={highlightedComment}
+            setHighlightedComment={setHighlightedComment}
+          />
+        ))}
       {isFetching && post.commentsCount > 0 && (
         <div className="flex-center mb-5">
           <Spin className="w-10 h-10 text-blue-primary animate-spin" />

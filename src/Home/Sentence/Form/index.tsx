@@ -6,7 +6,7 @@ import { NotebookSentence } from 'Post/types'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 import Loader from 'Shared/Loader'
 import api from 'api'
-import { NotebookStore } from 'Notebook/Store'
+import { addToCache, updateTotal } from 'Notebook/actions'
 
 type Props = {
   backButton?: boolean
@@ -54,8 +54,8 @@ export default function SentenceForm({
     setLoading(true)
     try {
       const sentence = await api.notebook.create(values)
-      NotebookStore.setItems([sentence, ...NotebookStore.items])
-      NotebookStore.setTotal(NotebookStore.total + 1)
+      addToCache(sentence)
+      updateTotal((total) => total + 1)
       if (onSubmit) await onSubmit(values)
       setError(undefined)
       onClose()

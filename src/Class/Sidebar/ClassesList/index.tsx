@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default function ClassesList({ className }: Props) {
-  const { data } = useQuery('classes', api.classes.list)
+  const { data } = useQuery(['class'], api.classes.list)
 
   return (
     <div
@@ -21,7 +21,7 @@ export default function ClassesList({ className }: Props) {
       )}
     >
       <div className="flex-grow pb-6">
-        {data?.owning && data.owning.length && (
+        {data?.owning && data.owning.length > 0 && (
           <div className="text-gray-6b text-lg uppercase mb-3">
             My Created Classes
           </div>
@@ -36,7 +36,7 @@ export default function ClassesList({ className }: Props) {
           </div>
           <div className="text-lg text-black font-bold">Create a Class</div>
         </button>
-        {data?.owning && data.owning.length && (
+        {data?.owning && data.owning.length > 0 && (
           <>
             {data.owning.map((item) => (
               <Item key={item.id} item={item} />

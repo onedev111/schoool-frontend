@@ -7,19 +7,28 @@ import useToggle from 'utils/useToggle'
 import CircleCheckbox from 'Shared/CircleCheckbox'
 import cn from 'classnames'
 import Placeholder from 'Notebook/Placeholder'
-import { NotebookStore, useSentences } from 'Notebook/Store'
 import { observer } from 'mobx-react-lite'
 import SentencesDelete from 'Notebook/Delete'
 import SentenceItem from 'Notebook/Item'
 import AddSentence from 'Notebook/AddSentence'
 import Spin from 'assets/images/icons/Spin'
 import NotebookMaxSentences from 'Shared/Modal/NotebookMaxSentences'
+import useRecords from 'utils/useRecords'
+import api from 'api'
+import { useQuery } from 'react-query'
 
 const maxFreeSentences = 100
 
 export default observer(function Notebook() {
   const ref = React.useRef<HTMLDivElement>(null)
-  const { items, isFetching } = useSentences({ ref })
+  const { data, isFetching } = useRecords({
+    key: ['notebookSentences'],
+    load: api.notebook.list,
+    loadOnScroll: {
+      ref,
+      threshold: 300,
+    },
+  })
   const [selecting, toggleSelecting] = useToggle()
   const [allChecked, setCheckAll] = React.useState(false)
   const [checkedIds, setCheckedIds] = React.useState<Record<number, boolean>>(
@@ -41,7 +50,7 @@ export default observer(function Notebook() {
     if (allChecked) setCheckedIds({})
     else {
       const all: Record<number, boolean> = {}
-      items.forEach(({ id }) => (all[id] = true))
+      data?.pages.forEach((page) => page.forEach(({ id }) => (all[id] = true)))
       setCheckedIds(all)
     }
     setCheckAll(!allChecked)
@@ -49,17 +58,22 @@ export default observer(function Notebook() {
 
   const selectedIds = Object.keys(checkedIds)
 
-  const { total, loadedTotal } = NotebookStore
+  const { data: countesAndIsPremium, isLoading: isLoadingTotal } = useQuery(
+    ['countsAndIsPremium'],
+    api.app.getCountsAndIsPremium,
+  )
+
+  const total = countesAndIsPremium?.notebookCount || 0
 
   return (
     <>
       {deleteModal && (
         <SentencesDelete checkedIds={checkedIds} onClose={toggleDeleteModal} />
       )}
-      {addModal && loadedTotal && total > maxFreeSentences && (
+      {addModal && !isLoadingTotal && total > maxFreeSentences && (
         <NotebookMaxSentences onClose={toggleAddModal} />
       )}
-      {addModal && loadedTotal && total <= maxFreeSentences && (
+      {addModal && !isLoadingTotal && total <= maxFreeSentences && (
         <AddSentence onClose={toggleAddModal} />
       )}
       <div className="flex flex-shrink-0 justify-between p-4">
@@ -70,7 +84,7 @@ export default observer(function Notebook() {
               <button type="button" onClick={toggleAddModal}>
                 <Plus size={17} />
               </button>
-              {items.length > 0 && (
+              {data && data.pages.length > 0 && (
                 <button type="button" onClick={toggleSelecting}>
                   <Edit className="ml-2" size={20} />
                 </button>
@@ -108,20 +122,24 @@ export default observer(function Notebook() {
         )}
       </div>
       <div className="flex-grow flex flex-1 min-h-0">
-        {items.length === 0 && <Placeholder />}
-        {items.length !== 0 && (
+        {data && data.pages.length === 0 && <Placeholder />}
+        {data && data.pages.length !== 0 && (
           <div
             className="border-t border-gray-c5 flex-1 overflow-auto"
             ref={ref}
           >
-            {items.map((item) => (
-              <SentenceItem
-                key={item.id}
-                sentence={item}
-                selecting={selecting}
-                checkedIds={checkedIds}
-                toggleItem={toggleItem}
-              />
+            {data.pages.map((page, i) => (
+              <React.Fragment key={i}>
+                {page.map((item) => (
+                  <SentenceItem
+                    key={item.id}
+                    sentence={item}
+                    selecting={selecting}
+                    checkedIds={checkedIds}
+                    toggleItem={toggleItem}
+                  />
+                ))}
+              </React.Fragment>
             ))}
             {isFetching && (
               <div className="flex-center my-5">

@@ -7,7 +7,7 @@ import {
 } from 'Studyflow/types'
 import { useMutation } from 'react-query'
 import api from 'api'
-import { StudyFlowStore } from 'Studyflow/Store'
+import { addToCache } from 'Studyflow/actions'
 
 export default function useCreateStudyFlow({
   type,
@@ -21,7 +21,7 @@ export default function useCreateStudyFlow({
   userIds: number[]
 }) {
   const [createdStudyFlow, setCreatedStudyFlow] = React.useState<StudyFlow>()
-  const [performCreate, { isLoading: isCreating }] = useMutation(
+  const { mutate: performCreate, isLoading: isCreating } = useMutation(
     api.studyFlow.create,
     {
       onSettled(flow, error) {
@@ -29,7 +29,7 @@ export default function useCreateStudyFlow({
           setError(error as Error)
         } else if (flow) {
           setCreatedStudyFlow(flow)
-          StudyFlowStore.unshift(flow)
+          addToCache(flow)
         }
       },
     },

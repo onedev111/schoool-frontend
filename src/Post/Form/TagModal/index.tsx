@@ -27,18 +27,18 @@ const scrollLoadThreshold = 350
 export default observer(function TagModal({ state }: Props) {
   const [search, setSearch] = React.useState('')
   const {
-    data = [],
+    data,
     isLoading,
     isFetching,
-    fetchMore,
-    canFetchMore,
+    fetchNextPage,
+    hasNextPage,
   } = useInfiniteQuery(
     ['searchTags', { search }],
-    (key, { search }, page = 0) => {
-      return api.post.searchTags({ search, offset: (page as number) * 20 })
+    ({ pageParam = 0 }) => {
+      return api.post.searchTags({ search, offset: pageParam * 20 })
     },
     {
-      getFetchMore: (lastPage, pages) =>
+      getNextPageParam: (lastPage, pages) =>
         lastPage.length > 0 ? pages.length : undefined,
     },
   )
@@ -50,12 +50,12 @@ export default observer(function TagModal({ state }: Props) {
   const onScroll = (e: any) => {
     const el = (e as { target: HTMLElement }).target
     if (
-      canFetchMore &&
+      hasNextPage &&
       !isLoading &&
       !isFetching &&
       el.scrollHeight - el.offsetHeight - el.scrollTop <= scrollLoadThreshold
     ) {
-      fetchMore()
+      fetchNextPage()
     }
   }
 
@@ -97,7 +97,7 @@ export default observer(function TagModal({ state }: Props) {
           />
         </div>
         <div className="flex-grow overflow-auto" onScroll={onScroll}>
-          {data.map((page, i) => (
+          {data?.pages.map((page, i) => (
             <React.Fragment key={i}>
               {page.map((tag) => {
                 const { id, name, image, type } = tag

@@ -236,16 +236,47 @@ const mapPost = ({
 }
 
 export const list = get(
-  ({ limit, offset }: { limit: number; offset: number }) => ({
-    path: '/rest_share',
+  ({
+    classId,
+    limit,
+    offset,
+  }: {
+    classId?: number
+    limit: number
+    offset: number
+  }) => ({
+    path: classId ? `/rest_class/${classId}/post` : '/rest_share',
     params: {
       limit_posts: limit,
       num_of_posts: offset,
     },
-    response: (data: { data: PostResponse[] }): Post[] => {
+    response: (data: PostResponse[] | { data: PostResponse[] }): Post[] => {
       const userId = getCurrentUserId()
 
-      return data.data.map((post) => mapPost({ post, userId }))
+      const posts = Array.isArray(data) ? data : data.data
+      return posts.map((post) => mapPost({ post, userId }))
+    },
+  }),
+)
+
+export const listSaved = get(
+  ({
+    classId,
+    limit,
+    offset,
+  }: {
+    classId: number
+    limit: number
+    offset: number
+  }) => ({
+    path: `/rest_class/${classId}/saved`,
+    params: {
+      size: limit,
+      start: offset,
+    },
+    response(posts: PostResponse[]) {
+      const userId = getCurrentUserId()
+      return posts.map((post) => mapPost({ post, userId }))
     },
   }),
 )
@@ -373,9 +404,11 @@ export const save = post(
         'tagged_flow_ranges',
       ),
     },
-    response: (data: { result_code: string; data: CreatePostResponse }) => {
-      if (data.result_code !== '01.00' && data.result_code !== '02.00')
+    response: (res: { result_code: string; data?: CreatePostResponse }) => {
+      if (res.result_code !== '01.00' && res.result_code !== '02.00')
         throw new Error('Something went wrong')
+
+      return res.data?.share_post_id
     },
   }),
 )

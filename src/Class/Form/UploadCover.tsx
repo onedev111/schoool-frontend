@@ -26,6 +26,8 @@ export default function UploadCover({ form }: Props) {
         control={form.control}
         name="image"
         render={({ value }) => {
+          const url = typeof value === 'string' ? value : value?.url
+
           return (
             <>
               <button
@@ -34,7 +36,7 @@ export default function UploadCover({ form }: Props) {
                 style={{
                   width: '100px',
                   height: '100px',
-                  backgroundImage: value && `url("${value.url}")`,
+                  backgroundImage: url && `url("${url}")`,
                 }}
                 onClick={toggleUploadImage}
               >

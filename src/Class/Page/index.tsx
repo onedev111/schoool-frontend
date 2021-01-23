@@ -2,7 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import ClassLayout from 'Class/Layout'
 import logo from 'assets/images/logo.svg'
-import { Link } from 'react-router-dom'
+import { Link, useRouteMatch } from 'react-router-dom'
 import Posts from 'Class/Posts'
 import { useMutation, useQuery } from 'react-query'
 import api from 'api'
@@ -10,22 +10,27 @@ import Spin from 'assets/images/icons/Spin'
 import routes from 'routes'
 import JoinedClassActions from 'Class/Page/JoinedClassActions'
 import ClassActions from 'Class/Page/ClassActions'
+import cn from 'classnames'
 
 export default function ClassPage() {
-  const { id: stringId } = useParams<{ id: string }>()
+  const {
+    params: { id: stringId },
+    path,
+  } = useRouteMatch<{ id: string }>()
   const id = parseInt(stringId)
+  const allPosts = path === routes.class()
 
   const { data: item, isLoading } = useQuery(['class', id], () =>
     api.classes.getClass({ id }),
   )
 
-  const [getUser, { data: user }] = useMutation(api.user.getUser)
+  const { mutate: getUser, data: user } = useMutation(api.user.getUser)
 
   React.useEffect(() => {
     if (item) {
       getUser({ id: item.owner.id })
     }
-  }, [item])
+  }, [item?.owner.id])
 
   return (
     <ClassLayout>
@@ -40,21 +45,21 @@ export default function ClassPage() {
             <div className="px-16">
               <div className="flex-center mb-4">
                 <Link to={routes.user(item.owner.id)}>
-                  <img
-                    src={user ? user.avatar : logo}
-                    alt="logo"
-                    width={70}
-                    height={70}
-                    className="rounded-full"
+                  <div
+                    className="bg-center bg-cover rounded-full"
+                    style={{
+                      width: '70px',
+                      height: '70px',
+                      backgroundImage: `url("${user ? user.avatar : logo}")`,
+                    }}
                   />
                 </Link>
-                <img
-                  className="mx-10 rounded-full flex-shrink-0 block"
-                  src={item.image}
-                  alt="class photo"
+                <div
+                  className="mx-10 rounded-full flex-shrink-0 block bg-center bg-cover"
                   style={{
                     width: '240px',
                     height: '240px',
+                    backgroundImage: `url("${item.image}")`,
                   }}
                 />
                 <div style={{ width: '100px' }}>
@@ -90,11 +95,35 @@ export default function ClassPage() {
             {(item.isOwn || item.isJoined) && (
               <JoinedClassActions item={item} />
             )}
-            {!(item.isJoined || item.isJoined) && <ClassActions item={item} />}
+            {!(item.isOwn || item.isJoined) && <ClassActions item={item} />}
           </>
         )}
       </div>
-      <Posts />
+      <div className="flex bg-white" style={{ height: '50px' }}>
+        <Link
+          to={routes.class(id)}
+          className={cn(
+            'w-1/2 h-full flex-center uppercase text-17 border-b',
+            allPosts
+              ? 'border-black text-black'
+              : 'border-gray-87 text-gray-87',
+          )}
+        >
+          All posts
+        </Link>
+        <Link
+          to={routes.classSavedPosts(id)}
+          className={cn(
+            'w-1/2 h-full flex-center uppercase text-17 border-b',
+            !allPosts
+              ? 'border-black text-black'
+              : 'border-gray-87 text-gray-87',
+          )}
+        >
+          Saved posts
+        </Link>
+      </div>
+      <Posts classId={id} savedPosts={!allPosts} />
     </ClassLayout>
   )
 }

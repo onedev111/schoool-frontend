@@ -4,7 +4,7 @@ import { Comment } from 'Post/Comment/types'
 import { getCurrentUser } from 'User/currentUser'
 import dayjs from 'dayjs'
 import api from 'api'
-import CommentStore from 'Post/Comment/Store'
+import { addToCache } from 'Post/Comment/actions'
 
 type Props = {
   state: State
@@ -60,7 +60,7 @@ export default async function submit({ state, onSuccess }: Props) {
       comment,
       postOwnerId: state.postOwnerId,
     })
-    CommentStore.addComment({ comment, highlight: true })
+    addToCache(comment)
     post.commentsCount++
     state.reset()
     if (onSuccess) onSuccess(comment)

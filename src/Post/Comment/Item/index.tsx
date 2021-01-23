@@ -2,7 +2,6 @@ import React from 'react'
 import { Comment } from 'Post/Comment/types'
 import Attachments from 'Post/Attachments'
 import Comments from 'Post/Comment/List'
-import CommentStore from 'Post/Comment/Store'
 import CommentLike from 'Post/Comment/Item/Like'
 import { Post } from 'Post/types'
 import useToggle from 'utils/useToggle'
@@ -15,6 +14,8 @@ type Props = {
   comment: Comment
   level: number
   scrollingElementRef?: { current: HTMLDivElement | null }
+  highlightedComment?: Comment
+  setHighlightedComment(comment?: Comment): void
 }
 
 export default function CommentItem({
@@ -23,6 +24,8 @@ export default function CommentItem({
   comment,
   level,
   scrollingElementRef,
+  highlightedComment,
+  setHighlightedComment,
 }: Props) {
   const { id } = comment
   const subComments = allComments.filter(
@@ -34,8 +37,8 @@ export default function CommentItem({
   React.useEffect(() => {
     const scrollingElement = scrollingElementRef?.current
     const commentElement = commentRef.current
-    if (CommentStore.highlightedComment?.id !== comment.id) return
-    CommentStore.setHighlightedComment()
+    if (highlightedComment?.id !== comment.id) return
+    setHighlightedComment()
 
     if (commentElement && scrollingElement) {
       scrollingElement.scrollTo({
@@ -122,6 +125,8 @@ export default function CommentItem({
               levelComments={subComments}
               level={level + 1}
               scrollingElementRef={scrollingElementRef}
+              highlightedComment={highlightedComment}
+              setHighlightedComment={setHighlightedComment}
             />
           </div>
         </>

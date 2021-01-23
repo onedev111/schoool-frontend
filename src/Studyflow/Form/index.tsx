@@ -8,10 +8,10 @@ import Input from 'Shared/Form/Input'
 import api from 'api'
 import { StudyFlowType } from 'Studyflow/types'
 import Loader from 'Shared/Loader'
-import { StudyFlowStore } from 'Studyflow/Store'
 import useStudyFlowForm from './useForm'
 import useCreateStudyFlow from 'Studyflow/Form/useCreate'
 import SelectTarget from 'Studyflow/Form/SelectTarget'
+import { filterCache } from 'Studyflow/actions'
 
 type Props = {
   type: StudyFlowType
@@ -53,7 +53,7 @@ export default function Form({ type, onClose }: Props) {
 
     try {
       await api.studyFlow.remove({ id: createdStudyFlow.id })
-      StudyFlowStore.removeBy({ id: createdStudyFlow.id })
+      filterCache(({ id }) => id !== createdStudyFlow.id)
       onClose()
     } catch (error) {
       setError(error)

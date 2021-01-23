@@ -9,6 +9,8 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import smoothscroll from 'smoothscroll-polyfill'
 import DragNDropWrapper from 'Shared/DragNDropWrapper'
+import { QueryClientProvider } from 'react-query'
+import { queryClient } from 'utils/queryClient'
 
 dayjs.extend(utc)
 smoothscroll.polyfill()
@@ -17,7 +19,9 @@ ReactDOM.render(
   <React.StrictMode>
     <DragNDropWrapper>
       <Router history={history}>
-        <Routes />
+        <QueryClientProvider client={queryClient}>
+          <Routes />
+        </QueryClientProvider>
       </Router>
     </DragNDropWrapper>
   </React.StrictMode>,

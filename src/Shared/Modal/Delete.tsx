@@ -23,7 +23,7 @@ export default function Delete({ onClose, onDelete }: Props) {
           Cancel
         </button>
         <button
-          className="rounded-full bg-red-57 text-white h-7 font-bold ml-3 flex-center w-24"
+          className="rounded-full bg-red-58 text-white h-7 font-bold ml-3 flex-center w-24"
           disabled={isLoading}
           onClick={async () => {
             toggleLoading()

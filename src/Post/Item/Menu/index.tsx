@@ -6,11 +6,11 @@ import style from './style.module.css'
 import PostForm from 'Post/Form'
 import DeleteModal from 'Shared/Modal/Delete'
 import api from 'api'
-import { PostStore } from 'Post/Store'
 import SavePostModal from 'Post/Item/Menu/SavePostModal'
 import { observer } from 'mobx-react-lite'
 import Spin from 'assets/images/icons/Spin'
 import { useMutation } from 'react-query'
+import { removeFromCache, updateCache } from 'Post/actions'
 
 const itemClass = `w-full flex-center transition duration-200 hover:bg-gray-f2 cursor-pointer ${style.menuItem}`
 
@@ -29,18 +29,21 @@ export default observer(function Menu({ post, button, className }: Props) {
   const { isMine, isClassOwner, isClassAdmin } = post
   const [error, setError] = React.useState<string>()
 
-  const [follow, { isLoading: followLoading }] = useMutation(api.user.follow, {
-    onSettled(_, error) {
-      if (error) {
-        setError((error as Error).message)
-      } else {
-        setError(undefined)
-        PostStore.update(post, { isFollowing: true })
-      }
+  const { mutate: follow, isLoading: followLoading } = useMutation(
+    api.user.follow,
+    {
+      onSettled(_, error) {
+        if (error) {
+          setError((error as Error).message)
+        } else {
+          setError(undefined)
+          updateCache(post.id, { isFollowing: true })
+        }
+      },
     },
-  })
+  )
 
-  const [unfollow, { isLoading: unfollowLoading }] = useMutation(
+  const { mutate: unfollow, isLoading: unfollowLoading } = useMutation(
     api.user.unfollow,
     {
       onSettled(_, error) {
@@ -48,7 +51,7 @@ export default observer(function Menu({ post, button, className }: Props) {
           setError((error as Error).message)
         } else {
           setError(undefined)
-          PostStore.update(post, { isFollowing: false })
+          updateCache(post.id, { isFollowing: false })
         }
       },
     },
@@ -76,7 +79,7 @@ export default observer(function Menu({ post, button, className }: Props) {
           onClose={toggleDeleteModal}
           onDelete={() => {
             api.post.remove({ id: post.id })
-            PostStore.remove(post)
+            removeFromCache(post)
           }}
         />
       )}

@@ -33,12 +33,15 @@ export default observer(function SignUpForm() {
   const { data: constants } = useQuery('constants', api.constants.getAll)
   const [error, setError] = React.useState<string | null>(null)
 
-  const [updateProfile, { isLoading }] = useMutation(api.user.updateProfile, {
-    onSettled(_, error) {
-      if (!error) history.push(routes.home())
-      if (error) setError((error as Error).message)
+  const { mutate: updateProfile, isLoading } = useMutation(
+    api.user.updateProfile,
+    {
+      onSettled(_, error) {
+        if (!error) history.push(routes.home())
+        if (error) setError((error as Error).message)
+      },
     },
-  })
+  )
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

@@ -31,7 +31,7 @@ export default function SignIn() {
   >('email')
   const [error, setError] = React.useState<string | null>(null)
 
-  const [signIn, { isLoading }] = useMutation(api.user.login, {
+  const { mutate: signIn, isLoading } = useMutation(api.user.login, {
     onSettled(user, error) {
       if (user) {
         setUser(user)

@@ -14,7 +14,7 @@ import Modal from 'Shared/Modal'
 import Zoom from 'Post/Form/Zoom'
 import { useOnChangeSelectionRange } from 'utils/contentEditable'
 import PostFormMainScreen from 'Post/Form/MainScreen'
-import LeaveWarning from 'Post/Form/LeaveWarning'
+import LeaveWarning from 'Shared/LeaveWarning'
 import useToggle from 'utils/useToggle'
 import { Post } from 'Post/types'
 

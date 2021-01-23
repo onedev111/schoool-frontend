@@ -3,8 +3,9 @@ import Placeholder from './Placeholder'
 import { Plus } from '@styled-icons/fa-solid/Plus'
 import List from './List'
 import Form from 'Studyflow/Form'
-import { useStudyFlow } from 'Studyflow/Store'
 import { StudyFlowType } from 'Studyflow/types'
+import useRecords from 'utils/useRecords'
+import api from 'api'
 
 type Props = {
   showMenu: boolean
@@ -12,7 +13,10 @@ type Props = {
 }
 
 export default function Notebook({ toggleMenu }: Props) {
-  const { items } = useStudyFlow()
+  const { data } = useRecords({
+    key: ['studyFlow'],
+    load: api.studyFlow.list,
+  })
   const [addType, setAddType] = React.useState<StudyFlowType>()
 
   const addConversation = () => {
@@ -54,9 +58,11 @@ export default function Notebook({ toggleMenu }: Props) {
           Repetition
         </button>
       </div>
-      {items.length === 0 && <Placeholder />}
+      {data && data.pages.length === 0 && <Placeholder />}
       <div className="flex-grow flex flex-1 min-h-0">
-        {items.length > 0 && <List items={items} />}
+        {data &&
+          data.pages.length > 0 &&
+          data.pages.map((page, i) => <List key={i} items={page} />)}
       </div>
     </>
   )

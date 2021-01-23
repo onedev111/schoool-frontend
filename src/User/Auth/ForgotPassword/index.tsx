@@ -19,13 +19,16 @@ export default function ForgotPassword() {
   const form = useForm({ schema })
   const [modalMessage, setModalMessage] = React.useState<string | null>(null)
 
-  const [forgotPassword, { isLoading }] = useMutation(api.user.forgotPassword, {
-    onSettled(data, error) {
-      setModalMessage(
-        data ? 'Password sent to email' : (error as Error).message,
-      )
+  const { mutate: forgotPassword, isLoading } = useMutation(
+    api.user.forgotPassword,
+    {
+      onSettled(data, error) {
+        setModalMessage(
+          data ? 'Password sent to email' : (error as Error).message,
+        )
+      },
     },
-  })
+  )
 
   const submit = (values: { email: string }) => {
     if (isLoading) return

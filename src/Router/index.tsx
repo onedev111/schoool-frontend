@@ -33,6 +33,11 @@ const UserRoutes = () => (
             <Route path={routes.classes()} exact component={ClassesHome} />
             <Route path={routes.class()} exact component={ClassPage} />
             <Route
+              path={routes.classSavedPosts()}
+              exact
+              component={ClassPage}
+            />
+            <Route
               path={routes.notifications()}
               exact
               component={Notifications}

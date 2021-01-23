@@ -3,26 +3,35 @@ import cn from 'classnames'
 import Scrollbars from 'react-custom-scrollbars'
 import { ChevronLeft } from '@styled-icons/bootstrap/ChevronLeft'
 import { ChevronRight } from '@styled-icons/bootstrap/ChevronRight'
-import { useData } from 'Class/Sidebar/ClassesBlock/Store'
 import routes from 'routes'
 import { Link } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import style from './style.module.css'
+import useRecords from 'utils/useRecords'
+import api from 'api'
 
 type Props = {
   className?: string
+  setSearchOpen(value: boolean): void
 }
 
 const width = 112
 
-export default observer(function ClassesBlock({ className }: Props) {
+export default observer(function ClassesBlock({
+  className,
+  setSearchOpen,
+}: Props) {
   const [scrollRef] = React.useState<{ current: HTMLElement | null }>({
     current: null,
   })
-  const { items, isFetching } = useData({
-    ref: scrollRef,
-    direction: 'horizontal',
-    threshold: 300,
+  const { data } = useRecords({
+    key: ['recommendedClasses'],
+    load: api.classes.listRecommended,
+    loadOnScroll: {
+      ref: scrollRef,
+      direction: 'horizontal',
+      threshold: 300,
+    },
   })
   const ref = React.useRef<{ view: HTMLElement }>()
 
@@ -50,9 +59,17 @@ export default observer(function ClassesBlock({ className }: Props) {
     <div className={cn('bg-white shadow', className)}>
       <div className="flex items-center justify-between py-3 pl-7 pr-4">
         <div className="text-gray-6b text-lg uppercase">Explore Classes</div>
-        <a href="#" className="text-blue-primary text-lg block">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setSearchOpen(true)
+          }}
+          className="text-blue-primary text-lg block"
+        >
           See All
-        </a>
+        </button>
       </div>
       <div className="flex relative">
         <button
@@ -82,31 +99,36 @@ export default observer(function ClassesBlock({ className }: Props) {
         <Scroll style={{ width: '100%', height: '150px' }} ref={ref}>
           <div className="whitespace-no-wrap">
             <div className="inline-block h-full w-10" />
-            {items?.map((item) => (
-              <Link
-                key={item.id}
-                to={routes.class(item.id)}
-                className="inline-block whitespace-normal pb-5 align-top"
-                style={{ width: `${width}px` }}
-              >
-                <div
-                  className="rounded-full bg-center bg-cover mx-auto mb-3"
-                  style={{
-                    width: '70px',
-                    height: '70px',
-                    backgroundImage: `url("${item.image}")`,
-                  }}
-                />
-                <div
-                  className={cn(
-                    'text-black text-sm text-center px-2',
-                    style.className,
-                  )}
-                >
-                  {item.name}
-                </div>
-              </Link>
-            ))}
+            {data &&
+              data.pages.map((page, i) => (
+                <React.Fragment key={i}>
+                  {page.map((item) => (
+                    <Link
+                      key={item.id}
+                      to={routes.class(item.id)}
+                      className="inline-block whitespace-normal pb-5 align-top"
+                      style={{ width: `${width}px` }}
+                    >
+                      <div
+                        className="rounded-full bg-center bg-cover mx-auto mb-3"
+                        style={{
+                          width: '70px',
+                          height: '70px',
+                          backgroundImage: `url("${item.image}")`,
+                        }}
+                      />
+                      <div
+                        className={cn(
+                          'text-black text-sm text-center px-2',
+                          style.className,
+                        )}
+                      >
+                        {item.name}
+                      </div>
+                    </Link>
+                  ))}
+                </React.Fragment>
+              ))}
             <div className="inline-block h-full w-10" />
           </div>
         </Scroll>
