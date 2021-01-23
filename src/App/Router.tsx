@@ -3,15 +3,18 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import { useCurrentUser } from 'User/currentUser'
 import SignIn from 'User/Auth/SignIn'
 import SignUp from 'User/Auth/SignUp'
-import Layout from 'Layout'
+import Layout from 'App/Layout'
 import routes from 'routes'
 import ForgotPassword from 'User/Auth/ForgotPassword'
-import SignUpForm from 'User/Auth/SignUpForm'
+import SignUpFormPage from 'User/Auth/SignUpFormPage'
 import Home from 'Home'
 import ClassesHome from 'Class/Home'
 import ClassPage from 'Class/Page'
-import Notifications from 'Notifications'
-import Settings from 'Settings'
+import SettingsLayout from 'Settings/Layout'
+import ProfilePage from 'Settings/ProfilePage'
+import PasswordPage from 'Settings/PasswordPage'
+import TermsOfUsePage from 'Settings/TermsOfUsePage'
+import PrivacyPolicyPage from 'Settings/PrivacyPolicyPage'
 
 const AuthRoutes = () => (
   <Switch>
@@ -24,7 +27,7 @@ const AuthRoutes = () => (
 
 const UserRoutes = () => (
   <Switch>
-    <Route path={routes.signUpForm()} exact component={SignUpForm} />
+    <Route path={routes.signUpForm()} exact component={SignUpFormPage} />
     <Route
       render={() => (
         <Layout>
@@ -38,11 +41,35 @@ const UserRoutes = () => (
               component={ClassPage}
             />
             <Route
-              path={routes.notifications()}
-              exact
-              component={Notifications}
+              path={routes.settings.index()}
+              render={() => (
+                <SettingsLayout>
+                  <Switch>
+                    <Route
+                      path={routes.settings.profile()}
+                      exact
+                      component={ProfilePage}
+                    />
+                    <Route
+                      path={routes.settings.password()}
+                      exact
+                      component={PasswordPage}
+                    />
+                    <Route
+                      path={routes.settings.termsOfUse()}
+                      exact
+                      component={TermsOfUsePage}
+                    />
+                    <Route
+                      path={routes.settings.privacyPolicy()}
+                      exact
+                      component={PrivacyPolicyPage}
+                    />
+                    <Redirect to={routes.home()} />
+                  </Switch>
+                </SettingsLayout>
+              )}
             />
-            <Route path={routes.settings()} exact component={Settings} />
             <Redirect to={routes.home()} />
           </Switch>
         </Layout>

@@ -6,6 +6,7 @@ import * as classes from 'Class/api'
 import * as constants from 'Constants/api'
 import * as notebook from 'Notebook/api'
 import * as studyFlow from 'Studyflow/api'
+import * as notifications from 'App/Notifications/api'
 import { get } from 'utils/apiUtils'
 import { getUserToken } from 'User/currentUser'
 
@@ -18,6 +19,7 @@ export default {
   constants,
   notebook,
   studyFlow,
+  notifications,
 
   app: {
     getCountsAndIsPremium: get(() => ({

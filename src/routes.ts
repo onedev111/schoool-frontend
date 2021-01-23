@@ -1,8 +1,13 @@
 export default {
   home: () => '/',
   classes: () => '/classes',
-  notifications: () => '/notifications',
-  settings: () => '/settings',
+  settings: {
+    index: () => '/settings',
+    profile: () => '/settings/profile',
+    password: () => '/settings/password',
+    termsOfUse: () => '/settings/terms-of-use',
+    privacyPolicy: () => '/settings/privacy-policy',
+  },
   signIn: () => '/sign-in',
   signUp: () => '/sign-up',
   signUpForm: () => '/sign-up-form',

@@ -2,9 +2,10 @@ import React from 'react'
 import logo from 'assets/images/logo.svg'
 import { Link, NavLink } from 'react-router-dom'
 import routes from 'routes'
-import Search from './Search'
+import Search from 'App/Search'
 import { observer } from 'mobx-react-lite'
 import { useCurrentUser } from 'User/currentUser'
+import Notifications from 'App/Notifications'
 
 type Props = {
   children: React.ReactNode
@@ -48,16 +49,9 @@ export default observer(function Layout({ children }: Props) {
               >
                 Class
               </NavLink>
+              <Notifications />
               <NavLink
-                to={routes.notifications()}
-                exact
-                className="text-xl ml-4"
-                activeClassName="text-blue-primary"
-              >
-                Notifications
-              </NavLink>
-              <NavLink
-                to={routes.settings()}
+                to={routes.settings.profile()}
                 className="text-xl ml-4 flex-center"
                 activeClassName="text-blue-primary"
               >

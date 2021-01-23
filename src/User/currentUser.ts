@@ -11,7 +11,9 @@ const validateUser = (user: User) => {
     'token' in user &&
     'name' in user &&
     'email' in user &&
-    'avatar' in user
+    'avatar' in user &&
+    'language' in user &&
+    'location' in user
   )
     return user
 
@@ -47,3 +49,6 @@ export const getCurrentUser = () => {
 export const getUserToken = () => getCurrentUser()?.token
 
 export const getCurrentUserId = () => getCurrentUser().id
+
+export const updateCurrentUser = (params: Partial<User>) =>
+  setCurrentUser({ ...getCurrentUser(), ...params })

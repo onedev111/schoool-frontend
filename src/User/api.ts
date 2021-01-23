@@ -1,7 +1,12 @@
 import { post, get, put, del } from 'utils/apiUtils'
 import { EnglishLevel, User } from './types'
 import { getUploadingUrls } from 'Upload/api'
-import { getCurrentUser, getUserToken, setCurrentUser } from 'User/currentUser'
+import {
+  getCurrentUser,
+  getUserToken,
+  setCurrentUser,
+  updateCurrentUser,
+} from 'User/currentUser'
 
 type UserResponse = {
   user_id: number
@@ -64,6 +69,8 @@ const mapUser = (user: UserResponse): User => ({
   name: user.name,
   email: user.email,
   avatar: user.profile_image_dir,
+  language: user.base_language,
+  location: user.location,
 })
 
 export const login = post(
@@ -141,12 +148,24 @@ export const updateBio = post(({ bio }: { bio: string }) => ({
   },
 }))
 
+type ApiEnglishLevel = 'Beginner' | 'Intermediate' | 'Advanced'
+const englishLevelToApi: Record<EnglishLevel, ApiEnglishLevel> = {
+  Basic: 'Beginner',
+  Intermediate: 'Intermediate',
+  Advanced: 'Advanced',
+}
+const englishLevelFromApi: Record<ApiEnglishLevel, EnglishLevel> = {
+  Beginner: 'Basic',
+  Intermediate: 'Intermediate',
+  Advanced: 'Advanced',
+}
+
 export const updateEnglishLevel = post(
   ({ englishLevel }: { englishLevel: EnglishLevel }) => ({
     path: '/v1.3/update_eng_level',
     data: {
       access_token: getUserToken(),
-      eng_level: englishLevel,
+      eng_level: englishLevelToApi[englishLevel],
     },
     response({ result_code }: { result_code: string }) {
       if (result_code !== '35.00') throw new Error('Something went wrong')
@@ -159,9 +178,10 @@ export const updateBaseLanguage = get(({ language }: { language: string }) => ({
   path: '/update_base_language',
   params: {
     access_token: getUserToken(),
-    newLanguage: language,
+    new_language: language,
   },
   response() {
+    updateCurrentUser({ language })
     return
   },
 }))
@@ -174,6 +194,7 @@ export const updateProfileImage = post(({ avatar }: { avatar: string }) => ({
   },
   response({ result_code }: { result_code: string }) {
     if (result_code !== '05.00') throw new Error('Something went wrong')
+    updateCurrentUser({ avatar })
     return
   },
 }))
@@ -186,6 +207,7 @@ export const updateLocation = get(({ location }: { location: string }) => ({
   },
   response({ result_code }: { result_code: string }) {
     if (result_code !== '22.00') throw new Error('Something went wrong')
+    updateCurrentUser({ location })
     return
   },
 }))
@@ -197,7 +219,7 @@ export const updateProfile = async ({
   language,
   location,
 }: {
-  avatar?: { blob: Blob }
+  avatar?: string | { blob: Blob }
   bio?: string
   englishLevel?: EnglishLevel
   language?: string
@@ -205,7 +227,7 @@ export const updateProfile = async ({
 }) => {
   const promises: Promise<unknown>[] = []
 
-  if (avatar) {
+  if (typeof avatar === 'object' && 'blob' in avatar) {
     promises.push(
       new Promise(async (resolve, reject) => {
         try {
@@ -224,13 +246,8 @@ export const updateProfile = async ({
             body: avatar.blob,
           })
 
-          await updateProfileImage({
-            avatar:
-              'http://dzh6ulgfepbq.cloudfront.net/users/profile/photo/1674e3f6-071f-49c1-898a-a58974877d08.jpg',
-          })
+          await updateProfileImage({ avatar: cdnUrl })
 
-          const user = getCurrentUser()
-          if (user) setCurrentUser({ ...user, avatar: cdnUrl })
           resolve()
         } catch (error) {
           reject(error)
@@ -267,12 +284,32 @@ export const getUser = get(({ id }: { id: number }) => ({
   response({
     data: user,
   }: {
-    data: { user_id: number; name: string; profile_image_dir: string }
-  }): { id: number; name: string; avatar: string } {
+    data: {
+      user_id: number
+      name: string
+      profile_image_dir: string
+      bio: string
+      base_language: string
+      eng_level: ApiEnglishLevel
+      location: string
+    }
+  }): {
+    id: number
+    name: string
+    avatar: string
+    bio: string
+    language: string
+    englishLevel: EnglishLevel
+    location: string
+  } {
     return {
       id: user.user_id,
       name: user.name,
       avatar: user.profile_image_dir,
+      bio: user.bio,
+      language: user.base_language,
+      englishLevel: englishLevelFromApi[user.eng_level],
+      location: user.location,
     }
   },
 }))
