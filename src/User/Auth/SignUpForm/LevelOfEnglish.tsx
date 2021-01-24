@@ -25,7 +25,7 @@ export default function LevelOfEnglish({ form }: Props) {
                   <div
                     key={i}
                     className={cn(
-                      'h-10 cursor-pointer flex-center border-gray-97 w-1/3',
+                      'h-10 cursor-pointer flex-center border-gray-c5 w-1/3',
                       value === level && 'bg-gray-dc',
                       i === 0 && 'border rounded-l',
                       i !== 0 &&

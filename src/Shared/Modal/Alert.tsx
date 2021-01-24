@@ -18,7 +18,13 @@ export default function Alert({
 }: Props) {
   return (
     <Modal onClose={onClose} size={size} className="text-center">
-      <div className={titleClass || 'mt-8 mb-2 text-lg'}>{title}</div>
+      <div
+        className={
+          titleClass || text ? 'mt-8 mb-2 text-lg' : 'mt-8 mb-6 text-lg'
+        }
+      >
+        {title}
+      </div>
       {text && <div className="font-bold text-gray-02 mb-2 px-10">{text}</div>}
       <hr className="text-gray-bb" />
       <div className="flex-center">

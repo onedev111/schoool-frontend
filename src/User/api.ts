@@ -347,3 +347,23 @@ export const removeMember = del(
     },
   }),
 )
+
+export const changePassword = post(
+  ({
+    oldPassword,
+    newPassword,
+  }: {
+    oldPassword: string
+    newPassword: string
+  }) => ({
+    path: '/change_password',
+    data: {
+      access_token: getUserToken(),
+      old_password: oldPassword,
+      new_password: newPassword,
+    },
+    response({ result_code }: { result_code: string }) {
+      if (result_code !== '04.00') throw new Error('Incorrect Password')
+    },
+  }),
+)

@@ -6,7 +6,7 @@ import api from 'api'
 import './react-select.css'
 import Loader from 'Shared/Loader'
 import { useForm } from 'react-hook-form'
-import { getCurrentUser, setCurrentUser } from 'User/currentUser'
+import { getCurrentUser } from 'User/currentUser'
 import UploadAvatar from 'User/Auth/SignUpForm/UploadAvatar'
 import LevelOfEnglish from 'User/Auth/SignUpForm/LevelOfEnglish'
 import Language from 'User/Auth/SignUpForm/Language'
@@ -72,7 +72,7 @@ export default observer(function SignUpForm({ submitText, onSuccess }: Props) {
         <textarea
           ref={form.register}
           name="bio"
-          className="rounded resize-none border border-gray-8b text-gray-6b py-3 px-4 w-full"
+          className="rounded resize-none border border-gray-c5 placeholder-gray-6b py-3 px-4 w-full"
           rows={3}
           placeholder="Introduce yourself briefly. (optional)"
         />
@@ -84,7 +84,7 @@ export default observer(function SignUpForm({ submitText, onSuccess }: Props) {
         <input
           ref={form.register}
           name="location"
-          className="rounded border border-gray-8b text-gray-6b px-4 w-full h-10"
+          className="rounded border border-gray-c5 placeholder-gray-6b px-4 w-full h-10"
           placeholder="Where do you live? (optional)"
         />
       </div>

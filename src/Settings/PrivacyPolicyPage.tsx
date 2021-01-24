@@ -1,5 +1,10 @@
 import React from 'react'
 
 export default function PrivacyPolicyPage() {
-  return <div>Privacy Policy</div>
+  return (
+    <>
+      <p className="text-xl mb-2">Privacy Policy</p>
+      <p>SCHOOOL privacy policy written here.</p>
+    </>
+  )
 }

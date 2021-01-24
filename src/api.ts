@@ -7,8 +7,7 @@ import * as constants from 'Constants/api'
 import * as notebook from 'Notebook/api'
 import * as studyFlow from 'Studyflow/api'
 import * as notifications from 'App/Notifications/api'
-import { get } from 'utils/apiUtils'
-import { getUserToken } from 'User/currentUser'
+import * as app from 'App/api'
 
 export default {
   user,
@@ -20,22 +19,5 @@ export default {
   notebook,
   studyFlow,
   notifications,
-
-  app: {
-    getCountsAndIsPremium: get(() => ({
-      path: '/remember/is_ready',
-      params: {
-        access_token: getUserToken(),
-      },
-      response: (res: {
-        notebook_count: number
-        premium_enabled: number
-        remember_count: number
-      }) => ({
-        notebookCount: res.notebook_count,
-        isPremium: res.premium_enabled,
-        rememberCount: res.remember_count,
-      }),
-    })),
-  },
+  app,
 }

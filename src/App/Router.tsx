@@ -5,7 +5,7 @@ import SignIn from 'User/Auth/SignIn'
 import SignUp from 'User/Auth/SignUp'
 import Layout from 'App/Layout'
 import routes from 'routes'
-import ForgotPassword from 'User/Auth/ForgotPassword'
+import ForgotPasswordPage from 'User/Auth/ForgotPasswordPage'
 import SignUpFormPage from 'User/Auth/SignUpFormPage'
 import Home from 'Home'
 import ClassesHome from 'Class/Home'
@@ -15,12 +15,17 @@ import ProfilePage from 'Settings/ProfilePage'
 import PasswordPage from 'Settings/PasswordPage'
 import TermsOfUsePage from 'Settings/TermsOfUsePage'
 import PrivacyPolicyPage from 'Settings/PrivacyPolicyPage'
+import SettingsPasswordForgotPage from 'Settings/PasswordForgotPage'
 
 const AuthRoutes = () => (
   <Switch>
     <Route path={routes.signIn()} exact component={SignIn} />
     <Route path={routes.signUp()} exact component={SignUp} />
-    <Route path={routes.forgotPassword()} exact component={ForgotPassword} />
+    <Route
+      path={routes.forgotPassword()}
+      exact
+      component={ForgotPasswordPage}
+    />
     <Redirect to={routes.signIn()} />
   </Switch>
 )
@@ -54,6 +59,11 @@ const UserRoutes = () => (
                       path={routes.settings.password()}
                       exact
                       component={PasswordPage}
+                    />
+                    <Route
+                      path={routes.settings.passwordForgot()}
+                      exact
+                      component={SettingsPasswordForgotPage}
                     />
                     <Route
                       path={routes.settings.termsOfUse()}

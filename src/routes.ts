@@ -5,6 +5,7 @@ export default {
     index: () => '/settings',
     profile: () => '/settings/profile',
     password: () => '/settings/password',
+    passwordForgot: () => '/settings/password/forgot',
     termsOfUse: () => '/settings/terms-of-use',
     privacyPolicy: () => '/settings/privacy-policy',
   },
