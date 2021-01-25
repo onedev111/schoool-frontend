@@ -13,6 +13,7 @@ const ContentEditableDiv = React.memo(
     autoFocus,
     onFocus,
     onBlur,
+    openTag,
   }: {
     editorRef: EditorRef
     minHeight: number
@@ -21,6 +22,7 @@ const ContentEditableDiv = React.memo(
     setValue(value: string): void
     onFocus(): void
     onBlur(): void
+    openTag?(): void
   }) => {
     React.useEffect(() => {
       if (autoFocus && editorRef.current) focusAtTheEnd(editorRef.current)
@@ -38,6 +40,12 @@ const ContentEditableDiv = React.memo(
         dangerouslySetInnerHTML={{ __html: getValue() }}
         onInput={(e) => {
           setValue((e.target as HTMLElement).innerHTML)
+        }}
+        onKeyDown={(e) => {
+          if (openTag && e.nativeEvent.key === '@') {
+            e.preventDefault()
+            openTag()
+          }
         }}
         onPaste={(e: any) => {
           e.preventDefault()
@@ -57,6 +65,7 @@ type Props = {
   minHeight?: number
   editorRef: EditorRef
   autoFocus?: boolean
+  openTag?(): void
   getValue(): string
   setValue(value: string): void
 }
@@ -68,6 +77,7 @@ export default observer(function ContentEditable({
   getValue,
   setValue,
   autoFocus,
+  openTag,
 }: Props) {
   const [focused, setFocused] = React.useState(false)
 
@@ -97,6 +107,7 @@ export default observer(function ContentEditable({
         onBlur={onBlur}
         minHeight={minHeight}
         autoFocus={autoFocus}
+        openTag={openTag}
       />
     </div>
   )

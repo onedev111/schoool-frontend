@@ -98,6 +98,7 @@ export default observer(function PostFormMainScreen({
             editorRef={state.editorRef}
             getValue={() => state.values.html}
             setValue={(html) => state.setHTML(html)}
+            openTag={() => state.setCurrentScreen('tag')}
           />
         </div>
 
