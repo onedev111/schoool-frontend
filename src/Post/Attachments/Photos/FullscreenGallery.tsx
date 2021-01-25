@@ -5,14 +5,19 @@ import { ChevronRight } from '@styled-icons/fa-solid/ChevronRight'
 import { useKey } from 'react-use'
 import Swiper from 'swiper'
 import 'swiper/swiper-bundle.css'
+import { Dayjs } from 'dayjs'
 
 type Props = {
+  user: { id: number; name: string }
+  date: Dayjs
   images: string[]
   openImageIndex?: number
   onClose(): void
 }
 
 export default function FullscreenGallery({
+  user,
+  date,
   images,
   openImageIndex = 0,
   onClose,
@@ -31,7 +36,7 @@ export default function FullscreenGallery({
   }, [])
 
   return (
-    <Fullscreen onClose={onClose}>
+    <Fullscreen user={user} date={date} onClose={onClose}>
       <div className="w-full h-full flex-center px-5">
         {images.length > 1 && (
           <button type="button" className="text-gray-bb mr-5" onClick={prev}>

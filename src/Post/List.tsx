@@ -1,28 +1,27 @@
 import React from 'react'
-import classIcon from 'assets/images/icons/class.png'
 import Spin from 'assets/images/icons/Spin'
 import Post from 'Post/Item'
-import { observer } from 'mobx-react-lite'
 import api from 'api'
 import useRecords from 'utils/useRecords'
 
 type Props = {
+  userId?: number
   classId?: number
   savedPosts?: boolean
+  children?: React.ReactNode
 }
 
-export default observer(function Posts({
+export default function Posts({
+  userId,
   classId,
   savedPosts: loadSavedPosts,
+  children,
 }: Props) {
   const wrapRef = React.useRef<HTMLDivElement>(null)
 
   const { data: savedPosts, isFetching: isFetchingSavedPosts } = useRecords({
     key: ['posts', 'saved', { classId }],
-    load: ({ limit, offset }) =>
-      classId
-        ? api.post.listSaved({ classId, limit, offset })
-        : Promise.resolve([]),
+    load: ({ limit, offset }) => api.post.listSaved({ classId, limit, offset }),
     loadOnScroll: {
       ref: wrapRef,
       threshold: 500,
@@ -33,8 +32,11 @@ export default observer(function Posts({
   })
 
   const { data: allPosts, isFetching: isFetchingAllPosts } = useRecords({
-    key: ['posts', { classId }],
-    load: ({ limit, offset }) => api.post.list({ classId, limit, offset }),
+    key: ['posts', { classId, userId }],
+    load: ({ limit, offset }) => {
+      if (userId) return api.post.userPosts({ userId, limit, offset })
+      else return api.post.list({ classId, limit, offset })
+    },
     loadOnScroll: {
       ref: wrapRef,
       threshold: 500,
@@ -47,19 +49,8 @@ export default observer(function Posts({
   const posts = loadSavedPosts ? savedPosts : allPosts
   const isFetching = loadSavedPosts ? isFetchingSavedPosts : isFetchingAllPosts
 
-  if (!isFetching && posts?.pages.length === 0)
-    return (
-      <div className="bg-white shadow p-6 h-full">
-        <div className="flex-center flex-col mt-32 pt-2">
-          <img src={classIcon} alt="class" />
-          <div className="text-gray-71 text-17 uppercase mt-6 text-center font-bold">
-            CREATE OR JOIN CLASSES.
-            <br />
-            YOU CAN STUDY WITH ANYONE IN THE WORLD.
-          </div>
-        </div>
-      </div>
-    )
+  if (!isFetching && posts?.pages.length === 0 && children)
+    return <>{children}</>
 
   return (
     <div ref={wrapRef}>
@@ -77,4 +68,4 @@ export default observer(function Posts({
       )}
     </div>
   )
-})
+}

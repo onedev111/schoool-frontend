@@ -8,6 +8,10 @@ import ZoomLink from 'Post/Attachments/Link/ZoomLink'
 import { SharedPost } from 'Post/types'
 import SharedPostLink from 'Post/Attachments/Link/SharedPostLink'
 import File from 'Post/Attachments/File'
+import useToggle from 'utils/useToggle'
+import VR from 'Post/Attachments/VR'
+import { Dayjs } from 'dayjs'
+import vrIcon from 'assets/images/360.png'
 
 type Props = {
   audioClass?: string
@@ -24,6 +28,12 @@ type Props = {
     zoomLink?: string
     sharedPost?: SharedPost
     file?: string
+    isVR?: boolean
+    date: Dayjs
+    user: {
+      id: number
+      name: string
+    }
   }
 }
 
@@ -48,10 +58,18 @@ export default function Attachments({
     zoomLink,
     sharedPost,
     file,
+    isVR,
+    date,
+    user,
   },
 }: Props) {
+  const [openVR, toggleVR] = useToggle()
+
   return (
     <>
+      {openVR && (
+        <VR image={images[0]} onClose={toggleVR} user={user} date={date} />
+      )}
       {(audio || loopingAudio) && (
         <>
           <div className={audioClass}>
@@ -80,7 +98,28 @@ export default function Attachments({
 
       {file && <File file={file} className={fileClass} />}
 
-      <Photos className={imageClass} images={images} />
+      {!isVR && (
+        <Photos
+          className={imageClass}
+          images={images}
+          user={user}
+          date={date}
+        />
+      )}
+      {isVR && images[0] && (
+        <button
+          type="button"
+          className="flex-center w-full relative"
+          onClick={() => toggleVR()}
+        >
+          <img src={images[0]} className="max-w-full" alt="vr image" />
+          <img
+            src={vrIcon}
+            className="absolute right-0 bottom-0 mr-5 mb-5"
+            alt="open vr view"
+          />
+        </button>
+      )}
 
       {video && <Video video={video} className={videoClass} />}
 

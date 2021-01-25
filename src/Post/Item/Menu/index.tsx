@@ -65,7 +65,9 @@ export default observer(function Menu({ post, button, className }: Props) {
     if (isFollowLoading) return
 
     const fn = post.isFollowing ? unfollow : follow
-    fn({ userId: post.user.id })
+    fn({
+      user: { ...post.user, isFollowing: post.isFollowing },
+    })
   }
 
   return (

@@ -56,6 +56,7 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     zoomLink: post?.zoomLink,
     sharedPost: post?.sharedPost,
     sLectures: [],
+    isVR: false,
   } as Omit<Post, 'images' | 'video' | 'audio' | 'text' | 'tags'> & {
     html: string
     images: UploadingImage[]

@@ -19,7 +19,7 @@ type Props = {
 export default observer(function SelectTarget({ state }: Props) {
   const currentUser = getCurrentUser()
   const [showNotice, toggleNotice] = useToggle()
-  const { data, isLoading } = useQuery('classes', api.classes.list)
+  const { data, isLoading } = useQuery('classes', () => api.classes.list())
 
   const joined = data?.joined || []
   const owning = data?.owning || []

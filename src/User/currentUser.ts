@@ -1,9 +1,9 @@
 import { setItem, useLocalStorage } from 'utils/localStorage'
-import { User } from './types'
+import { CurrentUser } from './types'
 
 const storageKey = 'currentUser'
 
-const validateUser = (user: User) => {
+const validateUser = (user: CurrentUser) => {
   if (
     'isNew' in user &&
     'isInstructor' in user &&
@@ -20,10 +20,10 @@ const validateUser = (user: User) => {
   return null
 }
 
-let currentUser: User | undefined
+let currentUser: CurrentUser | undefined
 
-export const setCurrentUser = (user: User | null) => {
-  currentUser = user as User
+export const setCurrentUser = (user: CurrentUser | null) => {
+  currentUser = user as CurrentUser
   setItem(storageKey, user ? JSON.stringify(user) : null)
 }
 
@@ -32,8 +32,8 @@ export const useCurrentUser = () => {
 
   if (!currentUser)
     currentUser = ((json
-      ? validateUser(JSON.parse(json) as User)
-      : null) as unknown) as User
+      ? validateUser(JSON.parse(json) as CurrentUser)
+      : null) as unknown) as CurrentUser
 
   return [currentUser, setCurrentUser] as const
 }
@@ -41,7 +41,7 @@ export const useCurrentUser = () => {
 export const getCurrentUser = () => {
   if (!currentUser) {
     const json = localStorage.getItem(storageKey)
-    currentUser = JSON.parse(json as string) as User
+    currentUser = JSON.parse(json as string) as CurrentUser
   }
   return currentUser
 }
@@ -50,5 +50,5 @@ export const getUserToken = () => getCurrentUser()?.token
 
 export const getCurrentUserId = () => getCurrentUser().id
 
-export const updateCurrentUser = (params: Partial<User>) =>
+export const updateCurrentUser = (params: Partial<CurrentUser>) =>
   setCurrentUser({ ...getCurrentUser(), ...params })

@@ -103,6 +103,7 @@ export const createImageUploadState = ({
 
       this.addFiles(images)
     },
+    // eslint-disable-next-line
     onChangeImage(e: any) {
       this.addFiles(e.target.files)
       e.target.value = []

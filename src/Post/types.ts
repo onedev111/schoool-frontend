@@ -16,6 +16,7 @@ export type Post = {
   id: number
   isUploading: boolean
   isPublic: boolean
+  isVR: boolean
   addedToSaved: boolean
   classes: { id: number; name: string }[]
   text: string

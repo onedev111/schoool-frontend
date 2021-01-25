@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default function ClassesList({ className }: Props) {
-  const { data } = useQuery(['class'], api.classes.list)
+  const { data } = useQuery(['class'], () => api.classes.list())
 
   return (
     <div

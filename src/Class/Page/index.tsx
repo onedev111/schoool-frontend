@@ -1,16 +1,15 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 import ClassLayout from 'Class/Layout'
 import logo from 'assets/images/logo.svg'
 import { Link, useRouteMatch } from 'react-router-dom'
-import Posts from 'Class/Posts'
+import Posts from 'Post/List'
 import { useMutation, useQuery } from 'react-query'
 import api from 'api'
 import Spin from 'assets/images/icons/Spin'
 import routes from 'routes'
 import JoinedClassActions from 'Class/Page/JoinedClassActions'
 import ClassActions from 'Class/Page/ClassActions'
-import cn from 'classnames'
+import Tabs from 'Shared/Tabs'
 
 export default function ClassPage() {
   const {
@@ -99,30 +98,21 @@ export default function ClassPage() {
           </>
         )}
       </div>
-      <div className="flex bg-white" style={{ height: '50px' }}>
-        <Link
-          to={routes.class(id)}
-          className={cn(
-            'w-1/2 h-full flex-center uppercase text-17 border-b',
-            allPosts
-              ? 'border-black text-black'
-              : 'border-gray-87 text-gray-87',
-          )}
-        >
-          All posts
-        </Link>
-        <Link
-          to={routes.classSavedPosts(id)}
-          className={cn(
-            'w-1/2 h-full flex-center uppercase text-17 border-b',
-            !allPosts
-              ? 'border-black text-black'
-              : 'border-gray-87 text-gray-87',
-          )}
-        >
-          Saved posts
-        </Link>
-      </div>
+      <Tabs
+        tabs={[
+          {
+            label: 'All posts',
+            value: 'all',
+            link: routes.class(id),
+          },
+          {
+            label: 'Saved posts',
+            value: 'saved',
+            link: routes.classSavedPosts(id),
+          },
+        ]}
+        activeTab={allPosts ? 'all' : 'saved'}
+      />
       <Posts classId={id} savedPosts={!allPosts} />
     </ClassLayout>
   )

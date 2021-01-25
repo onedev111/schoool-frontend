@@ -2,13 +2,16 @@ import React from 'react'
 import style from 'Post/Attachments/Photos/style.module.css'
 import cn from 'classnames'
 import FullscreenGallery from 'Post/Attachments/Photos/FullscreenGallery'
+import { Dayjs } from 'dayjs'
 
 type Props = {
+  user: { id: number; name: string }
+  date: Dayjs
   className?: string
   images: string[]
 }
 
-export default function Photos({ images, className }: Props) {
+export default function Photos({ user, date, images, className }: Props) {
   const [galleryImageIndex, setGalleryImageIndex] = React.useState<
     number | undefined
   >(undefined)
@@ -17,6 +20,8 @@ export default function Photos({ images, className }: Props) {
     <>
       {galleryImageIndex !== undefined && (
         <FullscreenGallery
+          user={user}
+          date={date}
           images={images}
           openImageIndex={galleryImageIndex}
           onClose={() => setGalleryImageIndex(undefined)}

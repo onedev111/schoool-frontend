@@ -66,11 +66,11 @@ const mapClass = (item: ClassResponse): Class => {
   }
 }
 
-export const list = get(() => ({
+export const list = get(({ userId }: { userId?: number } = {}) => ({
   path: '/rest_class',
   params: {
     access_token: getUserToken(),
-    user_id: getCurrentUser().id,
+    user_id: userId || getCurrentUser().id,
   },
   response(res: {
     interested_classes: ClassResponse[]

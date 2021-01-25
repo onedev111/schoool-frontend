@@ -10,6 +10,7 @@ import SignUpFormPage from 'User/Auth/SignUpFormPage'
 import Home from 'Home'
 import ClassesHome from 'Class/Home'
 import ClassPage from 'Class/Page'
+import UserPage from 'User/Page'
 import SettingsLayout from 'Settings/Layout'
 import ProfilePage from 'Settings/ProfilePage'
 import PasswordPage from 'Settings/PasswordPage'
@@ -44,6 +45,11 @@ const UserRoutes = () => (
               path={routes.classSavedPosts()}
               exact
               component={ClassPage}
+            />
+            <Route
+              path={[routes.user(), routes.userSavedPosts()]}
+              exact
+              component={UserPage}
             />
             <Route
               path={routes.settings.index()}

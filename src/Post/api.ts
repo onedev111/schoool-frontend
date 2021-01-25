@@ -232,6 +232,7 @@ const mapPost = ({
         },
     sLectureId: post.s_lecture_id || undefined,
     sLectures,
+    isVR: Boolean(post.is_pano),
   }
 }
 
@@ -265,17 +266,19 @@ export const listSaved = get(
     limit,
     offset,
   }: {
-    classId: number
+    classId?: number
     limit: number
     offset: number
   }) => ({
-    path: `/rest_class/${classId}/saved`,
+    path: classId ? `/rest_class/${classId}/saved` : '/get_share_notebook',
     params: {
+      access_token: getUserToken(),
       size: limit,
       start: offset,
     },
-    response(posts: PostResponse[]) {
+    response(data: PostResponse[] | { data: PostResponse[] }) {
       const userId = getCurrentUserId()
+      const posts = Array.isArray(data) ? data : data.data
       return posts.map((post) => mapPost({ post, userId }))
     },
   }),
@@ -496,3 +499,29 @@ export const removeFromSaved = get(({ postId }: { postId: number }) => ({
     share_post_id: postId,
   },
 }))
+
+export const userPosts = get(
+  ({
+    userId,
+    limit,
+    offset,
+  }: {
+    userId: number
+    limit: number
+    offset: number
+  }) => ({
+    path: '/v1.3/get_share_by_user_id',
+    params: {
+      access_token: getUserToken(),
+      user_id: userId,
+      limit_posts: limit,
+      num_of_posts: offset,
+    },
+    response({ data }: { data: PostResponse[] }) {
+      if (!data) throw new Error('Something went wrong')
+
+      const userId = getCurrentUserId()
+      return data.map((post) => mapPost({ post, userId }))
+    },
+  }),
+)

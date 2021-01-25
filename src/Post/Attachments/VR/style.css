@@ -1,0 +1,17 @@
+html:not(.a-fullscreen) .a-enter-ar, html:not(.a-fullscreen) .a-enter-vr {
+  width: auto !important;
+  top: 30px !important;
+  right: 30px !important;
+  bottom: auto !important;
+}
+
+.a-enter-ar-button, .a-enter-vr-button {
+  bottom: auto !important;
+  width: 60px !important;
+  height: 60px !important;
+  background: url('assets/images/360.png') !important;
+}
+
+html:not(.a-fullscreen) .a-scene-wrap {
+  padding: 0 350px;
+}

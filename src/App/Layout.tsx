@@ -4,7 +4,7 @@ import { Link, NavLink } from 'react-router-dom'
 import routes from 'routes'
 import Search from 'App/Search'
 import { observer } from 'mobx-react-lite'
-import { useCurrentUser } from 'User/currentUser'
+import { getCurrentUserId, useCurrentUser } from 'User/currentUser'
 import Notifications from 'App/Notifications'
 
 type Props = {
@@ -60,12 +60,14 @@ export default observer(function Layout({ children }: Props) {
             </div>
             <div className="flex">
               <Search />
-              <img
-                style={{ width: '30px', height: '30px' }}
-                className="ml-4 rounded-full"
-                src={avatar}
-                alt="avatar"
-              />
+              <Link to={routes.user('me')}>
+                <img
+                  style={{ width: '30px', height: '30px' }}
+                  className="ml-4 rounded-full"
+                  src={avatar}
+                  alt="avatar"
+                />
+              </Link>
             </div>
           </div>
         </div>

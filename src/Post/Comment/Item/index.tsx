@@ -79,6 +79,8 @@ export default function CommentItem({
               images: [comment.image].filter((url) => url) as string[],
               video: comment.video,
               file: comment.file,
+              date: comment.date,
+              user: comment.user,
             }}
           />
           <div className="flex items-center justify-between">

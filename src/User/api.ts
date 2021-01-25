@@ -1,12 +1,13 @@
 import { post, get, put, del } from 'utils/apiUtils'
-import { EnglishLevel, User } from './types'
+import { EnglishLevel, CurrentUser, User, UserToFollow } from './types'
 import { getUploadingUrls } from 'Upload/api'
 import {
-  getCurrentUser,
+  getCurrentUserId,
   getUserToken,
-  setCurrentUser,
   updateCurrentUser,
 } from 'User/currentUser'
+import dayjs from 'dayjs'
+import { updateData } from 'utils/queryClient'
 
 type UserResponse = {
   user_id: number
@@ -57,7 +58,7 @@ type UserResponse = {
   premium_platform?: number
 }
 
-const mapUser = (user: UserResponse): User => ({
+const mapUser = (user: UserResponse): CurrentUser => ({
   isNew: user.is_new || false,
   isInstructor: Boolean(
     typeof user.is_instructor === 'string'
@@ -97,7 +98,10 @@ export const login = post(
         'emailBased' in params ? undefined : 'facebook' in params ? '1' : '2',
       os: 2,
     },
-    response: (data: { result_code: string; data: UserResponse }): User => {
+    response: (data: {
+      result_code: string
+      data: UserResponse
+    }): CurrentUser => {
       if (!data.data?.access_token)
         throw new Error('Email or password is invalid')
       return mapUser(data.data)
@@ -112,7 +116,10 @@ export const register = post(
       ...data,
       os: 2,
     },
-    response: (data: { result_code: string; data: UserResponse }): User => {
+    response: (data: {
+      result_code: string
+      data: UserResponse
+    }): CurrentUser => {
       if (data.result_code === '02.01')
         throw new Error('User with such email already exists')
       if (data.result_code === '02.05')
@@ -292,16 +299,11 @@ export const getUser = get(({ id }: { id: number }) => ({
       base_language: string
       eng_level: ApiEnglishLevel
       location: string
+      followers: number
+      following: number
+      registration_date: string
     }
-  }): {
-    id: number
-    name: string
-    avatar: string
-    bio: string
-    language: string
-    englishLevel: EnglishLevel
-    location: string
-  } {
+  }): User {
     return {
       id: user.user_id,
       name: user.name,
@@ -310,25 +312,101 @@ export const getUser = get(({ id }: { id: number }) => ({
       language: user.base_language,
       englishLevel: englishLevelFromApi[user.eng_level],
       location: user.location,
+      followersCount: user.followers,
+      followingCount: user.following,
+      createdAt: dayjs(user.registration_date).utc(),
     }
   },
 }))
 
-export const follow = get(({ userId }: { userId: number }) => ({
-  path: '/follow_user',
-  params: {
-    access_token: getUserToken(),
-    follower_id: userId,
-  },
-}))
+export const follow = get(
+  ({
+    user,
+    updateCacheUserId,
+  }: {
+    user: UserToFollow
+    updateCacheUserId?: number
+  }) => ({
+    path: '/follow_user',
+    params: {
+      access_token: getUserToken(),
+      follower_id: user.id,
+    },
+    response() {
+      const id = getCurrentUserId()
+      if (updateCacheUserId) {
+        const updater = (data: UserToFollow[]) =>
+          data.map((item) =>
+            item.id === user.id ? { ...item, isFollowing: true } : item,
+          )
+        updateData<UserToFollow[]>(
+          ['user', updateCacheUserId, 'following'],
+          updater,
+        )
+        updateData<UserToFollow[]>(
+          ['user', updateCacheUserId, 'followers'],
+          updater,
+        )
+      }
+      updateData<UserToFollow[]>(['user', id, 'following'], (data) => [
+        ...data,
+        user,
+      ])
+      updateData<User>(['user', id], (data) => ({
+        ...data,
+        followingCount: data.followingCount + 1,
+      }))
+      updateData<User>(['user', user.id], (data) => ({
+        ...data,
+        followersCount: data.followersCount + 1,
+      }))
+    },
+  }),
+)
 
-export const unfollow = get(({ userId }: { userId: number }) => ({
-  path: '/unfollow_user',
-  params: {
-    access_token: getUserToken(),
-    follower_id: userId,
-  },
-}))
+export const unfollow = get(
+  ({
+    user,
+    updateCacheUserId,
+  }: {
+    user: UserToFollow
+    updateCacheUserId?: number
+  }) => ({
+    path: '/unfollow_user',
+    params: {
+      access_token: getUserToken(),
+      follower_id: user.id,
+    },
+    response() {
+      const id = getCurrentUserId()
+      if (updateCacheUserId) {
+        const updater = (data: UserToFollow[]) =>
+          data.map((item) =>
+            item.id === user.id ? { ...item, isFollowing: false } : item,
+          )
+        updateData<UserToFollow[]>(
+          ['user', updateCacheUserId, 'following'],
+          updater,
+        )
+        updateData<UserToFollow[]>(
+          ['user', updateCacheUserId, 'followers'],
+          updater,
+        )
+      }
+      updateData<UserToFollow[]>(['user', id, 'following'], (data) =>
+        data.filter((item) => item.id !== user.id),
+      )
+      updateData<User>(['user', id], (data) => ({
+        ...data,
+        followingCount: data.followingCount - 1,
+      }))
+      updateData<User>(['user', user.id], (data) => ({
+        ...data,
+        followersCount: data.followersCount - 1,
+      }))
+    },
+  }),
+)
 
 export const approveJoinRequest = put(
   ({ classId, userId }: { classId: number; userId: number }) => ({
@@ -367,3 +445,46 @@ export const changePassword = post(
     },
   }),
 )
+
+const followersResponse = ({
+  data,
+}: {
+  data?: {
+    user_id: number
+    name: string
+    profile_image_dir: string
+    check_following: 0 | 1
+  }[]
+}): {
+  id: number
+  name: string
+  avatar: string
+  isFollowing: boolean
+}[] => {
+  if (!data) throw new Error('Something went wrong')
+
+  return data.map((user) => ({
+    id: user.user_id,
+    name: user.name,
+    avatar: user.profile_image_dir,
+    isFollowing: Boolean(user.check_following),
+  }))
+}
+
+export const getWhoUserIsFollowing = get(({ userId }: { userId: number }) => ({
+  path: '/get_following_by_user_id',
+  params: {
+    access_token: getUserToken(),
+    search_user_id: userId,
+  },
+  response: followersResponse,
+}))
+
+export const getWhoIsFollowingUser = get(({ userId }: { userId: number }) => ({
+  path: '/get_follower_by_user_id',
+  params: {
+    access_token: getUserToken(),
+    search_user_id: userId,
+  },
+  response: followersResponse,
+}))

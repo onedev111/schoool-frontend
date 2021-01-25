@@ -1,25 +1,15 @@
 import React from 'react'
-import Post from 'Post/Item'
 import LevelComplete from './LevelComplete'
 import Phrase from './Phrase'
 import { observer } from 'mobx-react-lite'
-import Spin from 'assets/images/icons/Spin'
 import useToggle from 'utils/useToggle'
 import PostForm from 'Post/Form'
 import logo from 'assets/images/logo.svg'
 import Sidebar from 'Home/Sidebar'
-import useRecords from 'utils/useRecords'
-import api from 'api'
+import Posts from 'Post/List'
 
 export default observer(function Home() {
   const [showPostForm, togglePostForm] = useToggle(false)
-  const postsWrapRef = React.useRef<HTMLDivElement>(null)
-
-  const { isFetching, data } = useRecords({
-    key: ['posts'],
-    load: api.post.list,
-    loadOnScroll: { ref: postsWrapRef, threshold: 500 },
-  })
 
   return (
     <>
@@ -43,22 +33,7 @@ export default observer(function Home() {
               placeholder="What do you want to post?"
             />
           </div>
-          {data && data.pages.length > 0 && (
-            <div ref={postsWrapRef}>
-              {data.pages.map((page, i) => (
-                <React.Fragment key={i}>
-                  {page.map((post) => (
-                    <Post key={post.id} post={post} />
-                  ))}
-                </React.Fragment>
-              ))}
-            </div>
-          )}
-          {isFetching && (
-            <div className="flex-center mb-5">
-              <Spin className="w-10 h-10 text-blue-primary animate-spin" />
-            </div>
-          )}
+          <Posts />
           <LevelComplete />
           <Phrase />
         </div>
