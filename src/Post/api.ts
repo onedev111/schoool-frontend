@@ -452,7 +452,7 @@ export const searchTags = get(
     path: '/search_user_class_for_tag',
     params: {
       access_token: getUserToken(),
-      include_studyflow: '1',
+      // include_studyflow: '1',
       limit_posts: limit,
       num_of_posts: offset,
       search_key: search,

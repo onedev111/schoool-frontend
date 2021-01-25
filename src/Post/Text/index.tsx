@@ -56,7 +56,8 @@ export default observer(function Text({
       {children}
       {parts.map((part, i) => {
         const tag = partsTags[i]
-        if (!tag) return <React.Fragment key={i}>{part}</React.Fragment>
+        if (!tag || tag.type === 'studyflow')
+          return <React.Fragment key={i}>{part}</React.Fragment>
 
         const { type, id } = tag
         return (
