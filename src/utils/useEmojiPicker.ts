@@ -2,6 +2,24 @@ import React from 'react'
 import { EmojiButton } from '@joeattardi/emoji-button'
 import { insertElementToContentEditable } from 'utils/contentEditable'
 
+const closeButtonPlugin = {
+  render(picker: EmojiButton) {
+    const div = document.createElement('div')
+    div.className = 'flex justify-end w-full pr-4'
+
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.innerHTML = '&times;'
+    button.className = 'text-2xl'
+    button.addEventListener('click', () => {
+      picker.hidePicker()
+    })
+
+    div.appendChild(button)
+    return div
+  },
+}
+
 type Props = {
   state: {
     selectionRange?: Range
@@ -12,7 +30,9 @@ type Props = {
 
 export default function useEmojiPicker({ state, onChange }: Props) {
   const [emojiPicker] = React.useState(() => {
-    const picker = new EmojiButton()
+    const picker = new EmojiButton({
+      plugins: [closeButtonPlugin],
+    })
     picker.on('emoji', ({ emoji }) => {
       const editor = state.editorRef.current
       if (!editor) return
@@ -38,6 +58,20 @@ export default function useEmojiPicker({ state, onChange }: Props) {
     })
     return picker
   })
+
+  React.useEffect(() => {
+    const listener = (e: MouseEvent) => {
+      const el = e.target as HTMLElement
+      if (
+        !el.closest('.emoji-picker__wrapper') &&
+        !el.closest('.js-emoji-button')
+      )
+        emojiPicker.hidePicker()
+    }
+
+    document.addEventListener('mousedown', listener)
+    return () => document.removeEventListener('mousedown', listener)
+  }, [])
 
   return (e: React.MouseEvent<HTMLElement>) =>
     emojiPicker.togglePicker(e.target as HTMLElement)

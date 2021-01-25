@@ -97,7 +97,7 @@ export default observer(function CommentForm({
           </label>
           <button
             type="button"
-            className="flex-center ml-2"
+            className="flex-center ml-2 js-emoji-button"
             onClick={toggleEmoji}
           >
             <Smile className="text-gray-a4" size={20} />

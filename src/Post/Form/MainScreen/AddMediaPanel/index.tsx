@@ -132,7 +132,11 @@ export default observer(function AddMediaPanel({
         >
           <ZoomIcon size={32} />
         </button>
-        <button className="text-gray-a4" data-tip="Emoji" onClick={toggleEmoji}>
+        <button
+          className="text-gray-a4 js-emoji-button"
+          data-tip="Emoji"
+          onClick={toggleEmoji}
+        >
           <Smile size={28} />
         </button>
         <ReactTooltip place="bottom" type="dark" effect="solid" />
