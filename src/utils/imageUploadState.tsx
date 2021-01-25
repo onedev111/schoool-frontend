@@ -9,7 +9,12 @@ export type SavedImage = { isNew: false; url: string }
 export type NewImage = { isNew: true; file: File; url?: string }
 export type UploadingImage = SavedImage | NewImage
 
-const supportedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']
+export const imageMimes = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/svg+xml',
+]
 
 type Props = {
   images?: UploadingImage[]
@@ -52,7 +57,7 @@ export const createImageUploadState = ({
       const maxCount = maxImagesCount - this.images.length
       const filtered = filesArray
         .slice(0, maxCount)
-        .filter((file) => supportedMimes.includes(file.type))
+        .filter((file) => imageMimes.includes(file.type))
 
       if (files.length > maxCount)
         this.setWarning(
@@ -61,7 +66,7 @@ export const createImageUploadState = ({
             maxImagesCount,
           )}`,
         )
-      else if (filesArray.some((file) => !supportedMimes.includes(file.type)))
+      else if (filesArray.some((file) => !imageMimes.includes(file.type)))
         this.setWarning('Supported image formats are jpeg, png, svg and gif')
       else this.setWarning(undefined)
 

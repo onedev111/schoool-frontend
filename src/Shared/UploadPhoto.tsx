@@ -5,7 +5,7 @@ import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 import { RotateRight } from '@styled-icons/boxicons-regular/RotateRight'
 import { Flip } from '@styled-icons/material/Flip'
 import Modal from 'Shared/Modal'
-import useImageUploadState from 'utils/imageUploadState'
+import useImageUploadState, { imageMimes } from 'utils/imageUploadState'
 
 type Props = {
   title: string
@@ -79,6 +79,7 @@ export default function UploadPhoto({
               type="file"
               multiple
               hidden
+              accept={imageMimes.join(',')}
               onChange={(e) => imageUploadState.onChangeImage(e)}
             />
           </label>

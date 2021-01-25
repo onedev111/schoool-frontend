@@ -13,7 +13,7 @@ type Props = {
   onChange?(video: UploadingVideo | undefined): void
 }
 
-const supportedMimes = [
+export const videoMimes = [
   'video/mp4',
   'video/webm',
   'video/ogg',
@@ -25,7 +25,7 @@ const createVideoUploadState = ({ video, onChange }: Props = {}) =>
     onChange,
     video,
     setFile(file: File | undefined) {
-      if (file && !supportedMimes.includes(file.type)) {
+      if (file && !videoMimes.includes(file.type)) {
         this.setWarning('Supported video formats are mp4, ogg and webm')
         this.setFile(undefined)
         return

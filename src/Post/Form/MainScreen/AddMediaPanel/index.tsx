@@ -10,8 +10,8 @@ import tag from 'assets/images/icons/tag.png'
 import { Smile } from '@styled-icons/fa-regular'
 import ReactTooltip from 'react-tooltip'
 import useEmojiPicker from 'utils/useEmojiPicker'
-import { State as ImageUploadState } from 'utils/imageUploadState'
-import { State as VideoUploadState } from 'utils/videoUploadState'
+import { imageMimes, State as ImageUploadState } from 'utils/imageUploadState'
+import { State as VideoUploadState, videoMimes } from 'utils/videoUploadState'
 import ZoomIcon from 'assets/images/icons/Zoom'
 import cn from 'classnames'
 
@@ -46,6 +46,7 @@ export default function AddMediaPanel({
             type="file"
             multiple
             hidden
+            accept={imageMimes.join(',')}
             onChange={(e) => imageUploadState.onChangeImage(e)}
           />
         </label>
@@ -54,6 +55,7 @@ export default function AddMediaPanel({
           <input
             type="file"
             hidden
+            accept={videoMimes.join(',')}
             onChange={(e) => videoUploadState.onChangeVideo(e)}
           />
         </label>

@@ -12,6 +12,7 @@ import submit from 'Post/Comment/Form/submit'
 import { Post } from 'Post/types'
 import Spin from 'assets/images/icons/Spin'
 import { Comment } from 'Post/Comment/types'
+import { imageMimes } from 'utils/imageUploadState'
 
 type Props = {
   comment?: Partial<Comment>
@@ -91,7 +92,7 @@ export default observer(function CommentForm({
               hidden
               type="file"
               onChange={(e) => state.imageUpload.onChangeImage(e)}
-              accept="image/*"
+              accept={imageMimes.join(',')}
             />
           </label>
           <button
