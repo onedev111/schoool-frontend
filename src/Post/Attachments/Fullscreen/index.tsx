@@ -35,7 +35,7 @@ export default function Fullscreen({ user, date, children, onClose }: Props) {
         className="absolute top-0 right-0 mt-3 mr-3 text-gray-bb z-10"
         onClick={onClose}
       >
-        <X size={72} />
+        <X size={50} />
       </button>
       {children}
     </div>
