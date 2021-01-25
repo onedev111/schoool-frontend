@@ -57,41 +57,42 @@ export default function CommentItem({
     <>
       <hr className="text-gray-dc" style={{ marginLeft: `${80 * level}px` }} />
       <div className="pt-6 pb-3" ref={commentRef}>
-        <div className="flex items-center mb-2 px-8">
+        <div className="flex px-8">
           <img
             src={comment.user.avatar}
             alt="avatar"
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 rounded-full flex-shrink-0 mr-2"
           />
-          <div className="ml-2 font-bold">{comment.user.name}</div>
-        </div>
-        <div className="pl-20 pr-12">
-          <Text className="text-lg text-gray-6b mb-2" data={comment} />
-          <Attachments
-            audioClass="mt-1 mb-4"
-            linkClass="mt-1 mb-4"
-            imageClass="w-full mt-1 mb-4"
-            videoClass="mt-1 mb-4"
-            fileClass="mt-1 mb-4"
-            attachments={{
-              audio: comment.audio,
-              loopingAudio: comment.loopingAudio,
-              images: [comment.image].filter((url) => url) as string[],
-              video: comment.video,
-              file: comment.file,
-              date: comment.date,
-              user: comment.user,
-            }}
-          />
-          <div className="flex items-center justify-between">
-            <div className="text-gray-97">
-              {comment.date.format('MMM DD, YYYY')}
-            </div>
-            <div className="text-gray-6e flex items-center text-xs">
-              <CommentLike post={post} comment={comment} />
-              <button className="ml-4 font-bold" onClick={toggleReply}>
-                Reply
-              </button>
+          <div className="flex-grow">
+            <Text className="text-lg text-gray-6b mb-2" data={comment}>
+              <span className="font-bold">{comment.user.name}</span>{' '}
+            </Text>
+            <Attachments
+              audioClass="mt-1 mb-4"
+              linkClass="mt-1 mb-4"
+              imageClass="w-full mt-1 mb-4"
+              videoClass="mt-1 mb-4"
+              fileClass="mt-1 mb-4"
+              attachments={{
+                audio: comment.audio,
+                loopingAudio: comment.loopingAudio,
+                images: [comment.image].filter((url) => url) as string[],
+                video: comment.video,
+                file: comment.file,
+                date: comment.date,
+                user: comment.user,
+              }}
+            />
+            <div className="flex items-center justify-between">
+              <div className="text-gray-97">
+                {comment.date.format('MMM DD, YYYY')}
+              </div>
+              <div className="text-gray-6e flex items-center text-xs">
+                <CommentLike post={post} comment={comment} />
+                <button className="ml-4 font-bold" onClick={toggleReply}>
+                  Reply
+                </button>
+              </div>
             </div>
           </div>
         </div>

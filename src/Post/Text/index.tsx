@@ -20,6 +20,7 @@ type Props = {
   textRef?: { current: null | HTMLDivElement }
   showFullText?: boolean
   className?: string
+  children?: React.ReactNode
 }
 
 export default observer(function Text({
@@ -27,6 +28,7 @@ export default observer(function Text({
   textRef,
   showFullText = true,
   className,
+  children,
 }: Props) {
   const [{ parts, partsTags, text }, setTextParts] = React.useState(() =>
     getTextAndTagsParts(data),
@@ -51,6 +53,7 @@ export default observer(function Text({
         !showFullText && clampSize,
       )}
     >
+      {children}
       {parts.map((part, i) => {
         const tag = partsTags[i]
         if (!tag) return <React.Fragment key={i}>{part}</React.Fragment>
