@@ -14,6 +14,7 @@ import { imageMimes, State as ImageUploadState } from 'utils/imageUploadState'
 import { State as VideoUploadState, videoMimes } from 'utils/videoUploadState'
 import ZoomIcon from 'assets/images/icons/Zoom'
 import cn from 'classnames'
+import { observer } from 'mobx-react-lite'
 
 type Props = {
   state: State
@@ -21,7 +22,7 @@ type Props = {
   videoUploadState: VideoUploadState
 }
 
-export default function AddMediaPanel({
+export default observer(function AddMediaPanel({
   state,
   imageUploadState,
   videoUploadState,
@@ -34,13 +35,26 @@ export default function AddMediaPanel({
     },
   })
 
-  const hasLinkOtherThanZoom = Boolean(state.values.sharedPost)
+  const { values } = state
+  const disableImage = Boolean(
+    values.video || values.youtubeId || values.images.length === 4,
+  )
+  const disableVideo = Boolean(
+    values.images.length > 0 || values.youtubeId || values.video,
+  )
+  const disableYouTube = Boolean(
+    values.video || values.images.length > 0 || values.youtubeId,
+  )
+  const disableAudio = Boolean(values.audio)
+  const disableLoopingAudio = Boolean(values.loopingAudio)
+  const disableNotebookSentence = Boolean(values.notebookSentence)
+  const disableZoom = Boolean(state.values.sharedPost || state.values.zoomLink)
 
   return (
     <div className="pt-3 px-7 pb-7">
       <div className="uppercase mb-3">Add media</div>
       <div className="flex items-center justify-between">
-        <label className="cursor-pointer">
+        <label className={cn('cursor-pointer', disableImage && 'opacity-25')}>
           <img src={photos} alt="photos" data-tip="Photo" />
           <input
             type="file"
@@ -48,24 +62,34 @@ export default function AddMediaPanel({
             hidden
             accept={imageMimes.join(',')}
             onChange={(e) => imageUploadState.onChangeImage(e)}
+            disabled={disableImage}
           />
         </label>
-        <label className="cursor-pointer">
+        <label className={cn('cursor-pointer', disableVideo && 'opacity-25')}>
           <img src={camera} alt="video" data-tip="Video" />
           <input
             type="file"
             hidden
             accept={videoMimes.join(',')}
             onChange={(e) => videoUploadState.onChangeVideo(e)}
+            disabled={disableVideo}
           />
         </label>
-        <button type="button" onClick={() => state.setCurrentScreen('youtube')}>
-          <img src={youtube} alt="youtube" data-tip="Youtube" />
+        <button
+          type="button"
+          onClick={() => state.setCurrentScreen('youtube')}
+          data-tip="YouTube"
+          className={cn(disableYouTube && 'opacity-25')}
+          disabled={disableYouTube}
+        >
+          <img src={youtube} alt="youtube" />
         </button>
         <button
           type="button"
           onClick={() => state.setCurrentScreen('audio')}
           data-tip="Voice"
+          className={cn(disableAudio && 'opacity-25')}
+          disabled={disableAudio}
         >
           <img src={record} alt="audio" />
         </button>
@@ -73,6 +97,8 @@ export default function AddMediaPanel({
           type="button"
           onClick={() => state.setCurrentScreen('loopingAudio')}
           data-tip="Looping Audio"
+          className={cn(disableLoopingAudio && 'opacity-25')}
+          disabled={disableLoopingAudio}
         >
           <img
             src={looping}
@@ -85,6 +111,8 @@ export default function AddMediaPanel({
           type="button"
           data-tip="Notebook SentenceForm"
           onClick={() => state.setCurrentScreen('sentence')}
+          className={cn(disableNotebookSentence && 'opacity-25')}
+          disabled={disableNotebookSentence}
         >
           <Notebook style={{ width: '36px' }} />
         </button>
@@ -98,8 +126,8 @@ export default function AddMediaPanel({
         <button
           type="button"
           data-tip="Zoom Meeting"
-          className={cn(hasLinkOtherThanZoom && 'opacity-25')}
-          disabled={hasLinkOtherThanZoom}
+          className={cn(disableZoom && 'opacity-25')}
+          disabled={disableZoom}
           onClick={() => state.setCurrentScreen('zoom')}
         >
           <ZoomIcon size={32} />
@@ -111,4 +139,4 @@ export default function AddMediaPanel({
       </div>
     </div>
   )
-}
+})

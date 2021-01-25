@@ -40,6 +40,7 @@ type Props = {
   loop?: boolean
   className?: string
   compact?: boolean
+  onEdit?(): void
   onDelete?(): void
 }
 
@@ -48,6 +49,7 @@ export default observer(function Audio({
   loop,
   compact,
   className,
+  onEdit,
   onDelete,
 }: Props) {
   const [state, setState] = React.useState<AudioState>()
@@ -166,10 +168,25 @@ export default observer(function Audio({
           <div className={cn('text-sm', compact ? 'ml-2' : 'ml-3 mr-1')}>
             {state.duration ? formatTime(state.duration) : null}
           </div>
-          <button onClick={stop}>
-            <StopFill size={36} />
-          </button>
+          {!onEdit && (
+            <button onClick={stop}>
+              <StopFill size={36} />
+            </button>
+          )}
         </>
+      )}
+      {onEdit && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+            onEdit()
+          }}
+          className="ml-5 text-white text-lg font-bold"
+        >
+          Edit
+        </button>
       )}
       {onDelete && (
         <button
@@ -179,7 +196,7 @@ export default observer(function Audio({
             e.preventDefault()
             onDelete()
           }}
-          className="ml-4"
+          className="ml-5"
         >
           <X size={36} />
         </button>

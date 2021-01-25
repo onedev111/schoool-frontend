@@ -105,6 +105,7 @@ export default observer(function PostFormMainScreen({
           <Audio
             src={state.values.audio.url}
             className="mt-4"
+            onEdit={() => state.setCurrentScreen('audio')}
             onDelete={() => state.setAudio()}
           />
         )}
