@@ -1,8 +1,11 @@
 import React from 'react'
 import Spin from 'assets/images/icons/Spin'
-import Post from 'Post/Item'
+import PostItem from 'Post/Item'
 import api from 'api'
 import useRecords from 'utils/useRecords'
+import { Post, UsefulExpression } from 'Post/types'
+import UsefulExpressionItem from './UsefulExpression'
+import LevelComplete from 'Post/UsefulExpression/LevelComplete'
 
 type Props = {
   userId?: number
@@ -21,7 +24,11 @@ export default function Posts({
 
   const { data: savedPosts, isFetching: isFetchingSavedPosts } = useRecords({
     key: ['posts', 'saved', { classId }],
-    load: ({ limit, offset }) => api.post.listSaved({ classId, limit, offset }),
+    load: ({ limit, offset }) =>
+      api.post.listSaved({ classId, limit, offset }).then((posts) => ({
+        posts,
+        usefulExpressions: [] as UsefulExpression[],
+      })),
     loadOnScroll: {
       ref: wrapRef,
       threshold: 500,
@@ -34,7 +41,11 @@ export default function Posts({
   const { data: allPosts, isFetching: isFetchingAllPosts } = useRecords({
     key: ['posts', { classId, userId }],
     load: ({ limit, offset }) => {
-      if (userId) return api.post.userPosts({ userId, limit, offset })
+      if (userId)
+        return api.post.userPosts({ userId, limit, offset }).then((posts) => ({
+          posts,
+          usefulExpressions: [] as UsefulExpression[],
+        }))
       else return api.post.list({ classId, limit, offset })
     },
     loadOnScroll: {
@@ -54,13 +65,30 @@ export default function Posts({
 
   return (
     <div ref={wrapRef}>
-      {posts?.pages.map((page, i) => (
-        <React.Fragment key={i}>
-          {page.map((post) => (
-            <Post key={post.id} post={post} />
-          ))}
-        </React.Fragment>
-      ))}
+      {posts?.pages.map(
+        (
+          {
+            posts,
+            usefulExpressions,
+          }: { posts: Post[]; usefulExpressions: UsefulExpression[] },
+          page,
+        ) => (
+          <React.Fragment key={page}>
+            {page === 0 && posts[0] && <PostItem post={posts[0]} />}
+
+            {page === 0 &&
+              usefulExpressions.map((item) => (
+                <UsefulExpressionItem key={item.id} item={item} />
+              ))}
+
+            {page === 0 && usefulExpressions.length === 0 && <LevelComplete />}
+
+            {(page === 0 ? posts.slice(1) : posts).map((post) => (
+              <PostItem key={post.id} post={post} />
+            ))}
+          </React.Fragment>
+        ),
+      )}
       {isFetching && (
         <div className="flex-center my-5">
           <Spin className="w-10 h-10 text-blue-primary animate-spin" />

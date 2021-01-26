@@ -5,11 +5,10 @@ import { Comment } from '@styled-icons/fa-solid/Comment'
 import cn from 'classnames'
 import Notebook from 'assets/images/icons/notebook'
 import useToggle from 'utils/useToggle'
-import Modal from 'Shared/Modal'
-import SentenceForm from 'Home/Sentence/Form'
 import { Check } from '@styled-icons/boxicons-regular/Check'
 import SavePostModal from 'Post/Item/Menu/SavePostModal'
 import { observer } from 'mobx-react-lite'
+import AddSentence from 'Notebook/AddSentence'
 
 type Props = {
   post: Post
@@ -27,19 +26,17 @@ export default observer(function PostBottomPanel({
     <>
       {savePostOpen && <SavePostModal post={post} onClose={toggleSavePost} />}
       {openAddToNotebook && (
-        <Modal onClose={toggleAddToNotebook} size="small">
-          <SentenceForm
-            onClose={toggleAddToNotebook}
-            title="Send to my notebook"
-            buttonText="Add"
-            contentClass="pt-4 px-5 pb-6"
-            buttonWrapClass="flex-center mt-5"
-            sentence={{
-              text: post.notebookSentence?.text || post.text,
-              translation: post.notebookSentence?.translation || '',
-            }}
-          />
-        </Modal>
+        <AddSentence
+          onClose={toggleAddToNotebook}
+          title="Send to my notebook"
+          buttonText="Add"
+          contentClass="pt-4 px-5 pb-6"
+          buttonWrapClass="flex-center mt-5"
+          sentence={{
+            text: post.notebookSentence?.text || post.text,
+            translation: post.notebookSentence?.translation || '',
+          }}
+        />
       )}
       <div
         style={{ height: '90px' }}

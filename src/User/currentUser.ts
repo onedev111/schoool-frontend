@@ -13,7 +13,8 @@ const validateUser = (user: CurrentUser) => {
     'email' in user &&
     'avatar' in user &&
     'language' in user &&
-    'location' in user
+    'location' in user &&
+    'englishLevel' in user
   )
     return user
 

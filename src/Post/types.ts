@@ -1,4 +1,5 @@
 import { Dayjs } from 'dayjs'
+import { EnglishLevel } from 'User/types'
 
 export type NotebookSentence = {
   text: string
@@ -80,3 +81,11 @@ export type SharedPost = {
 }
 
 export type TagWithReply = Omit<Tag, 'type'> & { type: TagType | 'reply' }
+
+export type UsefulExpression = {
+  id: number
+  sentence: string
+  translation: string
+  date: Dayjs
+  level: EnglishLevel
+}

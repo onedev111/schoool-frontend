@@ -2,8 +2,10 @@ import React from 'react'
 
 let count = 0
 
-export default function useHideBodyScroll() {
+export default function useHideBodyScroll(hide = true) {
   React.useEffect(() => {
+    if (!hide) return
+
     if (count === 0) document.body.style.overflow = 'hidden'
     count++
 
@@ -11,5 +13,5 @@ export default function useHideBodyScroll() {
       if (count === 1) document.body.style.overflow = ''
       count--
     }
-  }, [])
+  }, [hide])
 }

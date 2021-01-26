@@ -16,3 +16,17 @@ export const getCountsAndIsPremium = get(() => ({
     rememberCount: res.remember_count,
   }),
 }))
+
+export const speech = get(({ text }: { text: string }) => ({
+  path: '/speech',
+  params: {
+    access_token: getUserToken(),
+    gender: 0,
+    sentence: text,
+  },
+  response(res: { data?: string }): string {
+    if (!res.data) throw new Error('Something went wrong')
+
+    return res.data
+  },
+}))

@@ -5,15 +5,17 @@ import { EnglishLevel } from 'User/types'
 
 type Props = {
   // eslint-disable-next-line
+  title?: string
+  className?: string
   form: UseFormMethods<any>
 }
 
 const englishLevels: EnglishLevel[] = ['Basic', 'Intermediate', 'Advanced']
 
-export default function LevelOfEnglish({ form }: Props) {
+export default function LevelOfEnglish({ form, title, className }: Props) {
   return (
-    <div className="mb-8">
-      <div className="text-lg ml-1 mb-1 uppercase">Level of English</div>
+    <div className={className}>
+      {title && <div className="text-lg ml-1 mb-1 uppercase">{title}</div>}
       <div className="flex">
         <Controller
           control={form.control}

@@ -72,6 +72,7 @@ const mapUser = (user: UserResponse): CurrentUser => ({
   avatar: user.profile_image_dir,
   language: user.base_language,
   location: user.location,
+  englishLevel: 'Basic',
 })
 
 export const login = post(
@@ -176,7 +177,7 @@ export const updateEnglishLevel = post(
     },
     response({ result_code }: { result_code: string }) {
       if (result_code !== '35.00') throw new Error('Something went wrong')
-      return
+      updateCurrentUser({ englishLevel })
     },
   }),
 )

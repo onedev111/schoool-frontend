@@ -10,6 +10,7 @@ export type CurrentUser = {
   avatar: string
   language: string
   location: string
+  englishLevel: EnglishLevel
 }
 
 export type User = {

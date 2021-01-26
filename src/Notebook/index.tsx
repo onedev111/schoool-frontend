@@ -58,23 +58,26 @@ export default observer(function Notebook() {
 
   const selectedIds = Object.keys(checkedIds)
 
-  const { data: countesAndIsPremium, isLoading: isLoadingTotal } = useQuery(
+  const { data: countsAndIsPremium } = useQuery(
     ['countsAndIsPremium'],
     api.app.getCountsAndIsPremium,
   )
 
-  const total = countesAndIsPremium?.notebookCount || 0
+  const total = countsAndIsPremium?.notebookCount || 0
 
   return (
     <>
       {deleteModal && (
         <SentencesDelete checkedIds={checkedIds} onClose={toggleDeleteModal} />
       )}
-      {addModal && !isLoadingTotal && total > maxFreeSentences && (
-        <NotebookMaxSentences onClose={toggleAddModal} />
-      )}
-      {addModal && !isLoadingTotal && total <= maxFreeSentences && (
-        <AddSentence onClose={toggleAddModal} />
+      {addModal && (
+        <AddSentence
+          onClose={toggleAddModal}
+          title="Add Expressions"
+          buttonText="Add"
+          contentClass="pt-4 px-5 pb-6"
+          buttonWrapClass="flex-center mt-5"
+        />
       )}
       <div className="flex flex-shrink-0 justify-between p-4">
         {!selecting && (

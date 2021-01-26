@@ -64,7 +64,4 @@ export const remove = post(({ id }: { id: number }) => ({
     access_token: getUserToken(),
     mysen_post_id: id,
   },
-  response({ result_code }: { result_code: string }) {
-    if (result_code !== '28.00') throw new Error('Something went wrong')
-  },
 }))

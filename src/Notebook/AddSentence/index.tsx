@@ -2,25 +2,57 @@ import React from 'react'
 import Modal from 'Shared/Modal'
 import SentenceForm from 'Home/Sentence/Form'
 import NotebookMaxSentences from 'Shared/Modal/NotebookMaxSentences'
+import { useQuery } from 'react-query'
+import api from 'api'
+import { NotebookSentence } from 'Post/types'
 
 type Props = {
   onClose(): void
+  backButton?: boolean
+  title: string
+  buttonText: string
+  sentence?: NotebookSentence | null
+  className?: string
+  titleClass?: string
+  contentClass: string
+  buttonWrapClass: string
 }
 
-export default function AddSentence({ onClose }: Props) {
-  const reachedMaximum = false
+export default function AddSentence({
+  onClose,
+  backButton,
+  title,
+  buttonText,
+  sentence,
+  className,
+  titleClass,
+  contentClass,
+  buttonWrapClass,
+}: Props) {
+  const { data: countsAndIsPremium, isLoading: isLoadingTotal } = useQuery(
+    ['countsAndIsPremium'],
+    api.app.getCountsAndIsPremium,
+  )
+  const total = countsAndIsPremium?.notebookCount || 0
+  const reachedMaximum = total >= 100
 
   return (
     <>
-      {reachedMaximum && <NotebookMaxSentences onClose={onClose} />}
-      {!reachedMaximum && (
+      {!isLoadingTotal && reachedMaximum && (
+        <NotebookMaxSentences onClose={onClose} />
+      )}
+      {!isLoadingTotal && !reachedMaximum && (
         <Modal onClose={onClose} size="small">
           <SentenceForm
             onClose={onClose}
-            title="Add Expressions"
-            buttonText="Add"
-            contentClass="pt-4 px-5 pb-6"
-            buttonWrapClass="flex-center mt-5"
+            backButton={backButton}
+            title={title}
+            titleClass={titleClass}
+            buttonText={buttonText}
+            sentence={sentence}
+            className={className}
+            contentClass={contentClass}
+            buttonWrapClass={buttonWrapClass}
           />
         </Modal>
       )}

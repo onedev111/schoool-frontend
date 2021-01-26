@@ -2,13 +2,14 @@ import { del, get, post } from 'utils/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
 import {
   Post,
-  SLecture,
   SLectureItem,
   Tag,
   TagToInsert,
   TagType,
+  UsefulExpression,
 } from 'Post/types'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
+import { EnglishLevel } from 'User/types'
 
 type PostResponse = {
   base_language: string
@@ -100,6 +101,20 @@ type PostResponse = {
   video: string
   youtube_id: string
   zoom_link: string
+}
+
+type UsefulExpressionResponse = {
+  check_like: 0 | 1
+  comment_count: number
+  date: string
+  id: number
+  level: EnglishLevel
+  like_count: number
+  name: string
+  profile_image: string
+  sentence: string
+  translation: string
+  user_id: number
 }
 
 const getTagsFromResponse = (type: TagType, ids = '', ranges = '') => {
@@ -262,11 +277,31 @@ export const list = get(
       limit_posts: limit,
       num_of_posts: offset,
     },
-    response: (data: PostResponse[] | { data: PostResponse[] }): Post[] => {
+    response: (
+      data:
+        | PostResponse[]
+        | {
+            data: PostResponse[]
+            useful_expression: UsefulExpressionResponse[]
+          },
+    ): { posts: Post[]; usefulExpressions: UsefulExpression[] } => {
       const userId = getCurrentUserId()
 
       const posts = Array.isArray(data) ? data : data.data
-      return posts.map((post) => mapPost({ post, userId }))
+      const usefulExpressions = Array.isArray(data)
+        ? []
+        : (data.useful_expression || []).map((item) => ({
+            id: item.id,
+            sentence: item.sentence,
+            translation: item.translation,
+            date: dayjs(item.date),
+            level: item.level,
+          }))
+
+      return {
+        posts: posts.map((post) => mapPost({ post, userId })),
+        usefulExpressions,
+      }
     },
   }),
 )

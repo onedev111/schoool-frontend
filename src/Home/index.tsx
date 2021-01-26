@@ -1,6 +1,4 @@
 import React from 'react'
-import LevelComplete from './LevelComplete'
-import Phrase from './Phrase'
 import { observer } from 'mobx-react-lite'
 import useToggle from 'utils/useToggle'
 import PostForm from 'Post/Form'
@@ -34,8 +32,6 @@ export default observer(function Home() {
             />
           </div>
           <Posts />
-          <LevelComplete />
-          <Phrase />
         </div>
         <Sidebar />
       </div>

@@ -13,8 +13,9 @@ type Props = {
   onClose?(): void
   size?: keyof typeof sizes
   className?: string
-  width?: number
+  width?: number | boolean
   scrollingElementRef?: { current: HTMLDivElement | null }
+  scroll?: boolean
   [key: string]: any
 }
 
@@ -25,9 +26,10 @@ export default function Modal({
   className,
   width,
   scrollingElementRef,
+  scroll = true,
   ...props
 }: Props) {
-  useHideBodyScroll()
+  useHideBodyScroll(scroll)
 
   return (
     <div
@@ -37,7 +39,10 @@ export default function Modal({
       {...props}
     >
       <div
-        className="overflow-auto max-h-full w-full py-10"
+        className={cn(
+          'overflow-auto max-h-full py-10',
+          width !== false && 'w-full',
+        )}
         ref={scrollingElementRef}
       >
         <div
@@ -45,7 +50,14 @@ export default function Modal({
             'bg-white rounded-lg border border-gray-bb shadow max-w-full mx-auto',
             className,
           )}
-          style={{ width: width ? `${width}px` : sizes[size] }}
+          style={{
+            width:
+              width !== undefined
+                ? width === false
+                  ? `${width}px`
+                  : undefined
+                : sizes[size],
+          }}
           onClick={(e) => e.stopPropagation()}
         >
           {children}

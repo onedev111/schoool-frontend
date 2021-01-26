@@ -6,7 +6,7 @@ import api from 'api'
 import './react-select.css'
 import Loader from 'Shared/Loader'
 import { useForm } from 'react-hook-form'
-import { getCurrentUser } from 'User/currentUser'
+import { getCurrentUser, setCurrentUser } from 'User/currentUser'
 import UploadAvatar from 'User/Auth/SignUpForm/UploadAvatar'
 import LevelOfEnglish from 'User/Auth/SignUpForm/LevelOfEnglish'
 import Language from 'User/Auth/SignUpForm/Language'
@@ -38,8 +38,11 @@ export default observer(function SignUpForm({ submitText, onSuccess }: Props) {
   const { mutate: loadUser } = useMutation(
     () => api.user.getUser({ id: user.id }),
     {
-      onSuccess(user) {
-        form.reset({ ...user, language: user.language || 'English' })
+      onSuccess(fresh) {
+        if (fresh.englishLevel !== user.englishLevel) {
+          setCurrentUser({ ...user, englishLevel: fresh.englishLevel })
+        }
+        form.reset({ ...fresh, language: fresh.language || 'English' })
       },
     },
   )
@@ -77,7 +80,7 @@ export default observer(function SignUpForm({ submitText, onSuccess }: Props) {
           placeholder="Introduce yourself briefly. (optional)"
         />
       </div>
-      <LevelOfEnglish form={form} />
+      <LevelOfEnglish form={form} title="Level of English" className="mb-8" />
       <Language form={form} />
       <div className="mb-10">
         <div className="text-lg ml-1 mb-1">Location</div>
