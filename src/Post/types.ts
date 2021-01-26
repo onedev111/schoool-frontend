@@ -6,6 +6,11 @@ export type NotebookSentence = {
 }
 
 export type SLecture = {
+  id: number
+  items: SLectureItem[]
+}
+
+export type SLectureItem = {
   text: string
   link: string
   image: string
@@ -46,8 +51,7 @@ export type Post = {
   tags: Tag[]
   zoomLink?: string
   sharedPost?: SharedPost
-  sLectureId?: number
-  sLectures: SLecture[]
+  sLecture?: SLecture
 }
 
 export type TagType = 'user' | 'class' | 'studyflow'

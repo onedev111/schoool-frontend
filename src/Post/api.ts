@@ -1,6 +1,13 @@
 import { del, get, post } from 'utils/apiUtils'
 import { getCurrentUserId, getUserToken } from 'User/currentUser'
-import { Post, SLecture, Tag, TagToInsert, TagType } from 'Post/types'
+import {
+  Post,
+  SLecture,
+  SLectureItem,
+  Tag,
+  TagToInsert,
+  TagType,
+} from 'Post/types'
 import dayjs from 'dayjs'
 
 type PostResponse = {
@@ -157,7 +164,7 @@ const mapPost = ({
     classes = []
   }
 
-  const sLectures: SLecture[] = [
+  const sLectures: SLectureItem[] = [
     {
       text: post.s_lecture_first_content,
       link: post.s_lecture_first_link,
@@ -230,8 +237,12 @@ const mapPost = ({
             name: post.shared_share_user_name,
           },
         },
-    sLectureId: post.s_lecture_id || undefined,
-    sLectures,
+    sLecture: post.s_lecture_id
+      ? {
+          id: post.s_lecture_id,
+          items: sLectures,
+        }
+      : undefined,
     isVR: Boolean(post.is_pano),
   }
 }

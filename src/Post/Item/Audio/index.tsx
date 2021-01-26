@@ -11,12 +11,7 @@ import useToggle from 'utils/useToggle'
 import cn from 'classnames'
 import audioRipples from 'assets/images/audio-ripples.png'
 import { X } from '@styled-icons/boxicons-regular/X'
-
-const formatTime = (seconds: number) => {
-  const time = dayjs(0).utc().second(seconds)
-  if (time.hour() > 0) return time.format('hh:mm:ss')
-  else return time.format('mm:ss')
-}
+import { formatTime } from 'utils/time'
 
 const useKeyWhenFocused = (
   focused: boolean,

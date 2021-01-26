@@ -11,15 +11,15 @@ type Props = {
 export default observer(function PostTitle({
   post: {
     user: { name },
-    sLectureId,
+    sLecture,
     isPublic,
     classes,
   },
 }: Props) {
-  const onlyForMe = sLectureId
+  const onlyForMe = sLecture
     ? ' posted an S-Lecture Only for me '
     : ' Only for me'
-  const postedTo = sLectureId ? ' posted an S-Lecture to ' : ' posted to '
+  const postedTo = sLecture ? ' posted an S-Lecture to ' : ' posted to '
 
   return (
     <div className="text-xl text-gray-02">

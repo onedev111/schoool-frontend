@@ -5,13 +5,16 @@ import Photos from 'Post/Attachments/Photos'
 import useYouTubeState from 'utils/youTubeState'
 import { observer } from 'mobx-react-lite'
 import ZoomLink from 'Post/Attachments/Link/ZoomLink'
-import { SharedPost } from 'Post/types'
+import { SharedPost, SLecture } from 'Post/types'
 import SharedPostLink from 'Post/Attachments/Link/SharedPostLink'
 import File from 'Post/Attachments/File'
 import useToggle from 'utils/useToggle'
 import VR from 'Post/Attachments/VR'
 import { Dayjs } from 'dayjs'
 import vrIcon from 'assets/images/360.png'
+import sLectureIcon from 'assets/images/slecture.png'
+import { PlayFill } from '@styled-icons/bootstrap/PlayFill'
+import SLecturePage from './SLecture'
 
 type Props = {
   audioClass?: string
@@ -33,7 +36,9 @@ type Props = {
     user: {
       id: number
       name: string
+      avatar: string
     }
+    sLecture?: SLecture
   }
 }
 
@@ -61,12 +66,21 @@ export default function Attachments({
     isVR,
     date,
     user,
+    sLecture,
   },
 }: Props) {
   const [openVR, toggleVR] = useToggle()
+  const [openSLecture, toggleSLecture] = useToggle()
 
   return (
     <>
+      {openSLecture && sLecture && (
+        <SLecturePage
+          user={user}
+          sLecture={sLecture}
+          onClose={toggleSLecture}
+        />
+      )}
       {openVR && (
         <VR image={images[0]} onClose={toggleVR} user={user} date={date} />
       )}
@@ -118,6 +132,28 @@ export default function Attachments({
             className="absolute right-0 bottom-0 mr-5 mb-5"
             alt="open vr view"
           />
+        </button>
+      )}
+
+      {sLecture && (
+        <button
+          type="button"
+          className="flex-center w-full relative"
+          onClick={() => toggleSLecture()}
+        >
+          <img
+            src={sLecture.items[0]?.image || sLectureIcon}
+            className="max-w-full"
+            alt="S.Lecture"
+          />
+          <div className="absolute-fill flex-center">
+            <div
+              className="rounded-full flex-center w-12 h-12"
+              style={{ background: 'rgba(0, 0, 0, .3)' }}
+            >
+              <PlayFill className="text-blue-primary ml-1" size={36} />
+            </div>
+          </div>
         </button>
       )}
 
