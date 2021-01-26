@@ -9,6 +9,7 @@ import cn from 'classnames'
 import { formatTime } from 'utils/time'
 import { PauseFill } from '@styled-icons/bootstrap/PauseFill'
 import { Link as LinkIcon } from '@styled-icons/entypo/Link'
+import { useKey } from 'react-use'
 
 type Props = {
   user: {
@@ -103,6 +104,10 @@ export default function SLecturePage({ user, sLecture, onClose }: Props) {
   })
 
   React.useEffect(() => {
+    return () => audio.pause()
+  }, [])
+
+  React.useEffect(() => {
     if (audio.src !== item.audio) audio.src = item.audio
   }, [item])
 
@@ -111,26 +116,67 @@ export default function SLecturePage({ user, sLecture, onClose }: Props) {
     else audio.play()
   }
 
+  useKey(' ', togglePlay)
+  useKey('ArrowLeft', () => {
+    audio.currentTime = Math.max(audio.currentTime - 1, 0)
+  })
+  useKey('ArrowRight', () => {
+    audio.currentTime = Math.min(audio.currentTime + 1, audio.duration)
+  })
+
+  let linkProtocol = 'http:'
+  if (item.link) {
+    try {
+      const url = new URL(item.link)
+      linkProtocol = url.protocol
+    } catch (err) {
+      // noop
+    }
+  }
+
   return (
-    <Fullscreen onClose={onClose} showClose={false}>
+    <Fullscreen onClose={onClose}>
       <div
-        className="w-full h-full mx-auto bg-white flex flex-col pt-12 items-center"
+        className="w-full h-full mx-auto bg-white flex flex-col items-center relative"
         style={{ maxWidth: '500px' }}
       >
-        <Link
-          to={routes.user(user.id)}
-          className="rounded-full bg-center bg-cover border border-blue-25"
-          style={{
-            borderWidth: '3px',
-            width: '63px',
-            height: '63px',
-            backgroundImage: `url("${user.avatar}")`,
-          }}
-        />
-        <div className="flex-grow flex items-center px-12 text-xl w-full">
+        <div className="absolute z-10 left-0 top-0 right-0 pt-12 flex-center">
+          <Link
+            to={routes.user(user.id)}
+            className="rounded-full bg-center bg-cover border border-blue-25"
+            style={{
+              borderWidth: '3px',
+              width: '63px',
+              height: '63px',
+              backgroundImage: `url("${user.avatar}")`,
+            }}
+          />
+        </div>
+        {item.image && (
+          <div className="relative w-full flex-center mb-5">
+            <img src={item.image} alt="lecture image" className="max-w-full" />
+            {item.link && (
+              <a
+                href={item.link}
+                target="_blank"
+                className="flex-center flex-col rounded-lg border bg-white border-red-31 text-red-31 mr-4 mb-5 absolute right-0 bottom-0"
+                style={{ width: '80px', height: '80px', borderWidth: '3px' }}
+              >
+                <LinkIcon size={32} />
+                <div>{linkProtocol}//</div>
+              </a>
+            )}
+          </div>
+        )}
+        <div
+          className={cn(
+            'flex-grow flex px-12 text-xl w-full',
+            !item.image && 'items-center',
+          )}
+        >
           <div className="w-full">
             {item.text}
-            {item.link && (
+            {item.link && !item.image && (
               <a
                 href={item.link}
                 target="_blank"
