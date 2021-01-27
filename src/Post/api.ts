@@ -549,17 +549,20 @@ export const removeFromSaved = get(({ postId }: { postId: number }) => ({
 export const userPosts = get(
   ({
     userId,
+    search,
     limit,
     offset,
   }: {
     userId: number
+    search?: string
     limit: number
     offset: number
   }) => ({
-    path: '/v1.3/get_share_by_user_id',
+    path: search ? '/search_users_post' : '/v1.3/get_share_by_user_id',
     params: {
       access_token: getUserToken(),
       user_id: userId,
+      search_key: search,
       limit_posts: limit,
       num_of_posts: offset,
     },

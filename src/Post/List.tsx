@@ -11,6 +11,8 @@ type Props = {
   userId?: number
   classId?: number
   savedPosts?: boolean
+  search?: string
+  usefulExpressions?: boolean
   children?: React.ReactNode
 }
 
@@ -18,6 +20,8 @@ export default function Posts({
   userId,
   classId,
   savedPosts: loadSavedPosts,
+  search,
+  usefulExpressions: showUsefulExpressions = false,
   children,
 }: Props) {
   const wrapRef = React.useRef<HTMLDivElement>(null)
@@ -39,13 +43,15 @@ export default function Posts({
   })
 
   const { data: allPosts, isFetching: isFetchingAllPosts } = useRecords({
-    key: ['posts', { classId, userId }],
+    key: ['posts', { classId, userId, search }],
     load: ({ limit, offset }) => {
       if (userId)
-        return api.post.userPosts({ userId, limit, offset }).then((posts) => ({
-          posts,
-          usefulExpressions: [] as UsefulExpression[],
-        }))
+        return api.post
+          .userPosts({ userId, search, limit, offset })
+          .then((posts) => ({
+            posts,
+            usefulExpressions: [] as UsefulExpression[],
+          }))
       else return api.post.list({ classId, limit, offset })
     },
     loadOnScroll: {
@@ -74,18 +80,25 @@ export default function Posts({
           page,
         ) => (
           <React.Fragment key={page}>
-            {page === 0 && posts[0] && <PostItem post={posts[0]} />}
+            {showUsefulExpressions && page === 0 && posts[0] && (
+              <PostItem post={posts[0]} />
+            )}
 
-            {page === 0 &&
+            {showUsefulExpressions &&
+              page === 0 &&
               usefulExpressions.map((item) => (
                 <UsefulExpressionItem key={item.id} item={item} />
               ))}
 
-            {page === 0 && usefulExpressions.length === 0 && <LevelComplete />}
+            {showUsefulExpressions &&
+              page === 0 &&
+              usefulExpressions.length === 0 && <LevelComplete />}
 
-            {(page === 0 ? posts.slice(1) : posts).map((post) => (
-              <PostItem key={post.id} post={post} />
-            ))}
+            {(showUsefulExpressions && page === 0 ? posts.slice(1) : posts).map(
+              (post) => (
+                <PostItem key={post.id} post={post} />
+              ),
+            )}
           </React.Fragment>
         ),
       )}
