@@ -574,3 +574,11 @@ export const userPosts = get(
     },
   }),
 )
+
+export const report = get(({ postId }: { postId: number }) => ({
+  path: '/report_share',
+  params: {
+    access_token: getUserToken(),
+    share_post_id: postId,
+  },
+}))

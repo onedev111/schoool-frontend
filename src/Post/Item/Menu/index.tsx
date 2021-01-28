@@ -11,6 +11,7 @@ import { observer } from 'mobx-react-lite'
 import Spin from 'assets/images/icons/Spin'
 import { useMutation } from 'react-query'
 import { removeFromCache, updateCache } from 'Post/cacheActions'
+import Report from './Report'
 
 const itemClass = `w-full flex-center transition duration-200 hover:bg-gray-f2 cursor-pointer ${style.menuItem}`
 
@@ -139,7 +140,9 @@ export default observer(function Menu({ post, button, className }: Props) {
             Share This Post
           </button>
         )}
-        {!isMine && <div className={`${itemClass} text-blue-deep`}>Report</div>}
+        {!isMine && (
+          <Report post={post} className={`${itemClass} text-blue-deep`} />
+        )}
         {isMine && (
           <button
             type="button"
