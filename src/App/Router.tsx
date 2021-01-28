@@ -8,7 +8,7 @@ import routes from 'routes'
 import ForgotPasswordPage from 'User/Auth/ForgotPasswordPage'
 import SignUpFormPage from 'User/Auth/SignUpFormPage'
 import Home from 'Home'
-import ClassesHome from 'Class/Home'
+import ClassesHomePage from 'Class/Home/Page'
 import ClassPage from 'Class/Page'
 import UserPage from 'User/Page'
 import SettingsLayout from 'Settings/Layout'
@@ -39,7 +39,7 @@ const UserRoutes = () => (
         <Layout>
           <Switch>
             <Route path={routes.home()} exact component={Home} />
-            <Route path={routes.classes()} exact component={ClassesHome} />
+            <Route path={routes.classes()} exact component={ClassesHomePage} />
             <Route path={routes.class()} exact component={ClassPage} />
             <Route
               path={routes.classSavedPosts()}

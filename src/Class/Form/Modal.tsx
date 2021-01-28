@@ -11,13 +11,14 @@ import Toggle from 'Class/Form/Toggle'
 import { useMutation } from 'react-query'
 import api from 'api'
 import Loader from 'Shared/Loader'
-import { getCurrentUser } from 'User/currentUser'
 import useToggle from 'utils/useToggle'
 import Delete from 'Shared/Modal/Delete'
 import routes from 'routes'
 import history from 'utils/history'
 import LeaveWarning from 'Shared/LeaveWarning'
 import { resetClasses } from 'Class/cacheActions'
+import AskToNotify from 'Class/Form/AskToNotify'
+import { useSubmit } from 'Class/Form/submit'
 
 const maxLength = 200
 
@@ -61,68 +62,11 @@ export default function ClassForm({ item = defaultValues, onClose }: Props) {
     onClose()
   }
 
-  const {
-    mutate: create,
-    isLoading: isCreating,
-    error: createError,
-  } = useMutation(api.classes.create, {
-    onSuccess(item) {
-      onSuccess()
-      history.push(routes.class(item.id))
-    },
-  })
-  const {
-    mutate: update,
-    isLoading: isUpdating,
-    error: updateError,
-  } = useMutation(api.classes.update, {
-    onSuccess,
-  })
-  const isLoading = isCreating || isUpdating
-  const error = createError || updateError
+  const { error, submit, isLoading } = useSubmit({ item, form, onSuccess })
+
   const scrollingElementRef = React.useRef<HTMLDivElement>(null)
 
   const { mutate: remove } = useMutation(api.classes.remove, { onSuccess })
-
-  const submit = () => {
-    if (isLoading) return
-
-    const values = form.getValues()
-
-    if (item.id) {
-      update({
-        id: item.id,
-        name: item.name !== values.name ? values.name : undefined,
-        description:
-          item.description !== values.description
-            ? values.description
-            : undefined,
-        isPublic:
-          item.isPublic !== values.isPublic ? values.isPublic : undefined,
-        autoApprove:
-          item.autoApprove !== values.autoApprove
-            ? values.autoApprove
-            : undefined,
-        image:
-          item.image !== values.image
-            ? (values.image as { blob: Blob })
-            : undefined,
-      })
-    } else {
-      create({
-        name: values.name,
-        description: values.description,
-        isPublic: values.isPublic,
-        autoApprove: values.autoApprove,
-        completed: false,
-        image: values.image as { blob: Blob },
-        isLocked: false,
-        isJoined: false,
-        isOwn: true,
-        owner: getCurrentUser(),
-      })
-    }
-  }
 
   React.useEffect(() => {
     if (error && scrollingElementRef.current)
@@ -131,6 +75,7 @@ export default function ClassForm({ item = defaultValues, onClose }: Props) {
 
   const [openDelete, toggleDelete] = useToggle()
   const [showCloseAlert, toggleCloseAlert] = useToggle()
+  const [openNotify, toggleNotify] = useToggle()
 
   const tryToClose = () => {
     const values = form.getValues()
@@ -143,6 +88,11 @@ export default function ClassForm({ item = defaultValues, onClose }: Props) {
     else toggleCloseAlert()
   }
 
+  const tryToSubmit = () => {
+    if (item.id || !form.getValues().isPublic) submit()
+    else toggleNotify()
+  }
+
   return (
     <Modal
       width={840}
@@ -152,7 +102,8 @@ export default function ClassForm({ item = defaultValues, onClose }: Props) {
       {showCloseAlert && (
         <LeaveWarning cancel={toggleCloseAlert} close={onClose} />
       )}
-      <form onSubmit={form.handleSubmit(submit)} className="pb-12">
+      <AskToNotify open={openNotify} toggle={toggleNotify} submit={submit} />
+      <form onSubmit={form.handleSubmit(tryToSubmit)} className="pb-12">
         <div className="mt-8 mb-7 uppercase text-center text-2xl relative">
           <button onClick={tryToClose}>
             <X size={32} className="absolute top-0 right-0 mr-7 text-gray-5f" />

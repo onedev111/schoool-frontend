@@ -1,5 +1,5 @@
 import React from 'react'
-import ClassForm from 'Class/Form'
+import ClassFormModal from 'Class/Form/Modal'
 import State from 'Class/State'
 import { observer } from 'mobx-react-lite'
 import ClassSidebar from 'Class/Sidebar'
@@ -12,7 +12,7 @@ export default observer(function ClassLayout({
   return (
     <>
       {State.openCreateModal && (
-        <ClassForm onClose={() => State.toggleCreateModal()} />
+        <ClassFormModal onClose={() => State.toggleCreateModal()} />
       )}
       <div className="flex h-full">
         <ClassSidebar />

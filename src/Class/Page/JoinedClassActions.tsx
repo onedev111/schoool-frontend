@@ -4,7 +4,7 @@ import { Edit } from '@styled-icons/material/Edit'
 import { Settings } from '@styled-icons/material/Settings'
 import { Class } from 'Class/types'
 import useToggle from 'utils/useToggle'
-import ClassForm from 'Class/Form'
+import ClassFormModal from 'Class/Form/Modal'
 import ClassMates from 'Class/Page/ClassMates'
 import InviteModal from 'Class/Page/InviteModal'
 
@@ -20,7 +20,7 @@ export default function JoinedClassActions({ item }: Props) {
   return (
     <>
       {openMembers && <ClassMates item={item} onClose={toggleMembers} />}
-      {openSettings && <ClassForm item={item} onClose={toggleSettings} />}
+      {openSettings && <ClassFormModal item={item} onClose={toggleSettings} />}
       {openInvite && <InviteModal item={item} onClose={toggleInvite} />}
       <div className="flex border-t border-gray-d6 py-5 px-16">
         <div className="flex-grow flex">

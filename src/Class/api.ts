@@ -175,12 +175,20 @@ export const updateIsPublic = put(
 )
 
 export const updateAutoApprove = put(
-  ({ classId, autoApprove }: { classId: number; autoApprove: boolean }) => ({
+  ({
+    classId,
+    autoApprove,
+    notify,
+  }: {
+    classId: number
+    autoApprove: boolean
+    notify?: boolean
+  }) => ({
     path: `/class/${classId}/autoapprove`,
     data: {
       access_token: getUserToken(),
       auto_approve: autoApprove ? 1 : 0,
-      notify: 0,
+      notify: notify === undefined ? undefined : notify ? 1 : 0,
     },
   }),
 )
@@ -189,6 +197,7 @@ export const create = post(
   (
     item: Omit<Class, 'id' | 'image'> & {
       image: { blob: Blob }
+      notify?: boolean
     },
   ) => ({
     path: '/class',
@@ -226,9 +235,11 @@ export const update = async ({
   isPublic,
   autoApprove,
   image,
+  notify,
 }: Omit<Partial<Class>, 'id' | 'image'> & {
   id: number
   image?: { blob: Blob }
+  notify?: boolean
 }): Promise<{ image?: string }> => {
   const promises: Promise<unknown>[] = []
 
@@ -239,7 +250,7 @@ export const update = async ({
   if (isPublic !== undefined)
     promises.push(updateIsPublic({ classId: id, isPublic }))
   if (autoApprove !== undefined)
-    promises.push(updateAutoApprove({ classId: id, autoApprove }))
+    promises.push(updateAutoApprove({ classId: id, autoApprove, notify }))
 
   const result = await Promise.all(promises)
 
