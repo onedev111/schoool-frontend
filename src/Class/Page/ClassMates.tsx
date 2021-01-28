@@ -183,49 +183,43 @@ export default function ClassMates({ item, onClose }: Props) {
               )}
             </div>
           )}
-          <div className="text-gray-6b uppercase px-5">Members:</div>
-          {members && !members.some(({ id }) => id !== currentUserId) && (
-            <div className="px-5">No members in this class yet</div>
-          )}
+          <div className="text-gray-6b uppercase px-5">
+            Members: {members && members.length}
+          </div>
           {members && members.length > 0 && (
             <div className="flex min-h-0 mt-2">
               <div className="flex-1 overflow-auto pb-5">
                 {members.map((user) => (
                   <React.Fragment key={user.id}>
-                    {user.id !== currentUserId && (
-                      <div
-                        key={user.id}
-                        className="flex items-center py-2 px-5"
+                    <div key={user.id} className="flex items-center py-2 px-5">
+                      <Link to={routes.user(user.id)}>
+                        <div
+                          className="rounded-full mr-2 bg-center bg-cover"
+                          style={{
+                            width: '45px',
+                            height: '45px',
+                            backgroundImage: `url("${user.avatar}")`,
+                          }}
+                        />
+                      </Link>
+                      <Link
+                        to={routes.user(user.id)}
+                        className="text-bold text-black text-lg"
                       >
-                        <Link to={routes.user(user.id)}>
-                          <div
-                            className="rounded-full mr-2 bg-center bg-cover"
-                            style={{
-                              width: '45px',
-                              height: '45px',
-                              backgroundImage: `url("${user.avatar}")`,
-                            }}
-                          />
-                        </Link>
-                        <Link
-                          to={routes.user(user.id)}
-                          className="text-bold text-black text-lg"
-                        >
-                          {user.name}
-                        </Link>
-                        {item.isOwn && (
-                          <div className="flex-grow flex items-center justify-end">
-                            <button
-                              type="button"
-                              className="text-red-500 ml-4 font-bold"
-                              onClick={() => setDismiss(user.id)}
-                            >
-                              Dismiss
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                        {user.name}
+                      </Link>
+                      {item.isOwn && user.id !== currentUserId && (
+                        <div className="flex-grow flex items-center justify-end">
+                          <button
+                            type="button"
+                            className="text-red-500 ml-4 font-bold"
+                            onClick={() => setDismiss(user.id)}
+                          >
+                            Dismiss
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </React.Fragment>
                 ))}
               </div>

@@ -11,6 +11,7 @@ import Post from 'Post/Item'
 import history from 'utils/history'
 import useToggle from 'utils/useToggle'
 import Alert from 'Shared/Modal/Alert'
+import { formatDate } from 'utils/date'
 
 const dontPrependName: Record<number, boolean> = {
   18: true,
@@ -163,7 +164,10 @@ export default function NotificationsList() {
                       </Link>{' '}
                     </>
                   )}
-                  {item.message}
+                  {item.message}{' '}
+                  <span className="text-sm text-gray-6b">
+                    {formatDate(item.createdAt)}
+                  </span>
                 </button>
               </div>
             ))}
