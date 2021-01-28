@@ -58,12 +58,6 @@ export const getTextAndTagsFromEditor = ({
 }: {
   editor: HTMLDivElement
 }) => {
-  // let text = editor.innerHTML
-  //   .replace(/\n?<div>/g, '\n')
-  //   .replace(/(<br>)?<\/div>/g, '')
-  //   .replace(/<br>/g, '\n')
-  let text = editor.innerText
-
   const mark = String(Math.random()).slice(2)
 
   const div = editor.cloneNode(true) as HTMLDivElement
@@ -71,7 +65,7 @@ export const getTextAndTagsFromEditor = ({
     div.querySelectorAll('[data-tag-id]'),
   )
   tagElements.forEach((tag) => {
-    tag.innerText = `${mark}${JSON.stringify({
+    tag.outerHTML = `${mark}${JSON.stringify({
       id: parseInt(tag.dataset.tagId || '0'),
       type: tag.dataset.tagType,
       name: tag.innerText,
@@ -82,10 +76,17 @@ export const getTextAndTagsFromEditor = ({
 
   let position = 0
   let containsRepliedUserName = false
+  let text = ''
 
-  ;(div.innerText || '').split(mark).forEach((partText, i) => {
+  const innerText = div.innerHTML
+    .replace(/\n?<div>/g, '\n')
+    .replace(/(<br>)?<\/div>/g, '')
+    .replace(/<br>/g, '\n')
+
+  innerText.split(mark).forEach((partText, i) => {
     if (i % 2 === 0) {
       position += partText.length
+      text += partText
       return
     }
 
@@ -111,6 +112,7 @@ export const getTextAndTagsFromEditor = ({
     })
 
     position += length
+    text += tag.name
   })
 
   return {
