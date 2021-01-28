@@ -78,7 +78,10 @@ export const request = async <T>({
 
   const contentType = response.headers.get('Content-Type')
   const isJSON = contentType?.includes('application/json')
-  const body = await (isJSON ? response.json() : response.text())
+  const body =
+    response.status === 204
+      ? undefined
+      : await (isJSON ? response.json() : response.text())
 
   if (!response.ok) throw new Error(body.error || body)
 

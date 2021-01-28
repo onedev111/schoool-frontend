@@ -2,19 +2,20 @@ import React from 'react'
 import style from 'Home/style.module.css'
 import { Post as PostType } from 'Post/types'
 import cn from 'classnames'
-import ReadMore from 'Post/Item/ReadMore'
+import ReadMore from 'Post/Card/ReadMore'
 import useToggle from 'utils/useToggle'
-import Menu from 'Post/Item/Menu'
+import Menu from 'Post/Card/Menu'
 import { DotsHorizontalRounded } from '@styled-icons/boxicons-regular/DotsHorizontalRounded'
 import CommentForm from 'Post/Comment/Form'
 import Attachments from 'Post/Attachments'
 import Spin from 'assets/images/icons/Spin'
 import { formatDate } from 'utils/date'
 import Text from 'Post/Text'
-import PostBottomPanel from 'Post/Item/BottomPanel'
+import PostBottomPanel from 'Post/Card/BottomPanel'
 import CommentsModal from 'Post/Comment/Modal'
-import PostTitle from 'Post/Item/Title'
-import OnlyForMembersAlert from 'Post/Item/OnlyForMembersAlert'
+import PostTitle from 'Post/Card/Title'
+import OnlyForMembersAlert from 'Post/Card/OnlyForMembersAlert'
+import AddSentence from 'Notebook/AddSentence'
 
 type Props = {
   post: PostType
@@ -29,10 +30,11 @@ export default function Post({
 }: Props) {
   const textRef = React.useRef(null)
   const [showFullText, toggleShowFullText] = useToggle()
+  const [showOnlyForMembersAlert, toggleOnlyForMembersAlert] = useToggle()
+  const [openAddToNotebook, toggleAddToNotebook] = useToggle()
   const [openComments, setOpenComments] = React.useState(
     Boolean(initialHighlightedCommentId),
   )
-  const [showOnlyForMembersAlert, toggleOnlyForMembersAlert] = useToggle()
 
   const toggleComments = () => setOpenComments(!openComments)
 
@@ -47,6 +49,19 @@ export default function Post({
 
   return (
     <>
+      {openAddToNotebook && (
+        <AddSentence
+          onClose={toggleAddToNotebook}
+          title="Send to my notebook"
+          buttonText="Add"
+          contentClass="pt-4 px-5 pb-6"
+          buttonWrapClass="flex-center mt-5"
+          sentence={{
+            text: post.notebookSentence?.text || post.text,
+            translation: post.notebookSentence?.translation || '',
+          }}
+        />
+      )}
       {openComments && (
         <CommentsModal
           post={post}
@@ -119,11 +134,13 @@ export default function Post({
           <div className="flex items-end justify-end">
             {post.notebookSentence && (
               <div className="flex-grow">
-                <div
+                <button
+                  type="button"
+                  onClick={toggleAddToNotebook}
                   className={`text-blue-primary uppercase mb-1 ${style.text}`}
                 >
                   Send to notebook
-                </div>
+                </button>
 
                 <div className={`text-gray-87 uppercase mb-1 ${style.text}`}>
                   {post.notebookSentence.text}
@@ -153,7 +170,11 @@ export default function Post({
           attachments={post}
         />
 
-        <PostBottomPanel post={post} toggleComments={tryToOpenComments} />
+        <PostBottomPanel
+          post={post}
+          toggleComments={tryToOpenComments}
+          toggleAddToNotebook={toggleAddToNotebook}
+        />
 
         <CommentForm
           post={post}

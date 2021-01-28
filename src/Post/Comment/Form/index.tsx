@@ -50,7 +50,7 @@ export default observer(function CommentForm({
       const comment = await submit({
         post,
         postOwnerId: post.user.id,
-        editorRef,
+        editorRef: state.editorRef,
         values: state.values,
       })
       state.reset()

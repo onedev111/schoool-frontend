@@ -2,7 +2,7 @@ import React from 'react'
 import useToggle from 'utils/useToggle'
 import { Post } from 'Post/types'
 import { observer } from 'mobx-react-lite'
-import OnlyForMembersAlert from 'Post/Item/OnlyForMembersAlert'
+import OnlyForMembersAlert from 'Post/Card/OnlyForMembersAlert'
 
 type Props = {
   showFullText: boolean

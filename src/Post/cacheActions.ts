@@ -8,12 +8,14 @@ type PostsPage = {
 
 export const updateCache = (id: number, post: Partial<Post>) => {
   updatePages<PostsPage[]>(['posts'], (pages) =>
-    pages.map((page) => ({
-      posts: page.posts.map((item) =>
-        item.id === id ? { ...item, ...post } : item,
-      ),
-      usefulExpressions: page.usefulExpressions,
-    })),
+    pages.map((page) => {
+      return {
+        posts: page.posts.map((item) =>
+          item.id === id ? { ...item, ...post } : item,
+        ),
+        usefulExpressions: page.usefulExpressions,
+      }
+    }),
   )
 }
 

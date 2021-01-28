@@ -4,7 +4,7 @@ import Spin from 'assets/images/icons/Spin'
 import { useQuery } from 'react-query'
 import api from 'api'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
-import Post from 'Post/Item'
+import Post from 'Post/Card'
 
 type Props = {
   postId: number

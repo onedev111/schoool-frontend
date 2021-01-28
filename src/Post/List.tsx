@@ -1,6 +1,6 @@
 import React from 'react'
 import Spin from 'assets/images/icons/Spin'
-import PostItem from 'Post/Item'
+import PostItem from 'Post/Card'
 import api from 'api'
 import useRecords from 'utils/useRecords'
 import { Post, UsefulExpression } from 'Post/types'

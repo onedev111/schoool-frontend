@@ -26,7 +26,7 @@ export default observer(function CommentsModal({
   const scrollingElementRef = React.useRef<HTMLDivElement>(null)
 
   const { isFetching, data } = useRecords({
-    key: ['posts'],
+    key: ['comments'],
     load: () => api.comment.list({ postId: post.id }),
   })
 

@@ -1,43 +1,30 @@
 import React from 'react'
 import { Post } from 'Post/types'
-import Like from 'Post/Item/Like'
+import Like from 'Post/Card/Like'
 import { Comment } from '@styled-icons/fa-solid/Comment'
 import cn from 'classnames'
 import Notebook from 'assets/images/icons/notebook'
 import useToggle from 'utils/useToggle'
 import { Check } from '@styled-icons/boxicons-regular/Check'
-import SavePostModal from 'Post/Item/Menu/SavePostModal'
+import SavePostModal from 'Post/Card/Menu/SavePostModal'
 import { observer } from 'mobx-react-lite'
-import AddSentence from 'Notebook/AddSentence'
 
 type Props = {
   post: Post
   toggleComments(): void
+  toggleAddToNotebook(): void
 }
 
 export default observer(function PostBottomPanel({
   post,
   toggleComments,
+  toggleAddToNotebook,
 }: Props) {
-  const [openAddToNotebook, toggleAddToNotebook] = useToggle()
   const [savePostOpen, toggleSavePost] = useToggle()
 
   return (
     <>
       {savePostOpen && <SavePostModal post={post} onClose={toggleSavePost} />}
-      {openAddToNotebook && (
-        <AddSentence
-          onClose={toggleAddToNotebook}
-          title="Send to my notebook"
-          buttonText="Add"
-          contentClass="pt-4 px-5 pb-6"
-          buttonWrapClass="flex-center mt-5"
-          sentence={{
-            text: post.notebookSentence?.text || post.text,
-            translation: post.notebookSentence?.translation || '',
-          }}
-        />
-      )}
       <div
         style={{ height: '90px' }}
         className="border-b border-gray-d6 flex justify-around px-8"

@@ -1,6 +1,6 @@
 import React from 'react'
-import Audio from 'Post/Item/Audio'
-import Video from 'Post/Item/Video'
+import Audio from 'Post/Card/Audio'
+import Video from 'Post/Card/Video'
 import Photos from 'Post/Attachments/Photos'
 import useYouTubeState from 'utils/youTubeState'
 import { observer } from 'mobx-react-lite'
