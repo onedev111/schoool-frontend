@@ -1,8 +1,8 @@
 import React from 'react'
 import useToggle from 'utils/useToggle'
 import { Post } from 'Post/types'
-import Modal from 'Shared/Modal'
 import { observer } from 'mobx-react-lite'
+import OnlyForMembersAlert from 'Post/Item/OnlyForMembersAlert'
 
 type Props = {
   showFullText: boolean
@@ -38,25 +38,7 @@ export default observer(function ReadMore({
   return (
     <>
       {classMembersRestrictionModal && (
-        <Modal
-          onClose={toggleClassMembersRestrictionModal}
-          className="text-center"
-        >
-          <div className="mt-8 mb-2 text-lg">Join This Class</div>
-          <div className="font-bold text-gray-02 mb-2 px-10">
-            This post is only for class members. If you want to see this post
-            more, please join this class.
-          </div>
-          <hr className="text-gray-bb" />
-          <div className="flex-center">
-            <button
-              className="rounded-full bg-blue-primary text-white h-7 px-7 my-4 font-bold"
-              onClick={toggleClassMembersRestrictionModal}
-            >
-              Okay
-            </button>
-          </div>
-        </Modal>
+        <OnlyForMembersAlert onClose={toggleClassMembersRestrictionModal} />
       )}
       <button
         className="font-bold ml-5 whitespace-no-wrap"

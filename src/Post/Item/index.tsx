@@ -14,6 +14,7 @@ import Text from 'Post/Text'
 import PostBottomPanel from 'Post/Item/BottomPanel'
 import CommentsModal from 'Post/Comment/Modal'
 import PostTitle from 'Post/Item/Title'
+import OnlyForMembersAlert from 'Post/Item/OnlyForMembersAlert'
 
 type Props = {
   post: PostType
@@ -31,8 +32,15 @@ export default function Post({
   const [openComments, setOpenComments] = React.useState(
     Boolean(initialHighlightedCommentId),
   )
+  const [showOnlyForMembersAlert, toggleOnlyForMembersAlert] = useToggle()
 
   const toggleComments = () => setOpenComments(!openComments)
+
+  const tryToOpenComments = () => {
+    if (post.classes.length === 0 || post.joinedToClass) setOpenComments(true)
+    else toggleOnlyForMembersAlert()
+  }
+
   const [highlightedCommentId, setHighlightedCommentId] = React.useState(
     initialHighlightedCommentId,
   )
@@ -46,6 +54,9 @@ export default function Post({
           highlightedCommentId={highlightedCommentId}
           setHighlightedCommentId={setHighlightedCommentId}
         />
+      )}
+      {showOnlyForMembersAlert && (
+        <OnlyForMembersAlert onClose={toggleOnlyForMembersAlert} />
       )}
       <div
         className={cn(
@@ -142,7 +153,7 @@ export default function Post({
           attachments={post}
         />
 
-        <PostBottomPanel post={post} toggleComments={toggleComments} />
+        <PostBottomPanel post={post} toggleComments={tryToOpenComments} />
 
         <CommentForm
           post={post}
