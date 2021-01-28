@@ -78,8 +78,11 @@ export const request = async <T>({
 
   const contentType = response.headers.get('Content-Type')
   const isJSON = contentType?.includes('application/json')
+
+  const length = response.headers.get('content-length')
+
   const body =
-    response.status === 204
+    !length || parseInt(length) === 0
       ? undefined
       : await (isJSON ? response.json() : response.text())
 
