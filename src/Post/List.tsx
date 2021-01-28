@@ -16,6 +16,16 @@ type Props = {
   children?: React.ReactNode
 }
 
+type Page = {
+  posts: Post[]
+  usefulExpressions: UsefulExpression[]
+}
+
+const getNextPageParam = (lastPage: Page, pages: Page[]) =>
+  lastPage.posts.length > 0
+    ? pages.reduce((sum, page) => sum + page.posts.length, 0)
+    : undefined
+
 export default function Posts({
   userId,
   classId,
@@ -26,13 +36,16 @@ export default function Posts({
 }: Props) {
   const wrapRef = React.useRef<HTMLDivElement>(null)
 
-  const { data: savedPosts, isFetching: isFetchingSavedPosts } = useRecords({
+  const { data: savedPosts, isFetching: isFetchingSavedPosts } = useRecords<
+    Page
+  >({
     key: ['posts', 'saved', { classId }],
     load: ({ limit, offset }) =>
       api.post.listSaved({ classId, limit, offset }).then((posts) => ({
         posts,
         usefulExpressions: [] as UsefulExpression[],
       })),
+    getNextPageParam,
     loadOnScroll: {
       ref: wrapRef,
       threshold: 500,
@@ -42,7 +55,7 @@ export default function Posts({
     },
   })
 
-  const { data: allPosts, isFetching: isFetchingAllPosts } = useRecords({
+  const { data: allPosts, isFetching: isFetchingAllPosts } = useRecords<Page>({
     key: ['posts', { classId, userId, search }],
     load: ({ limit, offset }) => {
       if (userId)
@@ -54,6 +67,7 @@ export default function Posts({
           }))
       else return api.post.list({ classId, limit, offset })
     },
+    getNextPageParam,
     loadOnScroll: {
       ref: wrapRef,
       threshold: 500,

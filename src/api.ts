@@ -3,7 +3,6 @@ import * as post from 'Post/api'
 import * as comment from 'Post/Comment/api'
 import * as upload from 'Upload/api'
 import * as classes from 'Class/api'
-import * as constants from 'Constants/api'
 import * as notebook from 'Notebook/api'
 import * as studyFlow from 'Studyflow/api'
 import * as notifications from 'App/Notifications/api'
@@ -15,7 +14,6 @@ export default {
   comment,
   upload,
   classes,
-  constants,
   notebook,
   studyFlow,
   notifications,

@@ -30,3 +30,23 @@ export const speech = get(({ text }: { text: string }) => ({
     return res.data
   },
 }))
+
+type ConstantsResponse = {
+  result_code: string
+  languages: string[]
+}
+
+type Constants = {
+  languages: string[]
+}
+
+export const getConstants = get(() => ({
+  path: '/v1.2/get_app_constants',
+  response: (data: ConstantsResponse): Constants => {
+    if (data.result_code !== '21.00') throw new Error('Something went wrong')
+
+    return {
+      languages: data.languages,
+    }
+  },
+}))

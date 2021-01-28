@@ -1,15 +1,25 @@
 import React from 'react'
 import { useInfiniteQuery } from 'react-query'
 
+const defaultGetNextPageParam = <T>(lastPage: T, pages: T[]) =>
+  (Array.isArray(lastPage) ? lastPage.length > 0 : lastPage)
+    ? pages.reduce(
+        (sum, page) => sum + (Array.isArray(page) ? page.length : 1),
+        0,
+      )
+    : undefined
+
 export default function useRecords<T>({
   key,
   load,
+  getNextPageParam = defaultGetNextPageParam,
   loadOnScroll,
   limit = 20,
   options = {},
 }: {
   key: unknown[]
   load: (params: { limit: number; offset: number }) => Promise<T>
+  getNextPageParam?(lastPage: T, pages: T[]): number | undefined
   loadOnScroll?: {
     ref: { current: HTMLElement | null }
     threshold: number
@@ -27,13 +37,7 @@ export default function useRecords<T>({
       })
     },
     {
-      getNextPageParam: (lastPage, pages) =>
-        (Array.isArray(lastPage) ? lastPage.length > 0 : lastPage)
-          ? pages.reduce(
-              (sum, page) => sum + (Array.isArray(page) ? page.length : 1),
-              0,
-            )
-          : undefined,
+      getNextPageParam,
       ...options,
     },
   )

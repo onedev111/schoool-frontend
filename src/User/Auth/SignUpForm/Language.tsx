@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default function Language({ form }: Props) {
-  const { data: constants } = useQuery('constants', api.constants.getAll)
+  const { data: constants } = useQuery('constants', api.app.getConstants)
 
   return (
     <Controller

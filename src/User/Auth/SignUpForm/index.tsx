@@ -29,7 +29,7 @@ export default observer(function SignUpForm({ submitText, onSuccess }: Props) {
     defaultValues: {
       avatar: user.avatar,
       bio: '',
-      englishLevel: 'Basic',
+      englishLevel: user.englishLevel || 'Basic',
       language: user.language || 'English',
       location: user.location,
     },
