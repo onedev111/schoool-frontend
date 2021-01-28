@@ -9,12 +9,7 @@ type Props = {
 }
 
 export default observer(function PostTitle({
-  post: {
-    user: { name },
-    sLecture,
-    isPublic,
-    classes,
-  },
+  post: { user, sLecture, isPublic, classes },
 }: Props) {
   const onlyForMe = sLecture
     ? ' posted an S-Lecture Only for me '
@@ -23,7 +18,9 @@ export default observer(function PostTitle({
 
   return (
     <div className="text-xl text-gray-02">
-      <span className="font-bold">{name}</span>
+      <Link to={routes.user(user.id)} className="font-bold">
+        {user.name}
+      </Link>
       {!isPublic && classes.length === 0 && onlyForMe}
       {(isPublic || classes.length > 0) && postedTo}
       {isPublic && <span className="font-bold">Public</span>}

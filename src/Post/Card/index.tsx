@@ -16,6 +16,8 @@ import CommentsModal from 'Post/Comment/Modal'
 import PostTitle from 'Post/Card/Title'
 import OnlyForMembersAlert from 'Post/Card/OnlyForMembersAlert'
 import AddSentence from 'Notebook/AddSentence'
+import { Link } from 'react-router-dom'
+import routes from 'routes'
 
 type Props = {
   post: PostType
@@ -110,12 +112,14 @@ export default function Post({
           )}
 
           <div className="flex-center mb-3">
-            <img
-              src={post.user.avatar}
-              alt="avatar"
-              style={{ width: '60px', height: '60px' }}
-              className="mr-3 rounded-full"
-            />
+            <Link to={routes.user(post.user.id)}>
+              <img
+                src={post.user.avatar}
+                alt="avatar"
+                style={{ width: '60px', height: '60px' }}
+                className="mr-3 rounded-full"
+              />
+            </Link>
             <div className="flex-grow">
               <div className="text-gray-b0 text-sm">
                 <PostTitle post={post} />

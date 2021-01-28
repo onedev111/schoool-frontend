@@ -34,7 +34,8 @@ export default function AddSentence({
     api.app.getCountsAndIsPremium,
   )
   const total = countsAndIsPremium?.notebookCount || 0
-  const reachedMaximum = total >= 100
+  const isPremium = countsAndIsPremium?.isPremium || false
+  const reachedMaximum = !isPremium && total >= 100
 
   return (
     <>

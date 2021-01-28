@@ -78,7 +78,7 @@ export default function UserSidebar({ isMe, userId, user, isLoading }: Props) {
                 className="text-blue-primary"
                 onClick={() => setFollowersTab('following')}
               >
-                {user.followersCount}
+                {user.followingCount}
               </button>{' '}
               followed by{' '}
               <button
@@ -86,7 +86,7 @@ export default function UserSidebar({ isMe, userId, user, isLoading }: Props) {
                 className="text-blue-primary"
                 onClick={() => setFollowersTab('followers')}
               >
-                {user.followingCount}
+                {user.followersCount}
               </button>
             </div>
             <div className="mt-1 text-gray-6b">
