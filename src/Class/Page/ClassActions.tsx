@@ -17,18 +17,24 @@ type Props = {
 export default function ClassActions({ item }: Props) {
   const [openLockedAlert, toggleLockedAlert] = useToggle()
   const [openRequestSent, toggleRequestSent] = useToggle()
+  const [openAutoApproved, toggleAutoApproved] = useToggle()
   const [openCancelJoin, toggleCancelJoin] = useToggle()
   const [openMembers, toggleMembers] = useToggle()
   const [error, setError] = React.useState<string>()
 
   const { mutate: join, isLoading: isJoining } = useMutation(api.classes.join, {
-    onSettled(_, error) {
+    onSettled(status, error) {
       if (error) {
         setError((error as Error).message)
       } else {
-        toggleRequestSent()
+        if (status === 'applied') {
+          toggleRequestSent()
+          updateClassCache(item.id, { isApplied: true })
+        } else if (status === 'autoApproved') {
+          toggleAutoApproved()
+          updateClassCache(item.id, { isJoined: true })
+        }
         resetClasses()
-        updateClassCache(item.id, { isApplied: true })
       }
     },
   })
@@ -53,6 +59,14 @@ export default function ClassActions({ item }: Props) {
           size="small"
           title="Your request has been sent."
           onClose={toggleRequestSent}
+        />
+      )}
+      {openAutoApproved && (
+        <Alert
+          size="small"
+          title="Congrats!"
+          text="Your request to join the class is approved."
+          onClose={toggleAutoApproved}
         />
       )}
       {error && (

@@ -271,9 +271,11 @@ export const join = post(({ classId }: { classId: number }) => ({
   data: {
     access_token: getUserToken(),
   },
-  response(res: { result_code: string }) {
+  response(res: { result_code: string }): 'applied' | 'autoApproved' {
     if (res.result_code === '04.04')
       throw new Error('You are not allowed to join this class')
+
+    return res.result_code === '04.03' ? 'autoApproved' : 'applied'
   },
 }))
 

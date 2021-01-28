@@ -20,12 +20,14 @@ export default function Alert({
     <Modal onClose={onClose} size={size} className="text-center">
       <div
         className={
-          titleClass || text ? 'mt-8 mb-2 text-lg' : 'mt-8 mb-6 text-lg'
+          titleClass || (text ? 'mt-6 mb-2 text-xl' : 'mt-8 mb-6 text-lg')
         }
       >
         {title}
       </div>
-      {text && <div className="font-bold text-gray-02 mb-2 px-10">{text}</div>}
+      {text && (
+        <div className="font-bold text-gray-02 text-17 mb-6 px-5">{text}</div>
+      )}
       <hr className="text-gray-bb" />
       <div className="flex-center">
         <button
