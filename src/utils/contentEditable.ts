@@ -59,6 +59,7 @@ export const focusAtTheEnd = (el: HTMLElement) => {
       sel.addRange(range)
     }
   } else if ('createTextRange' in document.body) {
+    // eslint-disable-next-line
     const textRange = (document.body as any).createTextRange()
     textRange.moveToElementText(el)
     textRange.collapse(false)

@@ -4,8 +4,8 @@ import { Link, NavLink } from 'react-router-dom'
 import routes from 'routes'
 import Search from 'App/Search'
 import { observer } from 'mobx-react-lite'
-import { getCurrentUserId, useCurrentUser } from 'User/currentUser'
-import Notifications from 'App/Notifications'
+import { useCurrentUser } from 'User/currentUser'
+import Notifications from 'App/Notifications/List'
 
 type Props = {
   children: React.ReactNode
@@ -26,11 +26,11 @@ export default observer(function Layout({ children }: Props) {
           </Link>
         </div>
         <div
-          className="w-full mx-auto font-bold min-h-0"
+          className="w-full mx-auto font-bold min-h-0 h-full"
           style={{ width: '1300px', padding: '0 100px' }}
         >
           <div
-            className="w-full flex justify-between"
+            className="w-full flex items-center justify-between h-full relative"
             style={{ maxWidth: '640px' }}
           >
             <div className="flex">

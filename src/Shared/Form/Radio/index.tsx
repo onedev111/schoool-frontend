@@ -4,6 +4,7 @@ import { Check } from '@styled-icons/boxicons-regular/Check'
 
 type Props = {
   checked: boolean
+  // eslint-disable-next-line
   onChange(e: any): void
   name: string
   value: string

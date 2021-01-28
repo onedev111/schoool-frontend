@@ -7,7 +7,6 @@ import api from 'api'
 import ClassItem from 'Class/Sidebar/ClassesList/Item'
 import { Link } from 'react-router-dom'
 import routes from 'routes'
-import useToggle from 'utils/useToggle'
 import FollowersModal from 'User/Page/FollowersModal'
 
 type Props = {

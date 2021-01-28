@@ -57,7 +57,6 @@ export default function FollowersModal({
 
   const isLoading = isLoadingFollowings || isLoadingFollowers
   const users = followings || followers
-  const usersCount = users?.length
 
   const [unfollowUser, setUnfollowUser] = React.useState<UserToFollow>()
   const [followLoadingIds, setFollowLoadingIds] = React.useState<number[]>([])

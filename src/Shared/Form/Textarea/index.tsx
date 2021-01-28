@@ -1,9 +1,9 @@
 import React from 'react'
-import cn from 'classnames'
 import { Controller, UseFormMethods } from 'react-hook-form'
 import ControlledTextarea from 'Shared/Form/ControlledTextarea'
 
 type Props = {
+  // eslint-disable-next-line
   form: UseFormMethods<any>
   name: string
   label?: string

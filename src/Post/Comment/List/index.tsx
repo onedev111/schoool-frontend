@@ -9,8 +9,8 @@ type Props = {
   levelComments: Comment[]
   level?: number
   scrollingElementRef?: { current: HTMLDivElement | null }
-  highlightedComment?: Comment
-  setHighlightedComment(comment?: Comment): void
+  highlightedCommentId?: number
+  setHighlightedCommentId(id?: number): void
 }
 
 export default function CommentsList({
@@ -19,8 +19,8 @@ export default function CommentsList({
   levelComments,
   level = 0,
   scrollingElementRef,
-  highlightedComment,
-  setHighlightedComment,
+  highlightedCommentId,
+  setHighlightedCommentId,
 }: Props) {
   return (
     <>
@@ -32,8 +32,8 @@ export default function CommentsList({
           comment={comment}
           level={level}
           scrollingElementRef={scrollingElementRef}
-          highlightedComment={highlightedComment}
-          setHighlightedComment={setHighlightedComment}
+          highlightedCommentId={highlightedCommentId}
+          setHighlightedCommentId={setHighlightedCommentId}
         />
       ))}
     </>

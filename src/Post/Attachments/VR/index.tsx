@@ -9,6 +9,7 @@ declare global {
   // eslint-disable-next-line
   namespace JSX {
     interface IntrinsicElements {
+      // eslint-disable-next-line
       'a-scene': any
       // eslint-disable-next-line
       'a-sky': any

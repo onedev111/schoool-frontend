@@ -4,9 +4,9 @@ import { UseFormMethods, Controller } from 'react-hook-form'
 import { EnglishLevel } from 'User/types'
 
 type Props = {
-  // eslint-disable-next-line
   title?: string
   className?: string
+  // eslint-disable-next-line
   form: UseFormMethods<any>
 }
 

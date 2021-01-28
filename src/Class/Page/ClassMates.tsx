@@ -1,7 +1,6 @@
 import React from 'react'
 import { Class } from 'Class/types'
 import Modal from 'Shared/Modal'
-import { X } from '@styled-icons/boxicons-regular/X'
 import { useMutation, useQuery } from 'react-query'
 import api from 'api'
 import { Link } from 'react-router-dom'

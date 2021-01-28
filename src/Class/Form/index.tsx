@@ -17,7 +17,7 @@ import Delete from 'Shared/Modal/Delete'
 import routes from 'routes'
 import history from 'utils/history'
 import LeaveWarning from 'Shared/LeaveWarning'
-import { resetClasses } from 'Class/actions'
+import { resetClasses } from 'Class/cacheActions'
 
 const maxLength = 200
 

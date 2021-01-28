@@ -5,6 +5,7 @@ import { StudyFlowType } from 'Studyflow/types'
 
 type Props = {
   type: StudyFlowType
+  // eslint-disable-next-line
   form: UseFormMethods<any>
 }
 

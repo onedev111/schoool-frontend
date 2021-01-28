@@ -3,8 +3,10 @@ const appId = process.env.REACT_APP_FACEBOOK_APP_ID
 if (!appId)
   alert('Please put facebook app id into .env as REACT_APP_FACEBOOK_APP_ID')
 
+// eslint-disable-next-line
 export const initFacebook = async (): Promise<any> =>
   new Promise((resolve) => {
+    // eslint-disable-next-line
     const win = window as any
     if (win.FB) return resolve(win.FB)
 

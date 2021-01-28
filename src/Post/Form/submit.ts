@@ -5,7 +5,7 @@ import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 import { UploadingVideo } from 'utils/videoUploadState'
 import { Post } from 'Post/types'
 import { getTextAndTagsFromEditor } from 'utils/tags'
-import { addToCache, updateCache } from 'Post/actions'
+import { addToCache, updateCache } from 'Post/cacheActions'
 
 let postId = -1
 

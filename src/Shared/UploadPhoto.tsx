@@ -34,7 +34,6 @@ export default function UploadPhoto({
 
   const submit = () => {
     cropper?.getCroppedCanvas().toBlob((blob) => {
-      ;(window as any).blob = blob
       if (blob)
         submitImage({
           blob: blob,
@@ -53,7 +52,6 @@ export default function UploadPhoto({
       movable: false,
     })
     setCropper(cropper)
-    ;(window as any).cropper = cropper
   }, [image])
 
   React.useEffect(() => {

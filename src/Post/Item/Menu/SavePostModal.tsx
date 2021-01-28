@@ -7,7 +7,7 @@ import useToggle from 'utils/useToggle'
 import Spin from 'assets/images/icons/Spin'
 import cn from 'classnames'
 import { observer } from 'mobx-react-lite'
-import { removeFromCache, updateCache } from 'Post/actions'
+import { removeFromCache, updateCache } from 'Post/cacheActions'
 
 type Props = {
   post: Post

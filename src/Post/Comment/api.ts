@@ -99,13 +99,13 @@ export const create = post(
       actual_reply_id: comment.inReplyTo?.id,
     },
     response({
-      result_code,
+      error,
       data,
     }: {
-      result_code: string
-      data: { reply_id: number }
+      error?: string
+      data?: { reply_id: number }
     }): number {
-      if (result_code !== '07.00') throw new Error('Something went wrong')
+      if (!data) throw new Error(error || 'Something went wrong')
       return data.reply_id
     },
   }),

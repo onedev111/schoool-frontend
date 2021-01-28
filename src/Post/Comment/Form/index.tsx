@@ -13,6 +13,7 @@ import { Post } from 'Post/types'
 import Spin from 'assets/images/icons/Spin'
 import { Comment } from 'Post/Comment/types'
 import { imageMimes } from 'utils/imageUploadState'
+import Alert from 'Shared/Modal/Alert'
 
 type Props = {
   comment?: Partial<Comment>
@@ -33,20 +34,39 @@ export default observer(function CommentForm({
 }: Props) {
   const editorRef = React.useRef<HTMLDivElement>(null)
   const [state] = React.useState(() =>
-    createCommentFormState({ comment, post, editorRef }),
+    createCommentFormState({ comment, editorRef }),
   )
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [error, setError] = React.useState<Error>()
 
   useOnChangeSelectionRange((range) => state.setSelectionRange(range))
 
   const toggleEmoji = useEmojiPicker({ state })
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    submit({ state, onSuccess })
+    setIsSubmitting(true)
+    try {
+      const comment = await submit({
+        post,
+        postOwnerId: post.user.id,
+        editorRef,
+        values: state.values,
+      })
+      state.reset()
+      if (onSuccess) onSuccess(comment)
+    } catch (err) {
+      setError(err)
+      state.reset()
+    }
+    setIsSubmitting(false)
   }
 
   return (
     <form className={cn('relative', className)} onSubmit={onSubmit}>
+      {error && (
+        <Alert title={error.message} onClose={() => setError(undefined)} />
+      )}
       {state.imageUpload.warningModal}
       {state.imageUpload.dragArea}
       <div className="flex-grow">
@@ -111,8 +131,8 @@ export default observer(function CommentForm({
         )}
         disabled={!state.canSubmit}
       >
-        {!state.isSubmitting && 'Post'}
-        {state.isSubmitting && (
+        {!isSubmitting && 'Post'}
+        {isSubmitting && (
           <>
             <Spin className="animate-spin h-5 w-5 mr-3" />
             <span className="animate-pulse">Uploading</span>

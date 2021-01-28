@@ -12,12 +12,9 @@ import SentencesDelete from 'Notebook/Delete'
 import SentenceItem from 'Notebook/Item'
 import AddSentence from 'Notebook/AddSentence'
 import Spin from 'assets/images/icons/Spin'
-import NotebookMaxSentences from 'Shared/Modal/NotebookMaxSentences'
 import useRecords from 'utils/useRecords'
 import api from 'api'
 import { useQuery } from 'react-query'
-
-const maxFreeSentences = 100
 
 export default observer(function Notebook() {
   const ref = React.useRef<HTMLDivElement>(null)
@@ -39,7 +36,8 @@ export default observer(function Notebook() {
 
   const toggleItem = (id: number) => {
     if (checkedIds[id]) {
-      const { [id]: _, ...checked } = checkedIds
+      const checked = { ...checkedIds }
+      delete checked[id]
       setCheckedIds(checked)
     } else {
       setCheckedIds({ ...checkedIds, [id]: true })

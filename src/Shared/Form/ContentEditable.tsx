@@ -47,9 +47,10 @@ const ContentEditableDiv = React.memo(
             openTag()
           }
         }}
-        onPaste={(e: any) => {
+        onPaste={(e) => {
           e.preventDefault()
-          const text = (e.originalEvent || e).clipboardData.getData(
+          // eslint-disable-next-line
+          const text = ((e as any).originalEvent || e).clipboardData.getData(
             'text/plain',
           )
           document.execCommand('insertHTML', false, text)
@@ -91,6 +92,7 @@ export default observer(function ContentEditable({
 
   const fixedGetValue = React.useCallback(getValue, [])
   const fixedSetValue = React.useCallback(setValue, [])
+  const fixedOpenTag = React.useMemo(() => openTag, [])
 
   return (
     <div className="relative">
@@ -107,7 +109,7 @@ export default observer(function ContentEditable({
         onBlur={onBlur}
         minHeight={minHeight}
         autoFocus={autoFocus}
-        openTag={openTag}
+        openTag={fixedOpenTag}
       />
     </div>
   )

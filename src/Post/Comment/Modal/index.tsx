@@ -9,20 +9,19 @@ import { getCurrentUser } from 'User/currentUser'
 import { observer } from 'mobx-react-lite'
 import useRecords from 'utils/useRecords'
 import api from 'api'
-import { Comment } from 'Post/Comment/types'
 
 type Props = {
   post: Post
   onClose(): void
-  highlightedComment?: Comment
-  setHighlightedComment(comment?: Comment): void
+  highlightedCommentId?: number
+  setHighlightedCommentId(id?: number): void
 }
 
 export default observer(function CommentsModal({
   post,
   onClose,
-  highlightedComment,
-  setHighlightedComment,
+  highlightedCommentId,
+  setHighlightedCommentId,
 }: Props) {
   const scrollingElementRef = React.useRef<HTMLDivElement>(null)
 
@@ -67,8 +66,8 @@ export default observer(function CommentsModal({
             allComments={page}
             levelComments={page.filter((comment) => !comment.parentCommentId)}
             scrollingElementRef={scrollingElementRef}
-            highlightedComment={highlightedComment}
-            setHighlightedComment={setHighlightedComment}
+            highlightedCommentId={highlightedCommentId}
+            setHighlightedCommentId={setHighlightedCommentId}
           />
         ))}
       {isFetching && post.commentsCount > 0 && (

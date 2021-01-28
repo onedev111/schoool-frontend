@@ -14,19 +14,28 @@ import Text from 'Post/Text'
 import PostBottomPanel from 'Post/Item/BottomPanel'
 import CommentsModal from 'Post/Comment/Modal'
 import PostTitle from 'Post/Item/Title'
-import { Comment } from 'Post/Comment/types'
 
 type Props = {
   post: PostType
+  className?: string
+  highlightedCommentId?: number
 }
 
-export default function Post({ post }: Props) {
+export default function Post({
+  post,
+  className,
+  highlightedCommentId: initialHighlightedCommentId,
+}: Props) {
   const textRef = React.useRef(null)
   const [showFullText, toggleShowFullText] = useToggle()
-  const [openComments, setOpenComments] = React.useState(false)
+  const [openComments, setOpenComments] = React.useState(
+    Boolean(initialHighlightedCommentId),
+  )
 
   const toggleComments = () => setOpenComments(!openComments)
-  const [highlightedComment, setHighlightedComment] = React.useState<Comment>()
+  const [highlightedCommentId, setHighlightedCommentId] = React.useState(
+    initialHighlightedCommentId,
+  )
 
   return (
     <>
@@ -34,11 +43,16 @@ export default function Post({ post }: Props) {
         <CommentsModal
           post={post}
           onClose={toggleComments}
-          highlightedComment={highlightedComment}
-          setHighlightedComment={setHighlightedComment}
+          highlightedCommentId={highlightedCommentId}
+          setHighlightedCommentId={setHighlightedCommentId}
         />
       )}
-      <div className="bg-white shadow relative mb-5 flex flex-col">
+      <div
+        className={cn(
+          'bg-white shadow relative flex flex-col',
+          className || 'mb-5',
+        )}
+      >
         <Menu
           post={post}
           button={({ onClick }) => (
@@ -136,7 +150,7 @@ export default function Post({ post }: Props) {
           minHeight={28}
           onSuccess={(comment) => {
             setOpenComments(true)
-            setHighlightedComment(comment)
+            setHighlightedCommentId(comment.id)
           }}
         />
       </div>

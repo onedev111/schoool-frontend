@@ -47,6 +47,7 @@ export default observer(function TagModal({ state }: Props) {
 
   const onClose = () => state.backToForm()
 
+  // eslint-disable-next-line
   const onScroll = (e: any) => {
     const el = (e as { target: HTMLElement }).target
     if (

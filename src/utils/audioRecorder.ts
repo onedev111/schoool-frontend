@@ -123,8 +123,10 @@ export function createAudioRecorder({
   let processor: ScriptProcessorNode
   let audioRequested = false
 
+  // eslint-disable-next-line
   const dispatch = (name: EventName, data: any) => {
     const event = new Event(name)
+    // eslint-disable-next-line
     ;(event as any).data = data
     events.dispatchEvent(event)
   }
@@ -161,6 +163,7 @@ export function createAudioRecorder({
     name: 'audio',
     fn: (e: { data: ArrayBuffer }) => void,
   ): void
+  // eslint-disable-next-line
   function addEventListener(name: EventName, fn: (e: { data: any }) => void) {
     events.addEventListener(name, (fn as unknown) as EventListener)
   }

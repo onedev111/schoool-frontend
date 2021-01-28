@@ -11,7 +11,7 @@ import Loader from 'Shared/Loader'
 import useStudyFlowForm from './useForm'
 import useCreateStudyFlow from 'Studyflow/Form/useCreate'
 import SelectTarget from 'Studyflow/Form/SelectTarget'
-import { filterCache } from 'Studyflow/actions'
+import { filterCache } from 'Studyflow/cacheActions'
 
 type Props = {
   type: StudyFlowType

@@ -45,7 +45,6 @@ export type Post = {
   image?: string
   video?: string
   youtubeId?: string
-  reachedNotebookLimit?: boolean
   date: Dayjs
   error?: string
   notebookSentence?: NotebookSentence

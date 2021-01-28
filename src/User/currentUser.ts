@@ -1,5 +1,6 @@
 import { setItem, useLocalStorage } from 'utils/localStorage'
 import { CurrentUser } from './types'
+import { queryClient } from 'utils/queryClient'
 
 const storageKey = 'currentUser'
 
@@ -26,6 +27,7 @@ let currentUser: CurrentUser | undefined
 export const setCurrentUser = (user: CurrentUser | null) => {
   currentUser = user as CurrentUser
   setItem(storageKey, user ? JSON.stringify(user) : null)
+  if (!user) queryClient.clear()
 }
 
 export const useCurrentUser = () => {

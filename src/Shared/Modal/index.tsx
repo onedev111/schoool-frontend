@@ -16,7 +16,7 @@ type Props = {
   width?: number | boolean
   scrollingElementRef?: { current: HTMLDivElement | null }
   scroll?: boolean
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export default function Modal({
@@ -53,7 +53,7 @@ export default function Modal({
           style={{
             width:
               width !== undefined
-                ? width === false
+                ? width !== false
                   ? `${width}px`
                   : undefined
                 : sizes[size],

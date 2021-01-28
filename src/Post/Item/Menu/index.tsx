@@ -10,7 +10,7 @@ import SavePostModal from 'Post/Item/Menu/SavePostModal'
 import { observer } from 'mobx-react-lite'
 import Spin from 'assets/images/icons/Spin'
 import { useMutation } from 'react-query'
-import { removeFromCache, updateCache } from 'Post/actions'
+import { removeFromCache, updateCache } from 'Post/cacheActions'
 
 const itemClass = `w-full flex-center transition duration-200 hover:bg-gray-f2 cursor-pointer ${style.menuItem}`
 

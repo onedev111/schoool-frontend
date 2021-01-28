@@ -14,8 +14,8 @@ type Props = {
   comment: Comment
   level: number
   scrollingElementRef?: { current: HTMLDivElement | null }
-  highlightedComment?: Comment
-  setHighlightedComment(comment?: Comment): void
+  highlightedCommentId?: number
+  setHighlightedCommentId(id?: number): void
 }
 
 export default function CommentItem({
@@ -24,8 +24,8 @@ export default function CommentItem({
   comment,
   level,
   scrollingElementRef,
-  highlightedComment,
-  setHighlightedComment,
+  highlightedCommentId,
+  setHighlightedCommentId,
 }: Props) {
   const { id } = comment
   const subComments = allComments.filter(
@@ -37,8 +37,8 @@ export default function CommentItem({
   React.useEffect(() => {
     const scrollingElement = scrollingElementRef?.current
     const commentElement = commentRef.current
-    if (highlightedComment?.id !== comment.id) return
-    setHighlightedComment()
+    if (highlightedCommentId !== comment.id) return
+    setHighlightedCommentId()
 
     if (commentElement && scrollingElement) {
       scrollingElement.scrollTo({
@@ -128,8 +128,8 @@ export default function CommentItem({
               levelComments={subComments}
               level={level + 1}
               scrollingElementRef={scrollingElementRef}
-              highlightedComment={highlightedComment}
-              setHighlightedComment={setHighlightedComment}
+              highlightedCommentId={highlightedCommentId}
+              setHighlightedCommentId={setHighlightedCommentId}
             />
           </div>
         </>

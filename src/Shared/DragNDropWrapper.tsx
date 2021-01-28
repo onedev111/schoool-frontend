@@ -5,10 +5,13 @@ type Props = {
   children: React.ReactNode
 }
 
+// eslint-disable-next-line
 const hasType = (dataTransfer: any, type: string) =>
   Array.from(dataTransfer.items || []).some(
+    // eslint-disable-next-line
     (item: any) => item.kind === 'file' && item.type.startsWith(type),
   ) ||
+  // eslint-disable-next-line
   Array.from(dataTransfer.files || []).some((item: any) =>
     item.type.startsWith(type),
   )
@@ -16,6 +19,7 @@ const hasType = (dataTransfer: any, type: string) =>
 export default function DragNDropWrapper({ children }: Props) {
   const [state] = React.useState({ dragElementCount: 0 })
 
+  // eslint-disable-next-line
   const dragEnter = ({ dataTransfer }: any) => {
     state.dragElementCount++
     if (state.dragElementCount !== 1) return
@@ -29,6 +33,7 @@ export default function DragNDropWrapper({ children }: Props) {
       dragOverState.hasImage = dragOverState.hasVideo = false
   }
 
+  // eslint-disable-next-line
   const drop = (e: any) => {
     e.preventDefault()
     state.dragElementCount = 0

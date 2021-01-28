@@ -7,7 +7,7 @@ import {
 } from 'Studyflow/types'
 import { useMutation } from 'react-query'
 import api from 'api'
-import { addToCache } from 'Studyflow/actions'
+import { addToCache } from 'Studyflow/cacheActions'
 
 export default function useCreateStudyFlow({
   type,

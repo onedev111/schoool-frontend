@@ -20,6 +20,7 @@ export default function FacebookSignIn({
     if (!isLoading) {
       onClick()
       const FB = await initFacebook()
+      // eslint-disable-next-line
       FB.login((res: any) => {
         if (res.status === 'connected') {
           const { accessToken, userID } = res.authResponse

@@ -8,7 +8,7 @@ import {
   TagType,
   UsefulExpression,
 } from 'Post/types'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { EnglishLevel } from 'User/types'
 
 type PostResponse = {

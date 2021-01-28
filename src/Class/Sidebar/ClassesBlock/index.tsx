@@ -53,6 +53,7 @@ export default observer(function ClassesBlock({
 
   const next = () => scroll(1)
 
+  // eslint-disable-next-line
   const Scroll = Scrollbars as any
 
   return (

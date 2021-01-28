@@ -2,7 +2,6 @@ import React from 'react'
 import { UseFormMethods } from 'react-hook-form'
 import RadioGroup from 'Shared/Form/RadioGroup'
 import SelectTargetModal from './Modal'
-import { getCurrentUser } from 'User/currentUser'
 
 type Props = {
   // eslint-disable-next-line
@@ -39,7 +38,6 @@ export default function SelectTarget({
   userIds,
   setUserIds,
 }: Props) {
-  const currentUser = getCurrentUser()
   const values = [options.onlyForMe, options.public, options.shared]
 
   const [onChange, setOnChange] = React.useState<(value: Value) => void>()

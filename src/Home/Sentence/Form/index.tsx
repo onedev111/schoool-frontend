@@ -6,7 +6,7 @@ import { NotebookSentence } from 'Post/types'
 import { ArrowLeft } from '@styled-icons/fa-solid/ArrowLeft'
 import Loader from 'Shared/Loader'
 import api from 'api'
-import { addToCache, updateTotal } from 'Notebook/actions'
+import { addToCache, updateTotal } from 'Notebook/cacheActions'
 
 type Props = {
   backButton?: boolean

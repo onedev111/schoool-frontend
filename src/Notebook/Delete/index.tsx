@@ -1,7 +1,7 @@
 import React from 'react'
 import DeleteModal from 'Shared/Modal/Delete'
 import api from 'api'
-import { filterCache, updateTotal } from 'Notebook/actions'
+import { filterCache, updateTotal } from 'Notebook/cacheActions'
 
 type Props = {
   checkedIds: Record<number, boolean>

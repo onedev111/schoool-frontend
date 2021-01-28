@@ -3,6 +3,7 @@ import cn from 'classnames'
 import { Controller, UseFormMethods } from 'react-hook-form'
 
 type Props = {
+  // eslint-disable-next-line
   form: UseFormMethods<any>
   name: string
   label?: string

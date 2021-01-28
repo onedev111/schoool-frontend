@@ -7,6 +7,7 @@ export default function ErrorMessage({
   name,
   className = 'text-red-500 mt-2',
 }: {
+  // eslint-disable-next-line
   form: UseFormMethods<any>
   name: string
   className?: string
