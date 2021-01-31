@@ -112,7 +112,7 @@ export default function Post({
           )}
 
           <div className="flex-center mb-3">
-            <Link to={routes.user(post.user.id)}>
+            <Link to={routes.user(post.user.id)} className="flex-shrink-0">
               <img
                 src={post.user.avatar}
                 alt="avatar"

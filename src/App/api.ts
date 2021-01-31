@@ -1,5 +1,6 @@
 import { get } from 'utils/apiUtils'
-import { getUserToken } from 'User/currentUser'
+import { getCurrentUserId, getUserToken } from 'User/currentUser'
+import { PostResponse, mapPost } from 'Post/api'
 
 export const getCountsAndIsPremium = get(() => ({
   path: '/remember/is_ready',
@@ -50,3 +51,31 @@ export const getConstants = get(() => ({
     }
   },
 }))
+
+export const globalSearch = get(
+  ({
+    search,
+    limit,
+    offset,
+  }: {
+    search: string
+    limit: number
+    offset: number
+  }) => ({
+    path: '/v1.4/search_in_words',
+    params: {
+      access_token: getUserToken(),
+      search_key: search,
+      limit_posts: limit,
+      num_of_posts: offset,
+    },
+    response({ data }: { data?: (PostResponse & { post_type: number })[] }) {
+      if (!data) throw new Error('Something went wrong')
+
+      const userId = getCurrentUserId()
+      return data
+        .filter((post) => post.post_type === 0)
+        .map((post) => mapPost({ post, userId }))
+    },
+  }),
+)

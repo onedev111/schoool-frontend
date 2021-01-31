@@ -2,7 +2,7 @@ import React from 'react'
 import logo from 'assets/images/logo.svg'
 import { Link, NavLink } from 'react-router-dom'
 import routes from 'routes'
-import Search from 'App/Search'
+import Search from 'App/Search/Search'
 import { observer } from 'mobx-react-lite'
 import { useCurrentUser } from 'User/currentUser'
 import Notifications from 'App/Notifications/List'
@@ -58,7 +58,7 @@ export default observer(function Layout({ children }: Props) {
                 Settings
               </NavLink>
             </div>
-            <div className="flex">
+            <div className="flex items-center h-full">
               <Search />
               <Link to={routes.user('me')}>
                 <img

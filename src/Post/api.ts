@@ -11,7 +11,7 @@ import {
 import dayjs from 'dayjs'
 import { EnglishLevel } from 'User/types'
 
-type PostResponse = {
+export type PostResponse = {
   base_language: string
   check_like: number
   check_notebook: number
@@ -141,7 +141,7 @@ const getTagsFromResponse = (type: TagType, ids = '', ranges = '') => {
     )
 }
 
-const mapPost = ({
+export const mapPost = ({
   post,
   userId,
 }: {
