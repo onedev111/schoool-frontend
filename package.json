@@ -65,10 +65,10 @@
     "yup": "^0.29.3"
   },
   "scripts": {
-    "start": "concurrently --kill-others \"react-scripts start\" \"node proxy/index.js\"",
-    "start:https": "concurrently --kill-others \"HTTPS=true react-scripts start\" \"node proxy/index.js\"",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "concurrently --kill-others \"react-app-rewired start\" \"node proxy/index.js\"",
+    "start:https": "concurrently --kill-others \"HTTPS=true react-app-rewired start\" \"node proxy/index.js\"",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "watch:styles": "postcss --watch src/tailwind.css -o src/styles.css &",
     "build:styles": "postcss --watch src/tailwind.css -o src/styles.css &",
@@ -98,6 +98,7 @@
     "concurrently": "^5.3.0",
     "cors": "^2.8.5",
     "http-proxy": "^1.18.1",
+    "react-app-rewired": "^2.1.8",
     "request": "^2.88.2"
   }
 }
