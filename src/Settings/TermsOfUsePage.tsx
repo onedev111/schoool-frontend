@@ -1,10 +1,12 @@
 import React from 'react'
 
+// TODO: terms of use
 export default function TermsOfUsePage() {
   return (
-    <>
-      <p className="text-xl mb-2">Terms of use</p>
-      <p>SCHOOOL terms of use written here.</p>
-    </>
+    <iframe
+      src="https://www.schoool.me/privacy.html"
+      className="w-full"
+      style={{ height: '4900px' }}
+    />
   )
 }

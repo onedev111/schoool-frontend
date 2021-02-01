@@ -1,10 +1,12 @@
 import React from 'react'
 
+// TODO: privacy policy
 export default function PrivacyPolicyPage() {
   return (
-    <>
-      <p className="text-xl mb-2">Privacy Policy</p>
-      <p>SCHOOOL privacy policy written here.</p>
-    </>
+    <iframe
+      src="https://www.schoool.me/privacy.html"
+      className="w-full"
+      style={{ height: '4900px' }}
+    />
   )
 }
