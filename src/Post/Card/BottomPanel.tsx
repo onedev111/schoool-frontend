@@ -30,8 +30,11 @@ export default observer(function PostBottomPanel({
         className="border-b border-gray-d6 flex justify-around px-8"
       >
         <Like className="w-1/3" post={post} />
-        <button className="w-1/3 flex-center text-gray-5f transition duration-200">
-          <Comment size={29} onClick={toggleComments} />
+        <button
+          className="w-1/3 flex-center text-gray-5f transition duration-200"
+          onClick={toggleComments}
+        >
+          <Comment size={29} />
           {post.commentsCount > 0 && (
             <div className="text-lg ml-3">{post.commentsCount}</div>
           )}

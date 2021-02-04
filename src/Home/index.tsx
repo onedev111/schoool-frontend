@@ -31,7 +31,7 @@ export default observer(function Home() {
               placeholder="What do you want to post?"
             />
           </div>
-          <Posts />
+          <Posts usefulExpressions />
         </div>
         <Sidebar />
       </div>

@@ -1,5 +1,5 @@
 import { Post, UsefulExpression } from 'Post/types'
-import { updatePages } from 'utils/queryClient'
+import { updateData, updatePages } from 'utils/queryClient'
 
 type PostsPage = {
   posts: Post[]
@@ -7,16 +7,19 @@ type PostsPage = {
 }
 
 export const updateCache = (id: number, post: Partial<Post>) => {
+  const updatePost = (item: Post) =>
+    item.id === id ? { ...item, ...post } : item
+
   updatePages<PostsPage[]>(['posts'], (pages) =>
     pages.map((page) => {
       return {
-        posts: page.posts.map((item) =>
-          item.id === id ? { ...item, ...post } : item,
-        ),
+        posts: page.posts.map(updatePost),
         usefulExpressions: page.usefulExpressions,
       }
     }),
   )
+
+  updateData<Post>(['post', id], updatePost)
 }
 
 export const addToCache = (post: Post) => {
