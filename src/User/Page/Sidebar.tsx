@@ -95,7 +95,7 @@ export default function UserSidebar({ isMe, userId, user, isLoading }: Props) {
           </>
         )}
         {(isLoadingClasses || (isLoadingFollowings && isMe)) && !isLoading && (
-          <div className="flex-center">
+          <div className="flex-center mt-2">
             <Spin className="w-10 h-10 text-blue-primary animate-spin" />
           </div>
         )}
@@ -123,7 +123,7 @@ export default function UserSidebar({ isMe, userId, user, isLoading }: Props) {
               className="grid grid-cols-3 items-baseline"
               style={{ columnGap: '2rem' }}
             >
-              {followings.map((user) => (
+              {followings.slice(0, 12).map((user) => (
                 <Link
                   key={user.id}
                   to={routes.user(user.id)}
