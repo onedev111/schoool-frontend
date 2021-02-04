@@ -1,6 +1,5 @@
 import React from 'react'
 import Fullscreen from 'Post/Attachments/Fullscreen'
-import image from 'assets/images/image.jpg'
 import { Dayjs } from 'dayjs'
 import './style.css'
 import Spin from 'assets/images/icons/Spin'
@@ -24,13 +23,14 @@ type Props = {
   onClose(): void
 }
 
-export default function VR({ user, date, onClose }: Props) {
-  const [loaded, setLoaded] = React.useState(false)
+export default function VR({ image, user, date, onClose }: Props) {
+  const [loadedAFrame, setLoadedAFrame] = React.useState(false)
+  const [imageDataUrl, setImageDataUrl] = React.useState<string | undefined>()
 
   React.useEffect(() => {
     // eslint-disable-next-line
     // @ts-ignore
-    import('aframe').then(() => setLoaded(true))
+    import('aframe').then(() => setLoadedAFrame(true))
 
     const listener = () => {
       // eslint-disable-next-line
@@ -59,22 +59,34 @@ export default function VR({ user, date, onClose }: Props) {
     }
   }, [])
 
+  const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const img = e.target as HTMLImageElement
+    const canvas = document.createElement('canvas')
+    canvas.width = img.width
+    canvas.height = img.height
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+    ctx.drawImage(img, 0, 0, img.width, img.height)
+    setImageDataUrl(canvas.toDataURL())
+  }
+
   return (
     <Fullscreen user={user} date={date} onClose={onClose}>
       <div className="h-full a-scene-wrap">
-        {!loaded && (
+        <img
+          src={image}
+          alt="vr image"
+          onLoad={onImageLoad}
+          hidden
+          crossOrigin="anonymous"
+        />
+        {(!loadedAFrame || !imageDataUrl) && (
           <div className="flex-center h-full">
             <Spin className="w-10 h-10 text-gray-c5 animate-spin" />
           </div>
         )}
-        {loaded && (
+        {loadedAFrame && imageDataUrl && (
           <a-scene embedded>
-            <a-sky
-              // src={`${process.env.REACT_APP_API_URL}/url?${encodeURIComponent(
-              //   image,
-              // )}`}
-              src={image}
-            />
+            <a-sky src={imageDataUrl} />
           </a-scene>
         )}
       </div>
