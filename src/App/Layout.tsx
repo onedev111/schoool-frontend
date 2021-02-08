@@ -6,6 +6,8 @@ import Search from 'App/Search/Search'
 import { observer } from 'mobx-react-lite'
 import { useCurrentUser } from 'User/currentUser'
 import Notifications from 'App/Notifications/List'
+import cn from 'classnames'
+import style from './style.module.css'
 
 type Props = {
   children: React.ReactNode
@@ -26,8 +28,10 @@ export default observer(function Layout({ children }: Props) {
           </Link>
         </div>
         <div
-          className="w-full mx-auto font-bold min-h-0 h-full"
-          style={{ width: '1300px', padding: '0 100px' }}
+          className={cn(
+            'w-full mx-auto font-bold min-h-0 h-full',
+            style.centerSection,
+          )}
         >
           <div
             className="w-full flex items-center justify-between h-full relative"
@@ -71,7 +75,12 @@ export default observer(function Layout({ children }: Props) {
             </div>
           </div>
         </div>
-        <div className="absolute top-0 right-0 bottom-0 flex-center mr-8 text-gray-6e text-17 uppercase">
+        <div
+          className={cn(
+            'absolute top-0 right-0 bottom-0 flex-center mr-8 text-gray-6e text-17 uppercase',
+            style.extraLinks,
+          )}
+        >
           <a href="#" className="transition duration-200 hover:text-black">
             How to use
           </a>
