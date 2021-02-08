@@ -11,12 +11,14 @@ export const updateCache = (id: number, post: Partial<Post>) => {
     item.id === id ? { ...item, ...post } : item
 
   updatePages<PostsPage[]>(['posts'], (pages) =>
-    pages.map((page) => {
-      return {
-        posts: page.posts.map(updatePost),
-        usefulExpressions: page.usefulExpressions,
-      }
-    }),
+    pages.map((page) => ({
+      posts: page.posts.map(updatePost),
+      usefulExpressions: page.usefulExpressions,
+    })),
+  )
+
+  updatePages<Post[][]>(['globalSearch'], (pages) =>
+    pages.map((posts) => posts.map(updatePost)),
   )
 
   updateData<Post>(['post', id], updatePost)
