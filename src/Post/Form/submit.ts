@@ -58,6 +58,7 @@ export default async function submitPost({ state }: { state: State }) {
       videoCount,
       soundCount,
     })
+
     try {
       await Promise.all([
         ...uploadingImages.map((image, index) => {
