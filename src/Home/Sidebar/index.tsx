@@ -5,6 +5,7 @@ import Studyflow from 'Studyflow'
 import useToggle from 'utils/useToggle'
 import { useLocalStorage } from 'utils/localStorage'
 import Sidebar from 'Shared/Sidebar'
+import style from '../style.module.css'
 
 export default function NotebookWidget() {
   const [currentTab, setCurrentTab] = useLocalStorage('notebookTab', 'notebook')
@@ -12,7 +13,10 @@ export default function NotebookWidget() {
   const [showMenu, toggleMenu] = useToggle(true)
 
   return (
-    <Sidebar className="ml-10" contentClass="bg-white shadow">
+    <Sidebar
+      className="ml-10"
+      contentClass={cn('bg-white shadow', style.sidebar)}
+    >
       {showMenu && (
         <div className="flex flex-shrink-0 text-lg uppercase text-center">
           <div

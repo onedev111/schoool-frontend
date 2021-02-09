@@ -34,3 +34,7 @@
   -webkit-box-orient: vertical;
   box-orient: vertical;
 }
+
+.sidebar {
+  height: 924px;
+}

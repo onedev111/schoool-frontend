@@ -70,7 +70,7 @@ export default function Search() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
-              'absolute-fill opacity-0 px-8 rounded-full text-black font-bold',
+              'absolute-fill opacity-0 px-8 rounded-full text-blue-primary font-bold',
               (searchFocused || search) && 'opacity-100',
             )}
           />
