@@ -15,6 +15,7 @@ import vrIcon from 'assets/images/360.png'
 import sLectureIcon from 'assets/images/slecture.png'
 import { PlayFill } from '@styled-icons/bootstrap/PlayFill'
 import SLecturePage from './SLecture'
+import WebSiteLink from 'Post/Attachments/Link/WebSiteLink'
 
 type Props = {
   audioClass?: string
@@ -29,6 +30,7 @@ type Props = {
     video?: string
     youtubeId?: string
     zoomLink?: string
+    link?: string
     sharedPost?: SharedPost
     file?: string
     isVR?: boolean
@@ -61,6 +63,7 @@ export default function Attachments({
     video,
     youtubeId,
     zoomLink,
+    link,
     sharedPost,
     file,
     isVR,
@@ -109,6 +112,8 @@ export default function Attachments({
       )}
 
       {zoomLink && <ZoomLink zoomLink={zoomLink} className={linkClass} />}
+
+      {link && <WebSiteLink link={link} className={linkClass} />}
 
       {file && <File file={file} className={fileClass} />}
 

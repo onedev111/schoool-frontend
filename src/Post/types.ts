@@ -52,6 +52,7 @@ export type Post = {
   zoomLink?: string
   sharedPost?: SharedPost
   sLecture?: SLecture
+  link?: string
 }
 
 export type TagType = 'user' | 'class' | 'studyflow'

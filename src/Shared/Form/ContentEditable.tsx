@@ -14,6 +14,8 @@ const ContentEditableDiv = React.memo(
     onFocus,
     onBlur,
     openTag,
+    onInput,
+    onPaste,
   }: {
     editorRef: EditorRef
     minHeight: number
@@ -23,6 +25,8 @@ const ContentEditableDiv = React.memo(
     onFocus(): void
     onBlur(): void
     openTag?(): void
+    onInput?(e: React.FormEvent<HTMLDivElement>): void
+    onPaste?(html: string): void
   }) => {
     React.useEffect(() => {
       if (autoFocus && editorRef.current) focusAtTheEnd(editorRef.current)
@@ -40,6 +44,8 @@ const ContentEditableDiv = React.memo(
         dangerouslySetInnerHTML={{ __html: getValue() }}
         onInput={(e) => {
           setValue((e.target as HTMLElement).innerHTML)
+
+          if (onInput) onInput(e)
         }}
         onKeyDown={(e) => {
           if (openTag && e.nativeEvent.key === '@') {
@@ -54,7 +60,11 @@ const ContentEditableDiv = React.memo(
             'text/plain',
           )
           document.execCommand('insertHTML', false, text)
-          setValue((editorRef.current as HTMLElement).innerHTML)
+
+          const html = (editorRef.current as HTMLElement).innerHTML
+          setValue(html)
+
+          if (onPaste) onPaste(html)
         }}
       />
     )
@@ -69,6 +79,8 @@ type Props = {
   openTag?(): void
   getValue(): string
   setValue(value: string): void
+  onInput?(e: React.KeyboardEvent<HTMLDivElement>): void
+  onPaste?(html: string): void
 }
 
 export default observer(function ContentEditable({
@@ -79,6 +91,8 @@ export default observer(function ContentEditable({
   setValue,
   autoFocus,
   openTag,
+  onInput,
+  onPaste,
 }: Props) {
   const [focused, setFocused] = React.useState(false)
 
@@ -93,6 +107,8 @@ export default observer(function ContentEditable({
   const fixedGetValue = React.useCallback(getValue, [])
   const fixedSetValue = React.useCallback(setValue, [])
   const fixedOpenTag = React.useMemo(() => openTag, [])
+  const fixedOnInput = React.useMemo(() => onInput, [])
+  const fixedOnPaste = React.useMemo(() => onPaste, [])
 
   return (
     <div className="relative">
@@ -110,6 +126,8 @@ export default observer(function ContentEditable({
         minHeight={minHeight}
         autoFocus={autoFocus}
         openTag={fixedOpenTag}
+        onInput={fixedOnInput}
+        onPaste={fixedOnPaste}
       />
     </div>
   )

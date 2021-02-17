@@ -1,3 +1,4 @@
+import React from 'react'
 import { makeAutoObservable } from 'mobx'
 import { NotebookSentence, Post, SharedPost } from 'Post/types'
 import { getCurrentUser } from 'User/currentUser'
@@ -7,6 +8,8 @@ import { UploadingVideo } from 'utils/videoUploadState'
 import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 import { Voice } from 'Upload/api'
 import { getTaggedEditorHTML } from 'utils/tags'
+import urlRegex from 'url-regex'
+import normalizeUrl from 'normalize-url'
 
 type Screen =
   | 'form'
@@ -57,6 +60,7 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     sharedPost: post?.sharedPost,
     sLectures: [],
     isVR: false,
+    link: post?.link,
   } as Omit<Post, 'images' | 'video' | 'audio' | 'text' | 'tags'> & {
     html: string
     images: UploadingImage[]
@@ -125,6 +129,28 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
     },
     setClasses(classes: { id: number; name: string }[]) {
       this.values.classes = classes
+    },
+    setLink(link?: string) {
+      this.values.link = link
+    },
+    onHTMLInput(e: React.FormEvent<HTMLDivElement>) {
+      const { data } = (e.nativeEvent as unknown) as { data: string | null }
+      if (data && !/\s/.test(data)) return
+
+      this.onHTMLPaste(this.values.html)
+    },
+    onHTMLPaste(html: string) {
+      if (this.values.sharedPost || this.values.zoomLink) return
+
+      const match = urlRegex({ strict: false }).exec(html)
+      if (!match) return
+
+      const url = match[0]
+      this.setLink(normalizeUrl(match[0]))
+
+      const value = this.values.html.replace(new RegExp(`${url}\\s?`), '')
+      this.values.html = value
+      ;(this.editorRef.current as HTMLElement).innerHTML = value
     },
     get canPost() {
       const values = this.values as Values

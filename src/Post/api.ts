@@ -259,6 +259,7 @@ export const mapPost = ({
         }
       : undefined,
     isVR: Boolean(post.is_pano),
+    link: post.link,
   }
 }
 
@@ -418,6 +419,7 @@ export const save = post(
     tags = [],
     notebookSentence,
     zoomLink,
+    link,
     sharedPost,
   }: Partial<Post>) => ({
     path: id ? '/edit_share_post' : '/add_share_post',
@@ -436,6 +438,7 @@ export const save = post(
       sound: audio || (id ? -1 : undefined),
       looping_url: loopingAudio,
       zoom_link: zoomLink || (id ? '' : undefined),
+      link: link || (id ? '' : undefined),
       title: notebookSentence?.text,
       translated_title: notebookSentence?.translation,
       shared_share_id: sharedPost ? sharedPost.id : id ? -1 : undefined,

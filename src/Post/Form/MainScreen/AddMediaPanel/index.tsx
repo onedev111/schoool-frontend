@@ -48,7 +48,9 @@ export default observer(function AddMediaPanel({
   const disableAudio = Boolean(values.audio)
   const disableLoopingAudio = Boolean(values.loopingAudio)
   const disableNotebookSentence = Boolean(values.notebookSentence)
-  const disableZoom = Boolean(state.values.sharedPost || state.values.zoomLink)
+  const disableZoom = Boolean(
+    state.values.sharedPost || state.values.link || state.values.zoomLink,
+  )
 
   return (
     <div className="pt-3 px-7 pb-7">

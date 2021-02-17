@@ -17,6 +17,7 @@ import pluralize from 'utils/pluralize'
 import { observer } from 'mobx-react-lite'
 import ZoomLink from 'Post/Attachments/Link/ZoomLink'
 import SharedPostLink from 'Post/Attachments/Link/SharedPostLink'
+import WebSiteLink from 'Post/Attachments/Link/WebSiteLink'
 
 type Props = {
   state: State
@@ -97,6 +98,8 @@ export default observer(function PostFormMainScreen({
             getValue={() => state.values.html}
             setValue={(html) => state.setHTML(html)}
             openTag={() => state.setCurrentScreen('tag')}
+            onInput={(e) => state.onHTMLInput(e)}
+            onPaste={(html) => state.onHTMLPaste(html)}
           />
         </div>
 
@@ -135,6 +138,14 @@ export default observer(function PostFormMainScreen({
             className="mt-4"
             zoomLink={state.values.zoomLink}
             onDelete={() => state.setZoomLink()}
+          />
+        )}
+
+        {state.values.link && (
+          <WebSiteLink
+            className="mt-4"
+            link={state.values.link}
+            onDelete={() => state.setLink()}
           />
         )}
       </div>

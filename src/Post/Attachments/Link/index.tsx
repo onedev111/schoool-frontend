@@ -8,10 +8,11 @@ type Props = {
   className?: string
   url?: string
   onClick?(): void
-  image: React.ReactNode
-  title: string
+  image?: React.ReactNode
+  title?: string
   text?: string
   onDelete?(): void
+  style?: React.CSSProperties
 }
 
 const LinkComponent = ({
@@ -36,19 +37,15 @@ export default function Link({
   text,
   onDelete,
 }: Props) {
-  // let image: string | undefined
-  // if (link.type === 'link') image = link.image
-  // else if (link.type === 'studyflow') image = studyflowImage
-
   return (
     <LinkComponent
       url={url}
       onClick={onClick}
-      className={cn('bg-gray-f7 p-3 flex relative text-left', className)}
+      className={cn('bg-gray-f7 py-2 px-3 flex relative text-left', className)}
     >
-      <div className="flex-shrink-0 mr-3">{image}</div>
+      {image && <div className="flex-shrink-0 mr-3">{image}</div>}
       <div className="flex-grow flex flex-col justify-center">
-        <div className={style.title}>{title}</div>
+        {title && <div className={style.title}>{title}</div>}
         {text && (
           <div className="font-bold text-sm text-gray-71 mt-1 whitespace-per-wrap">
             {text}
