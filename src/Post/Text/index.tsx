@@ -8,6 +8,25 @@ import { getTextAndTagsParts } from 'utils/tags'
 import { InReplyTo } from 'Post/Comment/types'
 import style from 'Home/style.module.css'
 
+const TextPart = React.memo(
+  ({ text, highlightText }: { text: string; highlightText?: string }) => {
+    return (
+      <span>
+        {!highlightText && text}
+        {highlightText &&
+          text.split(highlightText).map((part, i) => (
+            <React.Fragment key={i}>
+              {i !== 0 && (
+                <span className="text-blue-primary">{highlightText}</span>
+              )}
+              {part}
+            </React.Fragment>
+          ))}
+      </span>
+    )
+  },
+)
+
 type Props = {
   data: {
     text: string
@@ -20,6 +39,7 @@ type Props = {
   textRef?: { current: null | HTMLDivElement }
   showFullText?: boolean
   className?: string
+  highlightText?: string
   children?: React.ReactNode
 }
 
@@ -28,6 +48,7 @@ export default observer(function Text({
   textRef,
   showFullText = true,
   className,
+  highlightText,
   children,
 }: Props) {
   const [{ parts, partsTags, text }, setTextParts] = React.useState(() =>
@@ -57,7 +78,7 @@ export default observer(function Text({
       {parts.map((part, i) => {
         const tag = partsTags[i]
         if (!tag || tag.type === 'studyflow')
-          return <React.Fragment key={i}>{part}</React.Fragment>
+          return <TextPart key={i} text={part} highlightText={highlightText} />
 
         const { type, id } = tag
         return (

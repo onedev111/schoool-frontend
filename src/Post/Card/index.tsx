@@ -23,12 +23,14 @@ type Props = {
   post: PostType
   className?: string
   highlightedCommentId?: number
+  highlightText?: string
 }
 
 export default function Post({
   post,
   className,
   highlightedCommentId: initialHighlightedCommentId,
+  highlightText,
 }: Props) {
   const textRef = React.useRef(null)
   const [showFullText, toggleShowFullText] = useToggle()
@@ -133,6 +135,7 @@ export default function Post({
             data={post}
             textRef={textRef}
             showFullText={showFullText}
+            highlightText={highlightText}
           />
 
           <div className="flex items-end justify-end">

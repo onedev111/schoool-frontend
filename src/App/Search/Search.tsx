@@ -13,6 +13,7 @@ import { useDebounce } from 'react-use'
 export default function Search() {
   const [search, setSearch] = React.useState('')
   const [debouncedSearch, setDebouncedSearch] = React.useState('')
+  const [appliedSearch, setAppliedSearch] = React.useState('')
   const [searchFocused, toggleSearchFocus] = useToggle()
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
@@ -38,6 +39,9 @@ export default function Search() {
     },
     options: {
       enabled: Boolean(debouncedSearch),
+      onSuccess() {
+        setAppliedSearch(debouncedSearch)
+      },
     },
   })
 
@@ -70,7 +74,7 @@ export default function Search() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
-              'absolute-fill opacity-0 px-8 rounded-full text-blue-primary font-bold',
+              'absolute-fill opacity-0 px-8 rounded-full text-black font-bold',
               (searchFocused || search) && 'opacity-100',
             )}
           />
@@ -110,7 +114,12 @@ export default function Search() {
             posts?.pages.map((page, i) => (
               <React.Fragment key={i}>
                 {page.map((post) => (
-                  <PostCard key={post.id} post={post} className="mb-5" />
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    className="mb-5"
+                    highlightText={appliedSearch}
+                  />
                 ))}
               </React.Fragment>
             ))}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useInfiniteQuery } from 'react-query'
+import { InfiniteData, useInfiniteQuery } from 'react-query'
 
 const defaultGetNextPageParam = <T>(lastPage: T, pages: T[]) =>
   (Array.isArray(lastPage) ? lastPage.length > 0 : lastPage)
@@ -26,7 +26,7 @@ export default function useRecords<T>({
     direction?: 'vertical' | 'horizontal'
   }
   limit?: number
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean; onSuccess?(data: InfiniteData<T>): void }
 }) {
   const result = useInfiniteQuery(
     key,
