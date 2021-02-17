@@ -1,0 +1,5 @@
+@media (max-width: 980px) {
+  .hideOnSmallScreen {
+    display: none !important;
+  }
+}

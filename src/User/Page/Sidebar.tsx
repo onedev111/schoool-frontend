@@ -8,15 +8,23 @@ import ClassItem from 'Class/Sidebar/ClassesList/Item'
 import { Link } from 'react-router-dom'
 import routes from 'routes'
 import FollowersModal from 'User/Page/FollowersModal'
+import cn from 'classnames'
 
 type Props = {
   isMe: boolean
   userId: number
   user?: User
   isLoading: boolean
+  className?: string
 }
 
-export default function UserSidebar({ isMe, userId, user, isLoading }: Props) {
+export default function UserSidebar({
+  isMe,
+  userId,
+  user,
+  isLoading,
+  className,
+}: Props) {
   const [showFollowersTab, setFollowersTab] = React.useState<
     'following' | 'followers' | undefined
   >()
@@ -38,7 +46,7 @@ export default function UserSidebar({ isMe, userId, user, isLoading }: Props) {
   )
 
   return (
-    <Sidebar className="mr-5">
+    <Sidebar className={cn('mr-5', className)}>
       {showFollowersTab && user && (
         <FollowersModal
           isMe={isMe}

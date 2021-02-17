@@ -17,7 +17,7 @@ export default observer(function ClassLayout({
       <div className="flex h-full">
         <ClassSidebar />
         <div
-          className="pt-8 w-full flex-shrink-0"
+          className="pt-8 w-full flex-shrink-0 mx-auto"
           style={{ maxWidth: '640px' }}
         >
           {children}

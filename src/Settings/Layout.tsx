@@ -4,6 +4,8 @@ import routes from 'routes'
 import { setCurrentUser } from 'User/currentUser'
 import useToggle from 'utils/useToggle'
 import Modal from 'Shared/Modal'
+import cn from 'classnames'
+import style from './style.module.css'
 
 type Props = {
   children: React.ReactNode
@@ -41,7 +43,10 @@ export default function SettingsLayout({ children }: Props) {
       >
         <div
           style={{ width: '320px' }}
-          className="text-lg text-black border-r border-gray-c5 py-8 px-8"
+          className={cn(
+            'text-lg text-black border-r border-gray-c5 py-8 px-8',
+            style.hideOnSmallScreen,
+          )}
         >
           <NavLink
             to={routes.settings.profile()}

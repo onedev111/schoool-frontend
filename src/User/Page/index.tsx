@@ -5,6 +5,7 @@ import { useQuery } from 'react-query'
 import api from 'api'
 import UserContent from 'User/Page/Content'
 import { getCurrentUserId } from 'User/currentUser'
+import style from './style.module.css'
 
 export default function UserPage() {
   const {
@@ -20,8 +21,17 @@ export default function UserPage() {
 
   return (
     <div className="flex h-full">
-      <Sidebar isMe={isMe} userId={id} user={user} isLoading={isLoading} />
-      <div className="pt-8 w-full flex-shrink-0" style={{ maxWidth: '640px' }}>
+      <Sidebar
+        className={style.hideOnSmallScreen}
+        isMe={isMe}
+        userId={id}
+        user={user}
+        isLoading={isLoading}
+      />
+      <div
+        className="pt-8 w-full flex-shrink-0 mx-auto"
+        style={{ maxWidth: '640px' }}
+      >
         <UserContent isMe={isMe} userId={id} />
       </div>
     </div>

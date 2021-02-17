@@ -13,7 +13,10 @@ export default observer(function Home() {
     <>
       {showPostForm && <PostForm onClose={togglePostForm} />}
       <div className="h-full flex">
-        <div style={{ maxWidth: '640px' }} className="w-full pt-8 pb-12">
+        <div
+          style={{ maxWidth: '640px' }}
+          className="w-full pt-8 pb-12 mx-auto"
+        >
           <div
             className="bg-white p-5 flex-center mb-5 shadow"
             onClick={togglePostForm}

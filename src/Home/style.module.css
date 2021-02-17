@@ -38,3 +38,9 @@
 .sidebar {
   height: 924px;
 }
+
+@media (max-width: 910px) {
+  .hideOnSmallScreen {
+    display: none !important;
+  }
+}

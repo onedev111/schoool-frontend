@@ -14,7 +14,7 @@ export default function NotebookWidget() {
 
   return (
     <Sidebar
-      className="ml-10"
+      className={cn('ml-10', style.hideOnSmallScreen)}
       contentClass={cn('bg-white shadow', style.sidebar)}
     >
       {showMenu && (
