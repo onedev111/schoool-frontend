@@ -79,7 +79,7 @@ export default function ClassPage() {
               </div>
               <div
                 className="text-3xl font-bold text-black flex-center"
-                style={{ height: '38px' }}
+                style={{ minHeight: '38px' }}
               >
                 {item.name}
               </div>

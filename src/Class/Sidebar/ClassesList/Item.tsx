@@ -12,7 +12,7 @@ export default function ClassItem({ item }: Props) {
     <div className="flex items-center mb-4">
       <Link
         to={routes.class(item.id)}
-        className="w-15 h-15 rounded-full mr-4 bg-center bg-cover"
+        className="w-15 h-15 rounded-full mr-4 bg-center bg-cover flex-shrink-0"
         style={{ backgroundImage: `url("${item.image}")` }}
       />
       <div className="flex justify-center flex-col">

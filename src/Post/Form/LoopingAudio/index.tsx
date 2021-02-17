@@ -146,6 +146,7 @@ export default observer(function LoopingAudio({ state }: Props) {
             {Object.keys(voices).map((value) => (
               <label key={value} className="w-full flex items-center">
                 <Radio
+                  type="checkbox"
                   classes={{ root: 'mr-2' }}
                   checked={draftVoices.includes(voices[value])}
                   onChange={() => state.toggleLoopingAudioVoice(voices[value])}
