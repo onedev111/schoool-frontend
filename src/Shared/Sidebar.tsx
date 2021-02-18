@@ -73,7 +73,7 @@ export default function Sidebar({ className, contentClass, children }: Props) {
   return (
     <div
       ref={containerRef}
-      className={cn('pt-8 pb-8 w-full h-full', className)}
+      className={cn('pt-8 pb-8 w-full', className)}
       style={{ maxWidth: '420px' }}
     >
       <div ref={helperRef} />

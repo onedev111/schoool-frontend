@@ -79,12 +79,13 @@ export const request = async <T>({
   const contentType = response.headers.get('Content-Type')
   const isJSON = contentType?.includes('application/json')
 
-  const length = response.headers.get('content-length')
-
-  const body =
-    !length || parseInt(length) === 0
-      ? undefined
-      : await (isJSON ? response.json() : response.text())
+  // eslint-disable-next-line
+  let body: any
+  try {
+    body = await (isJSON ? response.json() : response.text())
+  } catch (err) {
+    body = undefined
+  }
 
   if (!response.ok) throw new Error(body.error || body)
 

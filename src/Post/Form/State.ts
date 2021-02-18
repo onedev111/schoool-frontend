@@ -8,7 +8,7 @@ import { UploadingVideo } from 'utils/videoUploadState'
 import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 import { Voice } from 'Upload/api'
 import { getTaggedEditorHTML } from 'utils/tags'
-import urlRegex from 'url-regex'
+// import urlRegex from 'url-regex'
 import normalizeUrl from 'normalize-url'
 
 type Screen =
@@ -140,17 +140,17 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
       this.onHTMLPaste(this.values.html)
     },
     onHTMLPaste(html: string) {
-      if (this.values.sharedPost || this.values.zoomLink) return
-
-      const match = urlRegex({ strict: false }).exec(html)
-      if (!match) return
-
-      const url = match[0]
-      this.setLink(normalizeUrl(match[0]))
-
-      const value = this.values.html.replace(new RegExp(`${url}\\s?`), '')
-      this.values.html = value
-      ;(this.editorRef.current as HTMLElement).innerHTML = value
+      // if (this.values.sharedPost || this.values.zoomLink) return
+      //
+      // const match = urlRegex({ strict: false }).exec(html)
+      // if (!match) return
+      //
+      // const url = match[0]
+      // this.setLink(normalizeUrl(match[0]))
+      //
+      // const value = this.values.html.replace(new RegExp(`${url}\\s?`), '')
+      // this.values.html = value
+      // ;(this.editorRef.current as HTMLElement).innerHTML = value
     },
     get canPost() {
       const values = this.values as Values

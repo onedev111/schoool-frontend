@@ -7,5 +7,9 @@ type Props = {
 }
 
 export default function Video({ video, className }: Props) {
-  return <video src={video} controls className={cn('w-full', className)} />
+  return (
+    <video controls className={cn('w-full', className)}>
+      <source src={video} type="video/quicktime" />
+    </video>
+  )
 }
