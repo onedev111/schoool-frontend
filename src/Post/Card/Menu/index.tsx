@@ -157,6 +157,7 @@ export default observer(function Menu({ post, button, className }: Props) {
             type="button"
             className={`${itemClass} text-red-500`}
             onClick={toggleDeleteModal}
+            disabled={!post.id}
           >
             Delete
           </button>

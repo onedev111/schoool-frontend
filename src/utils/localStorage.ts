@@ -29,7 +29,7 @@ export const useLocalStorage = (
     window.addEventListener('localStorage', listener as () => void)
     return () =>
       window.removeEventListener('localStorage', listener as () => void)
-  }, [value, setValueFromEvent])
+  }, [key, value, setValueFromEvent])
 
   const setValue = (value: string | null) => setItem(key, value)
 

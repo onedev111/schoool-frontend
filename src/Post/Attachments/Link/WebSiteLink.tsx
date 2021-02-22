@@ -12,6 +12,24 @@ export default function WebSiteLink({ link, className, onDelete }: Props) {
   const preview = useLinkPreview({ link })
 
   return (
-    <Link className={className} url={link} text={link} onDelete={onDelete} />
+    <Link
+      className={className}
+      url={link}
+      title={preview.title || undefined}
+      text={link}
+      onDelete={onDelete}
+      image={
+        preview.image ? (
+          <div
+            className="bg-center bg-cover"
+            style={{
+              backgroundImage: `url(${preview.image})`,
+              width: '70px',
+              height: '70px',
+            }}
+          />
+        ) : undefined
+      }
+    />
   )
 }

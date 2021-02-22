@@ -8,8 +8,7 @@ import { UploadingVideo } from 'utils/videoUploadState'
 import { UploadingAudio } from 'Post/Form/RecordAudio/State'
 import { Voice } from 'Upload/api'
 import { getTaggedEditorHTML } from 'utils/tags'
-// import urlRegex from 'url-regex'
-import normalizeUrl from 'normalize-url'
+import urlRegex from 'url-regex'
 
 type Screen =
   | 'form'
@@ -134,23 +133,33 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
       this.values.link = link
     },
     onHTMLInput(e: React.FormEvent<HTMLDivElement>) {
+      if (this.values.link || this.values.sharedPost || this.values.zoomLink)
+        return
+
       const { data } = (e.nativeEvent as unknown) as { data: string | null }
       if (data && !/\s/.test(data)) return
 
       this.onHTMLPaste(this.values.html)
     },
     onHTMLPaste(html: string) {
-      // if (this.values.sharedPost || this.values.zoomLink) return
-      //
-      // const match = urlRegex({ strict: false }).exec(html)
-      // if (!match) return
-      //
-      // const url = match[0]
-      // this.setLink(normalizeUrl(match[0]))
-      //
-      // const value = this.values.html.replace(new RegExp(`${url}\\s?`), '')
-      // this.values.html = value
-      // ;(this.editorRef.current as HTMLElement).innerHTML = value
+      if (this.values.link || this.values.sharedPost || this.values.zoomLink)
+        return
+
+      const match = urlRegex({ strict: false }).exec(html)
+      if (!match) return
+
+      const url = match[0]
+      let normalize = url
+      if (url.startsWith('//')) {
+        normalize = `https:${url}`
+      } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        normalize = `https://${url}`
+      }
+      this.setLink(normalize)
+
+      const value = this.values.html.replace(new RegExp(`${url}\\s?`), '')
+      this.values.html = value
+      ;(this.editorRef.current as HTMLElement).innerHTML = value
     },
     get canPost() {
       const values = this.values as Values
@@ -163,6 +172,7 @@ export const createFormState = ({ post }: { post?: Partial<Post> }) => {
         values.audio ||
         values.loopingAudio ||
         values.notebookSentence ||
+        values.link ||
         values.zoomLink ||
         values.sharedPost
       )

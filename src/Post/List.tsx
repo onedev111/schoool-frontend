@@ -95,7 +95,7 @@ export default function Posts({
         ) => (
           <React.Fragment key={page}>
             {showUsefulExpressions && page === 0 && posts[0] && (
-              <PostItem post={posts[0]} />
+              <PostItem key={posts[0].id} post={posts[0]} />
             )}
 
             {showUsefulExpressions &&

@@ -10,11 +10,12 @@ import { addToCache, updateCache } from 'Post/cacheActions'
 let postId = -1
 
 export default async function submitPost({ state }: { state: State }) {
+  const editor = state.editorRef.current as HTMLDivElement
+  state.onHTMLPaste(editor.innerHTML)
+
   const { images, video, audio } = state.values
 
-  const { text, tags } = getTextAndTagsFromEditor({
-    editor: state.editorRef.current as HTMLDivElement,
-  })
+  const { text, tags } = getTextAndTagsFromEditor({ editor })
 
   const post: Post = {
     ...state.values,
@@ -27,6 +28,7 @@ export default async function submitPost({ state }: { state: State }) {
   }
 
   const tempId = post.id === 0 ? postId-- : undefined
+  console.log('add post', post)
   if (tempId) addToCache({ ...post, id: tempId })
   else updateCache(post.id, post)
 
