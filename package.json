@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^6.1.1",
     "@hookform/error-message": "^0.0.5",
     "@joeattardi/emoji-button": "^4.6.0",
     "@styled-icons/bootstrap": "^10.23.0",
@@ -34,7 +35,7 @@
     "@typescript-eslint/eslint-plugin": "^4.7.0",
     "@typescript-eslint/parser": "^4.7.0",
     "aframe": "^1.1.0",
-    "autoprefixer": "^10.0.2",
+    "autoprefixer": "^9",
     "classnames": "^2.2.6",
     "cropperjs": "^1.5.9",
     "dayjs": "^1.9.7",
@@ -44,7 +45,7 @@
     "mobx": "^6.0.4",
     "mobx-react-lite": "^3.1.6",
     "normalize-url": "^5.3.0",
-    "postcss": "^8.1.7",
+    "postcss": "^7",
     "postcss-cli": "^8.2.0",
     "prettier": "^2.1.2",
     "react": "^17.0.1",
@@ -60,22 +61,18 @@
     "smoothscroll-polyfill": "^0.4.4",
     "styled-components": "^5.2.1",
     "swiper": "^6.4.5",
-    "tailwindcss": "^1.9.6",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "typescript": "^4.0.3",
     "url-regex": "^5.0.0",
     "web-vitals": "^0.2.4",
     "yup": "^0.29.3"
   },
   "scripts": {
-    "start": "concurrently --kill-others \"react-app-rewired start\" \"node proxy/index.js\"",
-    "start:https": "concurrently --kill-others \"HTTPS=true react-app-rewired start\" \"node proxy/index.js\"",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
+    "start": "concurrently --kill-others \"craco start\" \"node proxy/index.js\"",
+    "start:https": "concurrently --kill-others \"HTTPS=true craco start\" \"node proxy/index.js\"",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
-    "watch:styles": "postcss --watch src/tailwind.css -o src/styles.css &",
-    "build:styles": "postcss --watch src/tailwind.css -o src/styles.css &",
-    "prebuild": "npm run build:styles",
-    "prestart": "npm run watch:styles",
     "eslint": "eslint --fix src"
   },
   "eslintConfig": {
@@ -97,10 +94,10 @@
     ]
   },
   "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.0.3",
     "concurrently": "^5.3.0",
     "cors": "^2.8.5",
     "http-proxy": "^1.18.1",
-    "react-app-rewired": "^2.1.8",
     "request": "^2.88.2"
   }
 }

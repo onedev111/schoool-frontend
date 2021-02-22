@@ -1,7 +1,7 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  purge: ['./src/**/*.js'],
+  purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   variants: {
     opacity: ['responsive', 'hover', 'group-hover', 'focus'],
   },

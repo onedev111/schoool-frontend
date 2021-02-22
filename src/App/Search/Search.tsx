@@ -7,7 +7,7 @@ import api from 'api'
 import Spin from 'assets/images/icons/Spin'
 import useRecords from 'utils/useRecords'
 import { Post } from 'Post/types'
-import PostCard from 'Post/Card'
+import PostCard from 'Post/Card/Card'
 import { useDebounce } from 'react-use'
 
 export default function Search() {

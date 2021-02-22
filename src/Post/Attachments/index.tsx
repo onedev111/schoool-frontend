@@ -131,7 +131,7 @@ export default function Attachments({
           className="flex-center w-full relative"
           onClick={() => toggleVR()}
         >
-          <img src={images[0]} className="max-w-full" alt="vr image" />
+          {/*<img src={images[0]} className="max-w-full" alt="vr image" />*/}
           <img
             src={vrIcon}
             className="absolute right-0 bottom-0 mr-5 mb-5"

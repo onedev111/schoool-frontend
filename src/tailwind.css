@@ -44,7 +44,7 @@ textarea::placeholder, input::placeholder {
 }
 
 .form-input:focus {
-  @apply outline-none shadow-outline;
+  @apply outline-none;
 }
 
 @tailwind utilities;
