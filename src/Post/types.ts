@@ -53,6 +53,11 @@ export type Post = {
   sharedPost?: SharedPost
   sLecture?: SLecture
   link?: string
+  studyFlow?: {
+    id: number
+    title: string
+    username: string
+  }
 }
 
 export type TagType = 'user' | 'class' | 'studyflow'

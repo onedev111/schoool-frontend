@@ -260,6 +260,13 @@ export const mapPost = ({
       : undefined,
     isVR: Boolean(post.is_pano),
     link: post.link,
+    studyFlow: post.shared_flow_id
+      ? {
+          id: post.shared_flow_id,
+          title: post.shared_flow_title,
+          username: post.shared_flow_username,
+        }
+      : undefined,
   }
 }
 

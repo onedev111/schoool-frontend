@@ -16,6 +16,7 @@ import sLectureIcon from 'assets/images/slecture.png'
 import { PlayFill } from '@styled-icons/bootstrap/PlayFill'
 import SLecturePage from './SLecture'
 import WebSiteLink from 'Post/Attachments/Link/WebSiteLink'
+import StudyFlowLink from 'Post/Attachments/Link/StudyFlowLink'
 
 type Props = {
   audioClass?: string
@@ -41,6 +42,11 @@ type Props = {
       avatar: string
     }
     sLecture?: SLecture
+    studyFlow?: {
+      id: number
+      title: string
+      username: string
+    }
   }
 }
 
@@ -70,6 +76,7 @@ export default function Attachments({
     date,
     user,
     sLecture,
+    studyFlow,
   },
 }: Props) {
   const [openVR, toggleVR] = useToggle()
@@ -114,6 +121,10 @@ export default function Attachments({
       {zoomLink && <ZoomLink zoomLink={zoomLink} className={linkClass} />}
 
       {link && <WebSiteLink link={link} className={linkClass} />}
+
+      {studyFlow && (
+        <StudyFlowLink studyFlow={studyFlow} className={linkClass} />
+      )}
 
       {file && <File file={file} className={fileClass} />}
 

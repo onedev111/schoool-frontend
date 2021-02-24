@@ -41,10 +41,13 @@ export default function Link({
     <LinkComponent
       url={url}
       onClick={onClick}
-      className={cn('bg-gray-f7 py-2 px-3 flex relative text-left', className)}
+      className={cn(
+        'bg-gray-f7 py-2 px-3 flex items-center relative text-left',
+        className,
+      )}
     >
       {image && <div className="flex-shrink-0 mr-3">{image}</div>}
-      <div className="flex-grow flex flex-col justify-center">
+      <div className="h-full flex-grow flex flex-col justify-center">
         {title && <div className={style.title}>{title}</div>}
         {text && (
           <div className="font-bold text-sm text-gray-71 mt-1 whitespace-per-wrap">
